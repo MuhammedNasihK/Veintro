@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from .decorators import admin_login_required
 from django.views.decorators.cache import never_cache
 from django.db.models import Q
+from .forms import *
 # Create your views here.
 
 User = get_user_model()
@@ -73,7 +74,39 @@ def admin_banners(request):
 
 @admin_login_required
 def admin_add_products(request):
-    return render(request,'admin_add_products.html')
+
+    if request.method == 'POST':
+        product_form = ProductForm(request.POST)
+        variantform_set = VariantFormSet(request.POST)
+        specform_set = SpecificationFormSet(request.POST)
+
+        if product_form.is_valid():
+            product = product_form.save(commit=False)
+
+            variantform_set = VariantFormSet(request.POST,instance=product)
+            specform_set = SpecificationFormSet(request.POST,instance=product)
+
+            if variantform_set.is_valid() and specform_set.is_valid():
+                product.save()
+                variantform_set.save()
+                specform_set.save()
+
+            return redirect('admin_product')
+        else:
+            variantform_set = VariantFormSet(request.POST)
+            specform_set = SpecificationFormSet(request.POST)
+    else:
+        product_form = ProductForm()
+        variantform_set = VariantFormSet()
+        specform_set = SpecificationFormSet()
+
+        context = {
+            'product_form' : product_form,
+            'variantform_set' : variantform_set,
+            'specform_set' : specform_set
+        }
+                
+    return render(request,'admin_add_products.html',context)
 
 def admin_logout(request):
     del request.session['admin_id']
