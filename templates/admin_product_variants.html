@@ -8,13 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        /* Include your exact same CSS from admin_users.html here to keep the sidebar styling */
         :root { --admin-primary:#0f172a; --admin-accent:#22c55e; --admin-border:#e5e7eb; --admin-muted:#6b7280; --admin-bg:#f3f4f6;}
         body{font-family:'Poppins',sans-serif;background:var(--admin-bg);color:#111827;}
         .admin-wrapper{min-height:100vh;display:flex;}
         .admin-sidebar{width:250px;background:#fff;border-right:1px solid var(--admin-border);}
         .admin-main{flex:1;background:#f9fafb;display:flex;flex-direction:column;}
-        /* ... existing sidebar css ... */
         .admin-topbar{padding:10px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--admin-border);background:#fff;}
         .admin-breadcrumb{font-size:0.8rem;color:#9ca3af;}
         .admin-breadcrumb span{color:#111827;font-weight:500;}
@@ -23,10 +21,68 @@
         .admin-card-header{padding:12px 16px;border-bottom:1px solid var(--admin-border);}
         .admin-card-body{padding:14px 16px 16px;}
         .section-title{font-size:0.95rem;font-weight:600;}
-        .section-subtitle{font-size:0.8rem;color:var(--admin-muted);}
+        
+        /* 1. PREMIUM DROPDOWN STYLING (PURE CSS) */
+        .premium-select {
+            cursor: pointer;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+        }
+        .premium-select:hover {
+            border-color: #94a3b8;
+            background-color: #fff;
+        }
+        .premium-select:focus {
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 0.25rem rgba(34, 197, 94, 0.25);
+            background-color: #fff;
+        }
+        .premium-input {
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        /* 2. CSS-ONLY AUTO HIDING MESSAGE ANIMATION */
+        .floating-alerts {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            width: 350px;
+        }
+        
+        /* The animation logic: Stays for 3.5s, fades out, then shrinks to 0 height */
+        @keyframes cssFadeOut {
+            0% { opacity: 1; transform: translateX(0); max-height: 100px; margin-bottom: 1rem; }
+            80% { opacity: 1; transform: translateX(0); max-height: 100px; margin-bottom: 1rem; }
+            99% { opacity: 0; transform: translateX(50px); max-height: 100px; margin-bottom: 1rem; }
+            100% { opacity: 0; max-height: 0; margin-bottom: 0; overflow: hidden; border: none; padding: 0; }
+        }
+        
+        .auto-hide-alert {
+            animation: cssFadeOut 4.5s forwards; /* Runs the animation over 4.5 seconds and stops at 100% */
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
+
+<div class="floating-alerts">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible auto-hide-alert border-0 bg-success text-white d-flex align-items-center" role="alert">
+                <i class="bi bi-check-circle-fill fs-5 me-2"></i>
+                <div class="fw-medium" style="font-size:0.9rem;">{{ message }}</div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
 <div class="admin-wrapper">
     <div class="admin-main">
         <header class="admin-topbar">
@@ -36,105 +92,130 @@
             </div>
         </header>
 
-                    <main class="admin-content">
-                
-                <div class="admin-card">
-                    <div class="admin-card-header bg-success bg-opacity-10 border-success border-opacity-25">
-                        <div class="section-title text-success">Step 2: Add Variant for "{{ product.name }}"</div>
-                    </div>
-                    <div class="admin-card-body">
-                        <form method="POST">
-                            {% csrf_token %}
+        <main class="admin-content">
+            <div class="admin-card">
+                <div class="admin-card-header bg-success bg-opacity-10 border-success border-opacity-25">
+                    <div class="section-title text-success">Step 2: Add Variant for "{{ product.name }}"</div>
+                </div>
+                <div class="admin-card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="row g-4 mb-5 mt-1">
+                            <div class="col-md-4">
+                                <label class="form-label text-muted fw-bold" style="font-size:0.85rem;">Price (₹)</label>
+                                {{ variant_form.price }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted fw-bold" style="font-size:0.85rem;">Discount Price (₹)</label>
+                                {{ variant_form.discount_price }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted fw-bold" style="font-size:0.85rem;">Stock Quantity</label>
+                                {{ variant_form.stock }}
+                            </div>
+                        </div>
+
+                        <div class="border rounded p-4 bg-white position-relative mt-4 mb-3 shadow-sm">
+                            <h6 class="position-absolute top-0 start-0 translate-middle-y bg-white px-2 ms-3 text-muted border border-bottom-0 rounded-top" style="font-size:0.80rem; text-transform:uppercase; font-weight:700;">
+                                Dynamic Attributes (Optional)
+                            </h6>
                             
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-3"><label class="form-label">Colour</label>{{ variant_form.colour }}</div>
-                                <div class="col-md-3"><label class="form-label">Price</label>{{ variant_form.price }}</div>
-                                <div class="col-md-3"><label class="form-label">Discount Price</label>{{ variant_form.discount_price }}</div>
-                                <div class="col-md-3"><label class="form-label">Stock</label>{{ variant_form.stock }}</div>
-                            </div>
-
-                            <h6 class="text-muted mb-2" style="font-size:0.85rem; text-transform:uppercase;">Dynamic Attributes (Optional)</h6>
-                            <div class="row g-3 bg-light p-3 rounded border">
-                                
+                            <div class="row g-4 pt-2">
                                 <div class="col-md-4">
-                                    <div class="input-group input-group-sm">
-                                        <select name="attr_name_1" class="form-select w-25">
+                                    <div class="d-flex shadow-sm rounded">
+                                        <select name="attr_name_1" class="form-select premium-select w-50 border-end-0 rounded-end-0" style="font-size:0.85rem;">
                                             <option value="">Select...</option>
                                             {% for attr in attributes_list %}
                                                 <option value="{{ attr.id }}">{{ attr.name }}</option>
                                             {% endfor %}
                                         </select>
-                                        <input type="text" name="attr_value_1" class="form-control w-50" placeholder="Type value (e.g. 16GB)">
+                                        <input type="text" name="attr_value_1" class="form-control premium-input w-50 rounded-start-0" placeholder="e.g. 16GB" style="font-size:0.85rem;">
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <div class="input-group input-group-sm">
-                                        <select name="attr_name_2" class="form-select w-25">
+                                    <div class="d-flex shadow-sm rounded">
+                                        <select name="attr_name_2" class="form-select premium-select w-50 border-end-0 rounded-end-0" style="font-size:0.85rem;">
                                             <option value="">Select...</option>
                                             {% for attr in attributes_list %}
                                                 <option value="{{ attr.id }}">{{ attr.name }}</option>
                                             {% endfor %}
                                         </select>
-                                        <input type="text" name="attr_value_2" class="form-control w-50" placeholder="Type value">
+                                        <input type="text" name="attr_value_2" class="form-control premium-input w-50 rounded-start-0" placeholder="e.g. Red" style="font-size:0.85rem;">
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <div class="input-group input-group-sm">
-                                        <select name="attr_name_3" class="form-select w-25">
+                                    <div class="d-flex shadow-sm rounded">
+                                        <select name="attr_name_3" class="form-select premium-select w-50 border-end-0 rounded-end-0" style="font-size:0.85rem;">
                                             <option value="">Select...</option>
                                             {% for attr in attributes_list %}
                                                 <option value="{{ attr.id }}">{{ attr.name }}</option>
                                             {% endfor %}
                                         </select>
-                                        <input type="text" name="attr_value_3" class="form-control w-50" placeholder="Type value">
+                                        <input type="text" name="attr_value_3" class="form-control premium-input w-50 rounded-start-0" placeholder="Value" style="font-size:0.85rem;">
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="mt-4 text-end">
-                                <button type="submit" class="btn btn-success btn-sm rounded-pill px-4">Save Variant</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-success rounded-pill px-5 shadow-sm fw-medium">Save Variant</button>
+                        </div>
+                    </form>
                 </div>
+            </div>
 
-                <div class="admin-card mt-4">
-                    <div class="admin-card-header">
-                        <div class="section-title">Saved Variants</div>
-                    </div>
-                    <div class="admin-card-body p-0">
-                        <table class="table table-sm mb-0">
-                            <thead class="table-light" style="font-size: 0.85rem;">
+            <div class="admin-card mt-5 shadow-sm">
+                <div class="admin-card-header bg-light">
+                    <div class="section-title">Saved Variants</div>
+                </div>
+                <div class="admin-card-body p-0">
+                    <table class="table table-hover table-sm align-middle mb-0">
+                        <thead class="table-light text-muted" style="font-size: 0.85rem;">
+                            <tr>
+                                <th class="ps-3">Price</th>
+                                <th>Discount</th>
+                                <th>Stock</th>
+                                <th>Attributes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 0.85rem;">
+                            {% for v in variants %}
                                 <tr>
-                                    <th>Colour</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                    <th>Attributes</th>
+                                    <td class="ps-3 fw-semibold">₹{{ v.price }}</td>
+                                    <td>{% if v.discount_price %}₹{{ v.discount_price }}{% else %}-{% endif %}</td>
+                                    <td>
+                                        {% if v.stock > 0 %}
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success">{{ v.stock }} In Stock</span>
+                                        {% else %}
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Out of Stock</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% for a in v.attribute.all %}
+                                            <span class="badge bg-secondary me-1">{{ a.attribute.name }}: {{ a.value }}</span>
+                                        {% empty %}
+                                            <span class="text-muted fst-italic">No attributes</span>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-outline-danger btn-sm" style="font-size:0.7rem; padding: 2px 8px;"><i class="bi bi-trash"></i></button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody style="font-size: 0.85rem;">
-                                {% for v in variants %}
-                                    <tr>
-                                        <td>{{ v.colour }}</td>
-                                        <td>₹{{ v.price }}</td>
-                                        <td>{{ v.stock }}</td>
-                                        <td>
-                                            {% for a in v.attribute.all %}
-                                                <span class="badge bg-secondary">{{ a.attribute.name }}: {{ a.value }}</span>
-                                            {% endfor %}
-                                        </td>
-                                    </tr>
-                                {% empty %}
-                                    <tr><td colspan="4" class="text-center text-muted py-3">No variants yet.</td></tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                            {% empty %}
+                                <tr><td colspan="5" class="text-center text-muted py-4">No variants added yet. Use the form above to add one.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-            </main>
+            </div>
+        </main>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

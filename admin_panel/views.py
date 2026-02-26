@@ -79,7 +79,12 @@ def admin_add_products(request):
         product_form = ProductForm(request.POST)
         
         if product_form.is_valid():
-            product = product_form.save()
+            product_name = product_form.cleaned_data.get('name')
+            if Product.objects.filter(name=product_name).exists():
+                product_form.add_error(None,'Product already exists')
+                
+            else:
+                product = product_form.save()
             
             specform_set = SpecificationFormSet(request.POST, instance=product)
             if specform_set.is_valid():
@@ -87,9 +92,9 @@ def admin_add_products(request):
                 
             messages.success(request, "Product and specs saved! Now add variants.")
             return redirect('admin_product_variants', product_id=product.id)
-    else:
-        product_form = ProductForm()
-        specform_set = SpecificationFormSet()
+    
+    product_form = ProductForm()
+    specform_set = SpecificationFormSet()
 
     context = {
         'product_form': product_form,

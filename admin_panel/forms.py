@@ -13,6 +13,12 @@ class ProductForm(forms.ModelForm):
             'slug': forms.TextInput(attrs={'class':'form-control form-control-sm'})
         }
 
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields['brand'].empty_label = 'Select Brand...'
+        self.fields['category'].empty_label = 'Select Category...'
+
+
 class VariantForm(forms.ModelForm):
     class Meta:
         model = ProductVariant
@@ -43,6 +49,6 @@ SpecificationFormSet = inlineformset_factory(
     Product, 
     Specification, 
     form=SpecificationForm, 
-    extra=5, 
+    extra=23, 
     can_delete=True
 )

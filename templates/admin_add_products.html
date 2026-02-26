@@ -32,8 +32,43 @@
         .section-subtitle{font-size:0.8rem;color:var(--admin-muted);}
         
         .form-label {font-size: 0.85rem; font-weight: 500;}
-        .formset-row { border: 1px solid var(--admin-border); border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #fff;}
         
+        /* ---------------------------------------------------
+           PREMIUM INPUT & DROPDOWN STYLING (PURE CSS) 
+           --------------------------------------------------- */
+        .form-select, .form-control {
+            cursor: pointer;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+        }
+        .form-control {
+            cursor: text;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .form-select:hover, .form-control:hover {
+            border-color: #94a3b8;
+            background-color: #fff;
+        }
+        .form-select:focus, .form-control:focus {
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 0.25rem rgba(34, 197, 94, 0.25);
+            background-color: #fff;
+        }
+
+        /* Seamless Spec Group Trick (Connects the two Django fields) */
+        .spec-group .w-50:nth-of-type(1) select {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-right: 0;
+        }
+        .spec-group .w-50:nth-of-type(2) input {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
         @media(max-width:768px){
             .admin-wrapper{flex-direction:column}
             .admin-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--admin-border);}
@@ -95,70 +130,82 @@
             </div>
         </header>
 
-                    <main class="admin-content">
-                <form method="POST">
-                    {% csrf_token %}
-                    
-                    <div class="admin-card">
-                        <div class="admin-card-header">
-                            <div class="section-title">Step 1: Product Basics</div>
-                            <div class="section-subtitle">Name, brand, and category.</div>
-                        </div>
-                        <div class="admin-card-body">
-                            <div class="row g-4">
-                                <div class="col-md-6">
-                                    <label class="form-label">Product Name</label>
-                                    {{ product_form.name }}
-                                    <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.name.errors }}</div>
+        <main class="admin-content">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="admin-card shadow-sm">
+                    <div class="admin-card-header">
+                        <div class="section-title">Step 1: Product Basics</div>
+                        <div class="section-subtitle">Name, brand, and category.</div>
+                    </div>
+                    <div class="admin-card-body">
+                        
+                        {% if product_form.non_field_errors %}
+                            <div class="alert alert-danger py-2 px-3 d-flex align-items-center mb-4" style="font-size: 0.85rem;" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                                <div>
+                                    {% for error in product_form.non_field_errors %}
+                                        <strong>Error:</strong> {{ error }}
+                                    {% endfor %}
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Slug</label>
-                                    {{ product_form.slug }}
-                                    <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.slug.errors }}</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Category</label>
-                                    {{ product_form.category }}
-                                    <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.category.errors }}</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Brand</label>
-                                    {{ product_form.brand }}
-                                    <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.brand.errors }}</div>
-                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted fw-bold">Product Name</label>
+                                {{ product_form.name }}
+                                <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.name.errors }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted fw-bold">Slug</label>
+                                {{ product_form.slug }}
+                                <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.slug.errors }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted fw-bold">Category</label>
+                                {{ product_form.category }}
+                                <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.category.errors }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted fw-bold">Brand</label>
+                                {{ product_form.brand }}
+                                <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.brand.errors }}</div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="admin-card">
-                        <div class="admin-card-header bg-primary bg-opacity-10 border-primary border-opacity-25">
-                            <div class="section-title text-primary">Universal Specifications</div>
-                            <div class="section-subtitle">Features that do not change (e.g., Processor, Display Size, Battery).</div>
-                        </div>
-                        <div class="admin-card-body bg-light">
-                            {{ specform_set.management_form }}
-                            
-                            <div class="row g-3">
-                            {% for form in specform_set %}
-                                <div class="col-md-6">
-                                    <div class="d-flex gap-2">
-                                        {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
-                                        <div class="w-50">{{ form.spec }}</div>
-                                        <div class="w-50">{{ form.value }}</div>
-                                    </div>
+                <div class="admin-card shadow-sm">
+                    <div class="admin-card-header bg-primary bg-opacity-10 border-primary border-opacity-25">
+                        <div class="section-title text-primary">Universal Specifications</div>
+                        <div class="section-subtitle">Features that do not change (e.g., Processor, Display Size, Battery).</div>
+                    </div>
+                    <div class="admin-card-body bg-light">
+                        {{ specform_set.management_form }}
+                        
+                        <div class="row g-3">
+                        {% for form in specform_set %}
+                            <div class="col-md-6">
+                                <div class="d-flex shadow-sm rounded spec-group mb-2">
+                                    {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                    <div class="w-50">{{ form.spec }}</div>
+                                    <div class="w-50">{{ form.value }}</div>
                                 </div>
-                            {% endfor %}
                             </div>
-                            <div class="text-muted mt-2" style="font-size:0.75rem;">Fill only the rows you need. Empty rows will be ignored.</div>
+                        {% endfor %}
                         </div>
+                        <div class="text-muted mt-2" style="font-size:0.75rem;">Fill only the rows you need. Empty rows will be ignored.</div>
                     </div>
+                </div>
 
-                    <div class="text-end mb-5">
-                        <a href="{% url 'admin_products' %}" class="btn btn-outline-secondary btn-sm px-4 rounded-pill me-2">Cancel</a>
-                        <button type="submit" class="btn btn-success btn-sm px-4 rounded-pill">Save & Add Variants <i class="bi bi-arrow-right"></i></button>
-                    </div>
-                </form>
-            </main>
+                <div class="text-end mb-5">
+                    <a href="{% url 'admin_products' %}" class="btn btn-outline-secondary px-4 rounded-pill fw-medium me-2">Cancel</a>
+                    <button type="submit" class="btn btn-success px-4 rounded-pill fw-medium shadow-sm">Save & Add Variants <i class="bi bi-arrow-right"></i></button>
+                </div>
+            </form>
+        </main>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
