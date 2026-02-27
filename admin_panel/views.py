@@ -153,6 +153,10 @@ def admin_add_variants(request, product_id):
     }    
     return render(request, 'admin_product_variants.html', context)
 
+
+def admin_product_image(request,product_id):
+    return render(request,'admin_product_image.html')
+
 def admin_logout(request):
     del request.session['admin_id']
     return redirect('home')
