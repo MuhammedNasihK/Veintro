@@ -63,6 +63,13 @@ class ProductVariant(models.Model):
     added_date = models.DateField(auto_now_add=True)
     attribute = models.ManyToManyField(AttributeValue,related_name='variants')
 
+    def discount_percentage(self):
+        if self.price and self.discount_price and self.price > self.discount_price:
+            discount = self.price - self.discount_price
+            percentage = (discount/self.price) * 100
+            return round(percentage,1)
+        return 0 
+
 
 class SpecificationTitle(models.Model):
     name = models.CharField(max_length=200)

@@ -833,7 +833,7 @@
         </div>
 
         <div class="row g-4 mb-3">
-
+            {% for v in product_list %}
             <div class="col-6 col-md-3">
                 <div class="product-card p-2 h-100"
                      onclick="location.href='{% url 'product_review' %}'" style="cursor:pointer;">
@@ -842,98 +842,24 @@
                         <label for="wish-1" class="wishlist-label">
                             <i class="bi bi-heart"></i>
                         </label>
-                        <img src="img/new1.png" class="product-img mb-2" alt="Vivo X100">
+                        <img src="{{ v.image }}" class="product-img mb-2" alt="{{ v.product.name }}">
                     </div>
                     <div class="product-body p-2 mt-2">
-                        <h6 class="mb-1">Vivo X100 5G</h6>
-                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">12GB • 256GB • 120Hz display</p>
+                        <h6 class="mb-1">{{ v.product_name }}</h6>
+                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">{{ v.attribute.RAM }} | {{v.attribute.Storage}} | {{v.attribute.Colour}}</p>
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <div>
-                                <span class="product-price">₹49,999</span>
-                                <span class="product-old-price ms-1">₹54,999</span>
+                                <span class="product-price">₹{{ v.discount_price }}</span>
+                                <span class="product-old-price ms-1">₹{{ v.price }}</span>
                             </div>
-                            <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">Save ₹5,000</span>
+                            <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">{{ v.percentage }}% OFFER</span>
                         </div>
                         <button class="btn btn-cart w-100" type="button">Add to cart</button>
                     </div>
                 </div>
             </div>
-
-            <div class="col-6 col-md-3">
-                <div class="product-card p-2 h-100"
-                     onclick="location.href='{% url 'product_review' %}'" style="cursor:pointer;">
-                    <div class="product-image-wrapper">
-                        <input type="checkbox" id="wish-2" class="wishlist-toggle">
-                        <label for="wish-2" class="wishlist-label">
-                            <i class="bi bi-heart"></i>
-                        </label>
-                        <img src="img/new4.png" class="product-img mb-2" alt="HP Victus Gaming">
-                    </div>
-                    <div class="product-body p-2 mt-2">
-                        <h6 class="mb-1">HP Victus Gaming</h6>
-                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">Ryzen 7 • RTX • 16GB RAM</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div>
-                                <span class="product-price">₹59,999</span>
-                                <span class="product-old-price ms-1">₹69,999</span>
-                            </div>
-                            <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">Offer</span>
-                        </div>
-                        <button class="btn btn-cart w-100" type="button">Add to cart</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-3">
-                <div class="product-card p-2 h-100"
-                     onclick="location.href='PRODUCT_URL_HERE_3'" style="cursor:pointer;">
-                    <div class="product-image-wrapper">
-                        <input type="checkbox" id="wish-3" class="wishlist-toggle">
-                        <label for="wish-3" class="wishlist-label">
-                            <i class="bi bi-heart"></i>
-                        </label>
-                        <img src="img/tv.png" class="product-img mb-2" alt="Smart TV">
-                    </div>
-                    <div class="product-body p-2 mt-2">
-                        <h6 class="mb-1">Mi 55" 4K Smart TV</h6>
-                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">Dolby Vision • Patchwall</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div>
-                                <span class="product-price">₹29,999</span>
-                                <span class="product-old-price ms-1">₹34,999</span>
-                            </div>
-                            <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">Deal</span>
-                        </div>
-                        <button class="btn btn-cart w-100" type="button">Add to cart</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-3">
-                <div class="product-card p-2 h-100"
-                     onclick="location.href='PRODUCT_URL_HERE_4'" style="cursor:pointer;">
-                    <div class="product-image-wrapper">
-                        <input type="checkbox" id="wish-4" class="wishlist-toggle">
-                        <label for="wish-4" class="wishlist-label">
-                            <i class="bi bi-heart"></i>
-                        </label>
-                        <img src="img/speaker.png" class="product-img mb-2" alt="Speaker">
-                    </div>
-                    <div class="product-body p-2 mt-2">
-                        <h6 class="mb-1">Sony Bluetooth Speaker</h6>
-                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">Extra bass • 12h backup</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div>
-                                <span class="product-price">₹4,499</span>
-                                <span class="product-old-price ms-1">₹5,499</span>
-                            </div>
-                            <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">Limited</span>
-                        </div>
-                        <button class="btn btn-cart w-100" type="button">Add to cart</button>
-                    </div>
-                </div>
-            </div>
-
+            {% endfor %}
+            
         </div>
 
         <div class="row g-4">
@@ -1169,14 +1095,9 @@
             <p class="section-subtitle mb-0">Official brand partners & authorized dealers.</p>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            <span class="brand-chip">Apple</span>
-            <span class="brand-chip">Samsung</span>
-            <span class="brand-chip">Dell</span>
-            <span class="brand-chip">HP</span>
-            <span class="brand-chip">OnePlus</span>
-            <span class="brand-chip">Boat</span>
-            <span class="brand-chip">Sony</span>
-            <span class="brand-chip">Mi</span>
+            {% for b in brands %}
+            <span class="brand-chip">{{ b }}</span>
+            {% endfor %}
         </div>
     </div>
 </section>

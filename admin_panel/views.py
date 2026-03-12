@@ -148,6 +148,9 @@ def admin_banners(request):
 
 @admin_login_required
 def admin_add_products(request):
+    if 'admin_id' in request.session:
+        admin_data = User.objects.get(id = request.session['admin_id'])
+
     if request.method == 'POST':
         product_form = ProductForm(request.POST)
         
@@ -170,12 +173,16 @@ def admin_add_products(request):
     specform_set = SpecificationFormSet()
 
     context = {
+        'admin_data' : admin_data,
         'product_form': product_form,
         'specform_set': specform_set
     }
     return render(request, 'admin_add_products.html', context)
 
 
+
+@never_cache
+@admin_login_required
 def admin_add_variants(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     variants = ProductVariant.objects.filter(product=product)
@@ -187,12 +194,11 @@ def admin_add_variants(request, product_id):
         variant_form = VariantForm(request.POST)
         
         if variant_form.is_valid():
-            # 1. Save Variant
             new_variant = variant_form.save(commit=False)
             new_variant.product = product
             new_variant.save()
 
-            # 2. Process Dynamic Attributes (Your Idea!)
+            # Process Dynamic Attributes (My Idea)
             # We check the 3 manual HTML rows we will create in the template
             for i in range(1, len(attributes_list)+1):
                 attr_id = request.POST.get(f'attr_name_{i}') # Dropdown (e.g., RAM)
@@ -264,7 +270,9 @@ def delete_product_image(request,image_id,variant_id):
         ProductImage.objects.get(id=image_id).delete()
         return redirect('product_image',product_id=variant_id)
     
-    
+
+
+@admin_login_required
 def admin_logout(request):
     del request.session['admin_id']
     return redirect('home')
