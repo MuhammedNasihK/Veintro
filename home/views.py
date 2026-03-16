@@ -16,6 +16,11 @@ def home(request):                                                              
     product_list=[]
     for v in trending_products:
         main_image = v.productimage_set.filter(is_main=True).first()
+
+        in_wishlist=False
+
+        if request.user.is_authenticated:
+            in_wishlist = Wishlist.objects.filter(product_variant=v,user=request.user).exists()
         
         product_list.append({
             'variant_id':v.pk,
@@ -24,6 +29,7 @@ def home(request):                                                              
             'price':v.price,
             'discount_price':v.discount_price,
             'percentage':v.discount_percentage,
+            'in_wishlist':in_wishlist,
             'image':main_image.image.url
         })
 
@@ -94,8 +100,14 @@ def wishlist(request):
     }
     return render(request,'wishlist.html',context)
 
+
+@login_required
 def profile(request):
-    return render(request,'profile.html')
+    profile_data = Profile.objects.filter(user=request.user)
+    context ={
+        'profile':profile_data
+    }
+    return render(request,'profile.html',context)
 
 
 def product_review(request):
