@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,11 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electro - Product Review</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
@@ -29,13 +28,43 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Navbar */
+        /* --- EXACT NAVBAR STYLES FROM LOGIN PAGE --- */
         .navbar {
             background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+            height: 72px; /* Fixed height */
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
         }
+
+        .container-fluid-custom {
+            width: 100%;
+            max-width: 1320px;
+            padding-inline: 20px;
+            margin-inline: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Adjusted to keep right-side links in place */
+        }
+
         .navbar-brand {
-            letter-spacing: 1px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            /* EXACT POSITION PRESERVED */
+            margin-left: -45px; 
         }
+
+        /* LOGO SIZE EXACTLY 240PX */
+        .navbar-brand img {
+            width: 240px;  
+            height: auto;  
+            object-fit: contain;
+            display: block;
+        }
+
         .navbar .nav-link {
             color: #e5e7eb !important;
             font-weight: 500;
@@ -498,10 +527,11 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+    <div class="container-fluid-custom">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro">
+        </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
@@ -517,8 +547,15 @@
                     <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
                 </li>
 
-                <!-- Profile dropdown (icon) -->
-                <li class="nav-item dropdown ms-3">
+            </ul>
+
+            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                <i class="bi bi-heart"></i>
+            </a>
+            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                <i class="bi bi-cart"></i>
+            </a>
+            <li class="nav-item dropdown list-unstyled ms-3">
                     <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
                        href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-circle fs-5"></i>
@@ -548,21 +585,10 @@
                         </li>
                     </ul>
                 </li>
-            </ul>
-
-            <!-- Wishlist -->
-            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
-                <i class="bi bi-heart"></i>
-            </a>
-            <!-- Cart -->
-            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
-                <i class="bi bi-cart"></i>
-            </a>
         </div>
     </div>
 </nav>
 
-<!-- PAGE HEADER / BREADCRUMB -->
 <section class="page-header">
     <div class="container">
         <div class="breadcrumb-custom mb-1">
@@ -573,56 +599,48 @@
     </div>
 </section>
 
-<!-- PRODUCT HERO: IMAGE LEFT, CONTENT RIGHT -->
 <section class="product-hero">
     <div class="container">
         <div class="row g-4 align-items-center">
 
-            <!-- LEFT: big image + wishlist checkbox -->
             <div class="col-lg-6">
                 <div class="hero-gallery-card">
                     <div class="hero-main-image-wrapper">
+                        {%if request.user.is_authenticated%}
                         <input type="checkbox" id="hero-wishlist" class="wishlist-toggle">
                         <label for="hero-wishlist" class="wishlist-label">
                             <i class="bi bi-heart-fill"></i>
                         </label>
-                        <img src="img/mobile.png" alt="Galaxy S24 Ultra front and back" class="hero-main-image">
+                        {%endif%}
+                        <img src="{{product_details.main_image}}" alt="" class="hero-main-image">
                     </div>
+                    {%for i in product_details.images%}
                     <div class="d-flex hero-thumb-row">
                         <div class="hero-thumb">
-                            <img src="img/mobile.png" alt="Front view">
-                        </div>
-                        <div class="hero-thumb">
-                            <img src="img/mobile.png" alt="Back view">
-                        </div>
-                        <div class="hero-thumb">
-                            <img src="img/mobile.png" alt="Camera close‑up">
+                            <img src="{{i}}" alt="Front view">
                         </div>
                     </div>
+                    {%endfor%}
                     <div class="d-flex justify-content-between align-items-center hero-sub-meta">
-                        <span>Images shown are for illustration purposes; actual device may vary. [web:138]</span>
+                        <span>Images shown are for illustration purposes; actual device may vary.</span>
                         <span><i class="bi bi-shield-check me-1"></i>1‑year brand warranty</span>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT: text + variants + price -->
             <div class="col-lg-6">
                 <div class="product-hero-right">
-                    <p class="product-tagline mb-1">GALAXY SERIES</p>
-                    <h1 class="product-name mb-2">Galaxy <span>S24 Ultra 5G</span></h1>
+                    <p class="product-tagline mb-1">{{product_details.brand}}</p>
+                    <h1 class="product-name mb-2">{{product_details.product_name}}<span></span></h1>
                     <p class="product-keypoints mb-3">
-                        Flagship experience with pro‑grade camera, all‑day battery and a smooth 120Hz display tuned for work and play. [web:125][web:138]
+                        Flagship experience with pro‑grade camera, all‑day battery and a smooth 120Hz display tuned for work and play.
                     </p>
-
+                    {%for s in product_details.specifications%}
                     <div class="d-flex flex-wrap gap-2 mb-3">
-                        <span class="pill-spec">6.8" QHD+ 120Hz</span>
-                        <span class="pill-spec">200MP camera</span>
-                        <span class="pill-spec">Snapdragon® for Galaxy</span>
-                        <span class="pill-spec">5000 mAh</span>
+                        <span class="pill-spec">{{s}}</span>
                     </div>
+                    {%endfor%}
 
-                    <!-- Color variants -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="variant-label">Color</span>
@@ -649,7 +667,6 @@
                         </div>
                     </div>
 
-                    <!-- Storage variants -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="variant-label">Storage</span>
@@ -675,7 +692,7 @@
 
                     <div class="d-flex flex-wrap align-items-center gap-4 mb-3">
                         <div>
-                            <div class="product-price-lg mb-0">₹1,09,999</div>
+                            <div class="product-price-lg mb-0">{{product_details.discount_price}}</div>
                             <div class="product-price-lg-sub">
                                 Inclusive of all taxes • Limited‑time launch offers
                             </div>
@@ -697,7 +714,7 @@
                     </div>
 
                     <p class="hero-sub-meta mb-0">
-                        Exchange bonus, no‑cost EMI and bank cashback offers available on select cards. [web:144]
+                        Exchange bonus, no‑cost EMI and bank cashback offers available on select cards.
                     </p>
                 </div>
             </div>
@@ -705,7 +722,6 @@
     </div>
 </section>
 
-<!-- TABS BAR -->
 <div class="tabs-bar">
     <div class="container">
         <ul class="nav nav-pills py-2 gap-2">
@@ -725,14 +741,11 @@
     </div>
 </div>
 
-<!-- MAIN CONTENT -->
 <section class="py-4">
     <div class="container">
         <div class="row g-4">
-            <!-- LEFT MAIN COLUMN -->
             <div class="col-lg-8">
 
-                <!-- OVERVIEW -->
                 <div id="overview" class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
@@ -779,7 +792,6 @@
                     </div>
                 </div>
 
-                <!-- SPECS -->
                 <div id="specs" class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
@@ -838,7 +850,6 @@
                     </div>
                 </div>
 
-                <!-- REVIEWS -->
                 <div id="reviews" class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
@@ -849,7 +860,6 @@
                         </div>
                     </div>
 
-                    <!-- Summary card WITHOUT highlights column -->
                     <div class="card-soft p-3 mb-3">
                         <div class="row g-3 align-items-center">
                             <div class="col-md-4 text-center text-md-start">
@@ -903,7 +913,6 @@
                         </div>
                     </div>
 
-                    <!-- Individual reviews WITHOUT helpful button -->
                     <div class="review-card p-3 mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             <div>
@@ -967,7 +976,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ -->
                 <div id="faq" class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
@@ -1032,61 +1040,10 @@
                     </div>
                 </div>
 
-                <!-- SIMILAR PRODUCTS AT BOTTOM -->
-                <div class="mb-4">
-                    <h2 class="similar-section-title mb-2">Similar products</h2>
-                    <p class="section-subtitle mb-2">
-                        Explore other popular flagship phones in a similar price range. [web:156]
-                    </p>
-                    <div class="row g-3">
-                        <div class="col-md-4 col-6">
-                            <div class="similar-card p-2 h-100">
-                                <img src="img/p2.png" alt="Galaxy S23" class="similar-img mb-2">
-                                <h6 class="mb-1" style="font-size:0.85rem;">Samsung Galaxy S23</h6>
-                                <p class="mb-1" style="font-size:0.76rem; color:#6b7280;">8GB • 256GB</p>
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span style="font-size:0.84rem; font-weight:600; color:#16a34a;">₹54,999</span>
-                                    <span class="text-warning" style="font-size:0.74rem;">
-                                        <i class="bi bi-star-fill"></i> 4.6
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-6">
-                            <div class="similar-card p-2 h-100">
-                                <img src="img/p1.png" alt="iPhone 14" class="similar-img mb-2">
-                                <h6 class="mb-1" style="font-size:0.85rem;">Apple iPhone 14</h6>
-                                <p class="mb-1" style="font-size:0.76rem; color:#6b7280;">128GB</p>
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span style="font-size:0.84rem; font-weight:600; color:#16a34a;">₹68,999</span>
-                                    <span class="text-warning" style="font-size:0.74rem;">
-                                        <i class="bi bi-star-fill"></i> 4.7
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 d-none d-md-block">
-                            <div class="similar-card p-2 h-100">
-                                <img src="img/new2.png" alt="Galaxy A55" class="similar-img mb-2">
-                                <h6 class="mb-1" style="font-size:0.85rem;">Samsung Galaxy A55 5G</h6>
-                                <p class="mb-1" style="font-size:0.76rem; color:#6b7280;">8GB • 256GB</p>
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span style="font-size:0.84rem; font-weight:600; color:#16a34a;">₹27,999</span>
-                                    <span class="text-warning" style="font-size:0.74rem;">
-                                        <i class="bi bi-star-fill"></i> 4.3
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
-            <!-- RIGHT SIDEBAR -->
             <div class="col-lg-4">
 
-                <!-- Write review (rating + single text field) -->
                 <div class="write-review-card p-3 mb-3">
                     <h5 class="mb-1">Write a review</h5>
                     <p class="section-subtitle mb-2" style="color:#e5e7eb;">
@@ -1127,7 +1084,6 @@
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="pt-4 mt-4">
     <div class="container pb-3">
         <div class="row g-4">
@@ -1172,7 +1128,6 @@
     </div>
 </footer>
 
-<!-- Bootstrap JS only -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

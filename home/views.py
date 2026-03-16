@@ -110,8 +110,34 @@ def profile(request):
     return render(request,'profile.html',context)
 
 
-def product_review(request):
-    return render(request,'product review.html')
+
+def product_review(request,variant_id):
+    variant = get_object_or_404(ProductVariant.objects.select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set','product__specification_set','product__specification_set__spec'),id=variant_id)
+    product_details = []
+    
+    images = variant.productimage_set.all()
+    main_image = next((img for img in images if img.is_main), None)
+    specifications = variant.product.specification_set.all()
+    
+
+    product_details = {
+        'product_id':variant.product.id,
+        'variant_id':variant.id,
+        'product_name':variant.product.name,
+        'category':variant.product.category.name,
+        'brand':variant.product.brand.name,
+        'price':variant.price,
+        'discount_price':variant.discount_price,
+        'discount_percentage':variant.discount_percentage(),
+        'specifications':[a.value for a in specifications],
+        'main_image':main_image.image.url if main_image else None,
+        'other_images':[a.image.url for a in images]
+    }
+
+    context = {
+        'product_details':product_details
+    }
+    return render(request,'product review.html',context)
 
 def cart(request):
     return render(request,'cart.html')
