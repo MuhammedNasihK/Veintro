@@ -6,522 +6,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electro - Product Review</title>
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
-        :root {
-            --primary-dark: #0b1020;
-            --primary: #0f172a;
-            --accent: #22c55e;
-            --accent-soft: rgba(34, 197, 94, 0.12);
-            --muted: #6b7280;
-            --card-bg: #ffffff;
-            --badge-bg: #0b1020;
-        }
+        :root { --primary-dark: #0b1020; --primary: #0f172a; --accent: #22c55e; --accent-soft: rgba(34, 197, 94, 0.12); --muted: #6b7280; --card-bg: #ffffff; --badge-bg: #0b1020; }
+        body { background: #f3f4f6; font-family: 'Poppins', sans-serif; }
 
-        body {
-            background: #f3f4f6;
-            font-family: 'Poppins', sans-serif;
-        }
+        .navbar { background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important; height: 72px; padding: 0 !important; display: flex; align-items: center; }
+        .container-fluid-custom { width: 100%; max-width: 1320px; padding-inline: 20px; margin-inline: auto; display: flex; align-items: center; justify-content: space-between; }
+        .navbar-brand { padding: 0; margin: 0; display: flex; align-items: center; height: 100%; margin-left: -45px; }
+        .navbar-brand img { width: 240px; height: auto; object-fit: contain; display: block; }
+        .navbar-right-section { display: flex; align-items: center; gap: 8px; }
+        .navbar .nav-link { color: #e5e7eb !important; font-weight: 500; font-size: 0.95rem; }
+        .navbar .nav-link.special-hover { position: relative; border-radius: 999px; padding-inline: 14px; overflow: hidden; }
+        .navbar .nav-link.special-hover::after { content: ""; position: absolute; left: 50%; bottom: 2px; width: 0; height: 2px; background: #22c55e; transform: translateX(-50%); transition: width 0.25s ease-out; border-radius: 999px; }
+        .navbar .nav-link.special-hover:hover::after { width: 60%; }
+        .navbar .nav-link.special-hover:hover { background: rgba(31, 41, 55, 0.7); }
+        .icon-btn { border-radius: 999px; border-color: #1f2937; color: #e5e7eb; background: transparent; transition: all 0.2s ease; }
+        .icon-btn i { font-size: 1.1rem; }
+        .icon-btn:hover { background: rgba(34, 197, 94, 0.1); border-color: #22c55e; color: #bbf7d0; transform: translateY(-1px) scale(1.03); box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2); }
+        .dropdown-toggle::after { display: none; }
 
-        /* --- EXACT NAVBAR STYLES FROM LOGIN PAGE --- */
-        .navbar {
-            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
-            height: 72px; /* Fixed height */
-            padding: 0 !important;
-            display: flex;
-            align-items: center;
-        }
+        .page-header { background: #0f172a; color: #e5e7eb; padding: 24px 0 18px; border-bottom: 1px solid rgba(148, 163, 184, 0.25); }
+        .breadcrumb-custom { font-size: 0.8rem; color: #9ca3af; }
+        .breadcrumb-custom a { color: #9ca3af; text-decoration: none; }
+        .breadcrumb-custom a:hover { color: #f9fafb; }
 
-        .container-fluid-custom {
-            width: 100%;
-            max-width: 1320px;
-            padding-inline: 20px;
-            margin-inline: auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* Adjusted to keep right-side links in place */
-        }
+        .product-hero { background: #0b1020; color: #f9fafb; padding: 32px 0 26px; }
+        .hero-gallery-card { background: radial-gradient(circle at top left, rgba(34,197,94,0.2), #020617); border-radius: 18px; padding: 18px; border: 1px solid rgba(148, 163, 184, 0.16); box-shadow: 0 26px 60px rgba(15, 23, 42, 0.85); position: relative; }
+        .hero-main-image-wrapper { background: #ffffff; border-radius: 14px; padding: 16px; text-align: center; position: relative; }
+        .hero-main-image { width: 100%; height: 360px; object-fit: contain; }
+        
+        .hero-thumb-row { margin-top: 10px; gap: 8px; }
+        .hero-thumb { width: calc(20% - 6.4px); flex: 0 0 auto; background: #ffffff; border-radius: 10px; padding: 4px; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease; }
+        .hero-thumb img { width: 100%; height: 70px; object-fit: contain; border-radius: 6px; }
+        .hero-sub-meta { font-size: 0.76rem; color: #9ca3af; margin-top: 6px; }
 
-        .navbar-brand {
-            padding: 0;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            height: 100%;
-            /* EXACT POSITION PRESERVED */
-            margin-left: -45px; 
-        }
+        .wishlist-toggle { position: absolute; top: 10px; right: 12px; opacity: 0; width: 0; height: 0; }
+        .wishlist-label { position: absolute; top: 10px; right: 12px; width: 34px; height: 34px; border-radius: 999px; background: rgba(15, 23, 42, 0.9); color: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; border: 1px solid rgba(148, 163, 184, 0.7); transition: all 0.2s ease; }
+        .wishlist-label:hover { background: rgba(15, 23, 42, 1); transform: translateY(-1px); }
+        .wishlist-toggle:checked + .wishlist-label { background: #22c55e; color: #022c22; border-color: #16a34a; box-shadow: 0 10px 22px rgba(34, 197, 94, 0.5); }
 
-        /* LOGO SIZE EXACTLY 240PX */
-        .navbar-brand img {
-            width: 240px;  
-            height: auto;  
-            object-fit: contain;
-            display: block;
-        }
+        .product-hero-right { max-width: 520px; margin-left: auto; }
+        .product-tagline { font-size: 0.82rem; letter-spacing: 0.16em; text-transform: uppercase; color: #9ca3af; }
+        .product-name { font-size: 2rem; font-weight: 700; }
+        .product-name span { color: #22c55e; }
+        .product-keypoints { font-size: 0.9rem; color: #d1d5db; }
+        .pill-spec { font-size: 0.78rem; border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.6); padding: 3px 10px; color: #e5e7eb; background: rgba(15, 23, 42, 0.85); }
 
-        .navbar .nav-link {
-            color: #e5e7eb !important;
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-        .navbar .nav-link.special-hover {
-            position: relative;
-            border-radius: 999px;
-            padding-inline: 14px;
-            overflow: hidden;
-        }
-        .navbar .nav-link.special-hover::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            bottom: 2px;
-            width: 0;
-            height: 2px;
-            background: #22c55e;
-            transform: translateX(-50%);
-            transition: width 0.25s ease-out;
-            border-radius: 999px;
-        }
-        .navbar .nav-link.special-hover:hover::after {
-            width: 60%;
-        }
-        .navbar .nav-link.special-hover:hover {
-            background: rgba(31, 41, 55, 0.7);
-        }
+        /* FLIPKART STYLE VARIANTS */
+        .variant-group-title { font-size: 0.9rem; color: #f9fafb; font-weight: 500; }
+        .variant-group-subtitle { font-size: 0.9rem; color: #9ca3af; font-weight: 400; }
+        .variant-pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
+        
+        .variant-swatch-box { width: 60px; height: 70px; border: 2px solid #374151; border-radius: 6px; padding: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; background: #1f2937; text-decoration: none; transition: 0.2s ease;}
+        .variant-swatch-box img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+        .variant-swatch-box:hover { border-color: #6b7280; }
+        .variant-swatch-box.active { border-color: #22c55e; box-shadow: 0 0 0 1px #22c55e; }
 
-        .search-input {
-            border-radius: 999px;
-            border: 1px solid #1f2937;
-            background: #020617;
-            color: #e5e7eb;
-            font-size: 0.9rem;
-        }
-        .search-input::placeholder {
-            color: #6b7280;
-        }
-        .search-btn {
-            border-radius: 999px;
-            background: #22c55e;
-            border: none;
-            font-weight: 600;
-        }
-        .search-btn:hover {
-            background: #16a34a;
-        }
+        .variant-storage-box { border: 1px solid #4b5563; border-radius: 6px; padding: 10px 16px; color: #e5e7eb; font-size: 0.85rem; font-weight: 500; text-decoration: none; background: transparent; transition: 0.2s ease; display: inline-flex; align-items: center; }
+        .variant-storage-box:hover { border-color: #9ca3af; color: #f9fafb; }
+        .variant-storage-box.active { border-color: #22c55e; color: #22c55e; background: rgba(34, 197, 94, 0.1); box-shadow: 0 0 0 1px #22c55e; }
 
-        .icon-btn {
-            border-radius: 999px;
-            border-color: #1f2937;
-            color: #e5e7eb;
-            background: transparent;
-            transition: all 0.2s ease;
-        }
-        .icon-btn i {
-            font-size: 1.1rem;
-        }
-        .icon-btn:hover {
-            background: rgba(34, 197, 94, 0.1);
-            border-color: #22c55e;
-            color: #bbf7d0;
-            transform: translateY(-1px) scale(1.03);
-            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
-        }
+        .product-price-lg { font-size: 1.45rem; font-weight: 700; color: #22c55e; }
+        .product-price-lg-sub { font-size: 0.8rem; color: #9ca3af; }
+        .rating-summary-lg { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: #020617; border: 1px solid rgba(148, 163, 184, 0.4); font-size: 0.8rem; }
+        .rating-summary-lg strong { font-size: 1rem; color: #fde047; }
+        .rating-summary-lg i { color: #fde047; }
 
-        /* Page header / breadcrumb */
-        .page-header {
-            background: #0f172a;
-            color: #e5e7eb;
-            padding: 24px 0 18px;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.25);
-        }
-        .breadcrumb-custom {
-            font-size: 0.8rem;
-            color: #9ca3af;
-        }
-        .breadcrumb-custom a {
-            color: #9ca3af;
-            text-decoration: none;
-        }
-        .breadcrumb-custom a:hover {
-            color: #f9fafb;
-        }
+        .btn-primary-main { background: #22c55e; border: none; border-radius: 999px; font-size: 1.1rem; font-weight: 600; padding: 14px 28px; transition: all 0.18s ease-out; color:#fff;}
+        .btn-primary-main:hover { background: #16a34a; transform: translateY(-1px); box-shadow: 0 12px 26px rgba(22, 163, 74, 0.45); color:#fff;}
+        .btn-outline-light-soft { border-radius: 999px; border: 1px solid #4b5563; font-size: 1.1rem; padding: 14px 28px; color: #e5e7eb; background: transparent; }
+        .btn-outline-light-soft:hover { background: rgba(15,23,42,0.9); color:#fff;}
 
-        /* PRODUCT HERO – image left, content right */
-        .product-hero {
-            background: #0b1020;
-            color: #f9fafb;
-            padding: 32px 0 26px;
-        }
+        .tabs-bar { background: #ffffff; border-bottom: 1px solid #e5e7eb; }
+        .tabs-bar .nav-link { font-size: 0.84rem; color: #4b5563; border-radius: 999px; padding: 8px 14px; }
+        .tabs-bar .nav-link:hover { background: #f3f4f6; }
+        .tabs-bar .nav-link.active-tab { background: #0f172a; color: #f9fafb; }
+        .section-title { font-size: 1.1rem; font-weight: 700; }
+        .section-subtitle { font-size: 0.84rem; color: #6b7280; }
+        .card-soft { background: #ffffff; border-radius: 14px; border: 1px solid #e5e7eb; }
 
-        /* Big image card with wishlist heart */
-        .hero-gallery-card {
-            background: radial-gradient(circle at top left, rgba(34,197,94,0.2), #020617);
-            border-radius: 18px;
-            padding: 18px;
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            box-shadow: 0 26px 60px rgba(15, 23, 42, 0.85);
-            position: relative;
-        }
-        .hero-main-image-wrapper {
-            background: #020617;
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            position: relative;
-        }
-        .hero-main-image {
-            width: 100%;
-            max-height: 360px;
-            object-fit: contain;
-        }
-        .hero-thumb-row {
-            margin-top: 10px;
-            gap: 8px;
-        }
-        .hero-thumb {
-            flex: 1;
-            background: #020617;
-            border-radius: 10px;
-            padding: 6px;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-        }
-        .hero-thumb img {
-            width: 100%;
-            height: 70px;
-            object-fit: contain;
-        }
-        .hero-sub-meta {
-            font-size: 0.76rem;
-            color: #9ca3af;
-            margin-top: 6px;
-        }
+        .spec-table { width: 100%; font-size: 0.88rem; color: #4b5563;}
+        .spec-table tr { border-bottom: 1px solid #e5e7eb; }
+        .spec-table tr:last-child { border-bottom: none; }
+        .spec-table td { padding: 12px 16px; vertical-align: top;}
+        .spec-table .spec-title { font-weight: 500; color: #6b7280; width: 35%;}
+        .spec-table .spec-value { color: #111827; font-weight: 500; width: 65%;}
 
-        /* Wishlist heart checkbox (top-right on image) */
-        .wishlist-toggle {
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .wishlist-label {
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            width: 34px;
-            height: 34px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.9);
-            color: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            cursor: pointer;
-            border: 1px solid rgba(148, 163, 184, 0.7);
-            transition: all 0.2s ease;
-        }
-        .wishlist-label:hover {
-            background: rgba(15, 23, 42, 1);
-            transform: translateY(-1px);
-        }
-        .wishlist-toggle:checked + .wishlist-label {
-            background: #22c55e;
-            color: #022c22;
-            border-color: #16a34a;
-            box-shadow: 0 10px 22px rgba(34, 197, 94, 0.5);
-        }
+        .review-score-main { font-size: 2.3rem; font-weight: 700; }
+        .review-score-main i { color: #fde047; }
+        .review-count-text { font-size: 0.84rem; color: #6b7280; }
+        .rating-bar-row { font-size: 0.8rem; }
+        .rating-bar-track { height: 6px; border-radius: 999px; background: #e5e7eb; overflow: hidden; }
+        .rating-bar-fill { height: 100%; border-radius: 999px; background: #22c55e; }
+        .review-card { background: #ffffff; border-radius: 14px; border: 1px solid #e5e7eb; }
+        .reviewer-name { font-size: 0.86rem; font-weight: 600; }
+        .reviewer-meta { font-size: 0.78rem; color: #6b7280; }
+        .review-title { font-size: 0.9rem; font-weight: 600; }
+        .review-body { font-size: 0.82rem; color: #4b5563; }
+        .badge-verified { font-size: 0.7rem; border-radius: 999px; background: #dcfce7; color: #166534; }
+        .write-review-card { background: #0f172a; border-radius: 16px; border: 1px solid rgba(148, 163, 184, 0.35); color: #e5e7eb; }
+        .write-label { font-size: 0.82rem; color: #e5e7eb; }
+        .form-control-dark, .form-select-dark { background: #020617; border-radius: 10px; border: 1px solid #1f2937; color: #e5e7eb; font-size: 0.82rem; }
+        .form-control-dark::placeholder { color: #6b7280; }
+        .form-control-dark:focus, .form-select-dark:focus { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34,197,94,0.35); }
+        .similar-section-title { font-size: 1rem; font-weight: 600; }
+        .similar-card { background: #ffffff; border-radius: 12px; border: 1px solid #e5e7eb; transition: 0.2s ease; }
+        .similar-card:hover { border-color: #cbd5f5; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16); transform: translateY(-2px); }
+        .similar-img { width: 100%; height: 120px; object-fit: contain; }
 
-        /* Right product content */
-        .product-hero-right {
-            max-width: 520px;
-            margin-left: auto;
-        }
-        .product-tagline {
-            font-size: 0.82rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: #9ca3af;
-        }
-        .product-name {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        .product-name span {
-            color: #22c55e;
-        }
-        .product-keypoints {
-            font-size: 0.9rem;
-            color: #d1d5db;
-        }
-        .pill-spec {
-            font-size: 0.78rem;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.6);
-            padding: 3px 10px;
-            color: #e5e7eb;
-            background: rgba(15, 23, 42, 0.85);
-        }
+        footer { background: #020617; color: #9ca3af; }
+        footer a { color: #9ca3af; text-decoration: none; font-size: 0.85rem; }
+        footer a:hover { color: #f9fafb; }
 
-        .product-price-lg {
-            font-size: 1.45rem;
-            font-weight: 700;
-            color: #22c55e;
-        }
-        .product-price-lg-sub {
-            font-size: 0.8rem;
-            color: #9ca3af;
-        }
-
-        .rating-summary-lg {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            background: #020617;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            font-size: 0.8rem;
-        }
-        .rating-summary-lg strong {
-            font-size: 1rem;
-            color: #fde047;
-        }
-        .rating-summary-lg i {
-            color: #fde047;
-        }
-
-        .btn-primary-main {
-            background: #22c55e;
-            border: none;
-            border-radius: 999px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding-inline: 22px;
-            transition: all 0.18s ease-out;
-        }
-        .btn-primary-main:hover {
-            background: #16a34a;
-            transform: translateY(-1px);
-            box-shadow: 0 12px 26px rgba(22, 163, 74, 0.45);
-        }
-        .btn-outline-light-soft {
-            border-radius: 999px;
-            border: 1px solid #4b5563;
-            font-size: 0.9rem;
-            color: #e5e7eb;
-            background: transparent;
-        }
-        .btn-outline-light-soft:hover {
-            background: rgba(15,23,42,0.9);
-        }
-
-        /* Variant pills – CSS-only radio buttons */
-        .variant-label {
-            font-size: 0.8rem;
-            color: #9ca3af;
-        }
-        .variant-pill-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .variant-pill-input {
-            display: none;
-        }
-        .variant-pill {
-            border-radius: 999px;
-            border: 1px solid #4b5563;
-            padding: 5px 11px;
-            font-size: 0.78rem;
-            cursor: pointer;
-            background: rgba(15, 23, 42, 0.9);
-            color: #e5e7eb;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .variant-color-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 999px;
-            border: 1px solid #e5e7eb;
-        }
-        .variant-pill-input:checked + .variant-pill {
-            border-color: #22c55e;
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        /* Tabs bar */
-        .tabs-bar {
-            background: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        .tabs-bar .nav-link {
-            font-size: 0.84rem;
-            color: #4b5563;
-            border-radius: 999px;
-            padding: 8px 14px;
-        }
-        .tabs-bar .nav-link:hover {
-            background: #f3f4f6;
-        }
-        .tabs-bar .nav-link.active-tab {
-            background: #0f172a;
-            color: #f9fafb;
-        }
-
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-        .section-subtitle {
-            font-size: 0.84rem;
-            color: #6b7280;
-        }
-
-        .card-soft {
-            background: #ffffff;
-            border-radius: 14px;
-            border: 1px solid #e5e7eb;
-        }
-
-        /* Specs */
-        .spec-row-label {
-            font-size: 0.82rem;
-            color: #6b7280;
-        }
-        .spec-row-value {
-            font-size: 0.86rem;
-            font-weight: 500;
-            color: #111827;
-        }
-
-        /* Review summary */
-        .review-score-main {
-            font-size: 2.3rem;
-            font-weight: 700;
-        }
-        .review-score-main i {
-            color: #fde047;
-        }
-        .review-count-text {
-            font-size: 0.84rem;
-            color: #6b7280;
-        }
-        .rating-bar-row {
-            font-size: 0.8rem;
-        }
-        .rating-bar-track {
-            height: 6px;
-            border-radius: 999px;
-            background: #e5e7eb;
-            overflow: hidden;
-        }
-        .rating-bar-fill {
-            height: 100%;
-            border-radius: 999px;
-            background: #22c55e;
-        }
-
-        .review-card {
-            background: #ffffff;
-            border-radius: 14px;
-            border: 1px solid #e5e7eb;
-        }
-        .reviewer-name {
-            font-size: 0.86rem;
-            font-weight: 600;
-        }
-        .reviewer-meta {
-            font-size: 0.78rem;
-            color: #6b7280;
-        }
-        .review-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        .review-body {
-            font-size: 0.82rem;
-            color: #4b5563;
-        }
-        .badge-verified {
-            font-size: 0.7rem;
-            border-radius: 999px;
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        /* Write review card (dark) – simplified (rating + one text field) */
-        .write-review-card {
-            background: #0f172a;
-            border-radius: 16px;
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            color: #e5e7eb;
-        }
-        .write-label {
-            font-size: 0.82rem;
-            color: #e5e7eb;
-        }
-        .form-control-dark,
-        .form-select-dark {
-            background: #020617;
-            border-radius: 10px;
-            border: 1px solid #1f2937;
-            color: #e5e7eb;
-            font-size: 0.82rem;
-        }
-        .form-control-dark::placeholder {
-            color: #6b7280;
-        }
-        .form-control-dark:focus,
-        .form-select-dark:focus {
-            border-color: #22c55e;
-            box-shadow: 0 0 0 2px rgba(34,197,94,0.35);
-        }
-
-        /* Similar products */
-        .similar-section-title {
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        .similar-card {
-            background: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            transition: 0.2s ease;
-        }
-        .similar-card:hover {
-            border-color: #cbd5f5;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
-            transform: translateY(-2px);
-        }
-        .similar-img {
-            width: 100%;
-            height: 120px;
-            object-fit: contain;
-        }
-
-        /* Footer */
-        footer {
-            background: #020617;
-            color: #9ca3af;
-        }
-        footer a {
-            color: #9ca3af;
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
-        footer a:hover {
-            color: #f9fafb;
+        .carousel-control-prev, .carousel-control-next { width: 35px; height: 35px; top: 50%; transform: translateY(-50%); background: rgba(15, 23, 42, 0.9); border-radius: 50%; opacity: 0.8; transition: all 0.2s ease; }
+        .carousel-control-prev { left: -15px; }
+        .carousel-control-next { right: -15px; }
+        .carousel-control-prev:hover, .carousel-control-next:hover { opacity: 1; background: #22c55e; transform: translateY(-50%) scale(1.1); }
+        .carousel-control-icon-custom { display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        .carousel-control-icon-custom i { font-size: 1.2rem; color: #e5e7eb; }
+        .carousel-control-prev-icon, .carousel-control-next-icon { display: none; }
+        .carousel-item { transition: transform 0.4s ease; }
+        
+        @media (max-width: 991.98px) {
+            .navbar-brand { margin-left: -20px; }
+            .navbar-brand img { width: 180px; }
         }
     </style>
 </head>
@@ -537,54 +148,37 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="mainNav">
-            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
-                </li>
+        <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+            <div class="navbar-right-section">
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a></li>
+                </ul>
 
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
-                </li>
-
-            </ul>
-
-            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
-                <i class="bi bi-heart"></i>
-            </a>
-            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
-                <i class="bi bi-cart"></i>
-            </a>
-            <li class="nav-item dropdown list-unstyled ms-3">
-                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
-                       href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-5"></i>
+                <a class="btn icon-btn fw-semibold" href="{% url 'wishlist' %}"><i class="bi bi-heart"></i></a>
+                <a class="btn icon-btn fw-semibold" href="{% url 'cart' %}"><i class="bi bi-cart"></i></a>
+                
+                <div class="dropdown">
+                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if request.user.is_authenticated %}{{ request.user.email }}{% else %}<i class="bi bi-person-circle fs-5"></i>{% endif %}
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
-                                <i class="bi bi-person-circle me-2"></i> Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
-                                <i class="bi bi-bag-check me-2"></i> Orders
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
-                                <i class="bi bi-info-circle me-2"></i> About
-                            </a>
-                        </li>
+                        {% if request.user.is_authenticated %}
+                        <li><a class="dropdown-item fw-semibold" href="{% url 'profile' %}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item fw-semibold" href="{% url 'orders' %}"><i class="bi bi-bag-check me-2"></i> Orders</a></li>
+                        {% endif %}
+                        <li><a class="dropdown-item fw-semibold" href="{% url 'about' %}"><i class="bi bi-info-circle me-2"></i> About</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                            </a>
+                            {% if request.user.is_authenticated %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'logout' %}"><i class="bi bi-box-arrow-in-right me-2"></i> Logout</a>
+                            {% else %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right me-2"></i> Login</a>
+                            {% endif %}
                         </li>
                     </ul>
-                </li>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
@@ -592,9 +186,9 @@
 <section class="page-header">
     <div class="container">
         <div class="breadcrumb-custom mb-1">
-            <a href="home.html">Home</a> /
-            <a href="products.html">Mobiles</a> /
-            <span>Galaxy S24 Ultra 5G</span>
+            <a href="{% url 'home' %}">Home</a> /
+            <a href="{% url 'products' %}">{{ product_details.category }}</a> /
+            <span>{{ product_details.product_name }}</span>
         </div>
     </div>
 </section>
@@ -605,22 +199,67 @@
 
             <div class="col-lg-6">
                 <div class="hero-gallery-card">
+                    <input type="radio" name="gallery" id="gal_main" class="d-none" checked>
+                    {% for i in product_details.all_images %}
+                        <input type="radio" name="gallery" id="gal_{{ forloop.counter }}" class="d-none">
+                    {% endfor %}
+                    
+                    <style>
+                        .target-main-img { display: none; }
+                        #gal_main:checked ~ .hero-main-image-wrapper #img_main { display: block; }
+                        #gal_main:checked ~ .thumb-carousel-container .lbl_main { border-color: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); background: #f0fdf4; }
+
+                        {% for i in product_details.all_images %}
+                            #gal_{{ forloop.counter }}:checked ~ .hero-main-image-wrapper #img_{{ forloop.counter }} { display: block; }
+                            #gal_{{ forloop.counter }}:checked ~ .thumb-carousel-container .lbl_{{ forloop.counter }} { border-color: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); background: #f0fdf4; }
+                        {% endfor %}
+                    </style>
+
                     <div class="hero-main-image-wrapper">
-                        {%if request.user.is_authenticated%}
+                        {% if request.user.is_authenticated %}
                         <input type="checkbox" id="hero-wishlist" class="wishlist-toggle">
-                        <label for="hero-wishlist" class="wishlist-label">
-                            <i class="bi bi-heart-fill"></i>
-                        </label>
-                        {%endif%}
-                        <img src="{{product_details.main_image}}" alt="" class="hero-main-image">
+                        <label for="hero-wishlist" class="wishlist-label"><i class="bi bi-heart-fill"></i></label>
+                        {% endif %}
+                        
+                        <img src="{{ product_details.main_image }}" class="hero-main-image target-main-img" id="img_main">
+                        {% for i in product_details.all_images %}
+                            <img src="{{ i }}" class="hero-main-image target-main-img" id="img_{{ forloop.counter }}">
+                        {% endfor %}
                     </div>
-                    {%for i in product_details.images%}
-                    <div class="d-flex hero-thumb-row">
-                        <div class="hero-thumb">
-                            <img src="{{i}}" alt="Front view">
+                    
+                    <div class="thumb-carousel-container position-relative mt-2">
+                        {% if product_details.all_images %}
+                        <div id="thumbnailCarousel" class="carousel slide" data-bs-ride="false">
+                            <div class="carousel-inner">
+                                {% for i in product_details.all_images %}
+                                    {% if forloop.counter0|divisibleby:5 %}
+                                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                            <div class="d-flex hero-thumb-row">
+                                    {% endif %}
+                                    
+                                                <label for="gal_{{ forloop.counter }}" class="hero-thumb lbl_{{ forloop.counter }}">
+                                                    <img src="{{i}}" alt="View">
+                                                </label>
+                                    
+                                    {% if forloop.counter|divisibleby:5 or forloop.last %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            
+                            {% if product_details.all_images|length > 5 %}
+                            <button class="carousel-control-prev" type="button" data-bs-target="#thumbnailCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-icon-custom" aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#thumbnailCarousel" data-bs-slide="next">
+                                <span class="carousel-control-icon-custom" aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                            </button>
+                            {% endif %}
                         </div>
+                        {% endif %}
                     </div>
-                    {%endfor%}
+
                     <div class="d-flex justify-content-between align-items-center hero-sub-meta">
                         <span>Images shown are for illustration purposes; actual device may vary.</span>
                         <span><i class="bi bi-shield-check me-1"></i>1‑year brand warranty</span>
@@ -629,93 +268,77 @@
             </div>
 
             <div class="col-lg-6">
-                <div class="product-hero-right">
+                <div class="product-hero-right d-flex flex-column h-100">
                     <p class="product-tagline mb-1">{{product_details.brand}}</p>
                     <h1 class="product-name mb-2">{{product_details.product_name}}<span></span></h1>
-                    <p class="product-keypoints mb-3">
-                        Flagship experience with pro‑grade camera, all‑day battery and a smooth 120Hz display tuned for work and play.
-                    </p>
-                    {%for s in product_details.specifications%}
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <span class="pill-spec">{{s}}</span>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-3 mt-1">
+                        {% for spec in product_details.spec_highlights %}
+                        <span class="pill-spec">{{ spec.value }}</span>
+                        {% endfor %}
                     </div>
-                    {%endfor%}
 
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="variant-label">Color</span>
-                            <span class="variant-label">Choose your finish</span>
+                    {% if available_colors %}
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-2 gap-2">
+                            <span class="variant-group-title">Color:</span>
+                            <span class="variant-group-subtitle">{{ current_color }}</span>
                         </div>
                         <div class="variant-pill-group">
-                            <input type="radio" id="color-gray" name="color" class="variant-pill-input" checked>
-                            <label for="color-gray" class="variant-pill">
-                                <span class="variant-color-dot" style="background:#6b7280;"></span>
-                                Titanium Gray
-                            </label>
-
-                            <input type="radio" id="color-black" name="color" class="variant-pill-input">
-                            <label for="color-black" class="variant-pill">
-                                <span class="variant-color-dot" style="background:#111827;"></span>
-                                Phantom Black
-                            </label>
-
-                            <input type="radio" id="color-cream" name="color" class="variant-pill-input">
-                            <label for="color-cream" class="variant-pill">
-                                <span class="variant-color-dot" style="background:#e5e7eb;"></span>
-                                Cream
-                            </label>
+                            {% for color in available_colors %}
+                                <a href="{% url 'product_review' color.variant_id %}" 
+                                   class="variant-swatch-box {% if color.is_current %}active{% endif %}"
+                                   title="{{ color.value }}">
+                                   {% if color.img_url %}
+                                       <img src="{{ color.img_url }}" alt="{{ color.value }}">
+                                   {% else %}
+                                       <span style="font-size:0.65rem; color:#9ca3af;">{{ color.value|slice:":4" }}</span>
+                                   {% endif %}
+                                </a>
+                            {% endfor %}
                         </div>
                     </div>
+                    {% endif %}
 
+                    {% if available_storage %}
                     <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="variant-label">Storage</span>
-                            <span class="variant-label">Select capacity</span>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="variant-group-title">Storage & RAM</span>
                         </div>
                         <div class="variant-pill-group">
-                            <input type="radio" id="storage-256" name="storage" class="variant-pill-input" checked>
-                            <label for="storage-256" class="variant-pill">
-                                12GB + 256GB
-                            </label>
-
-                            <input type="radio" id="storage-512" name="storage" class="variant-pill-input">
-                            <label for="storage-512" class="variant-pill">
-                                12GB + 512GB
-                            </label>
-
-                            <input type="radio" id="storage-1tb" name="storage" class="variant-pill-input">
-                            <label for="storage-1tb" class="variant-pill">
-                                16GB + 1TB
-                            </label>
+                            {% for storage in available_storage %}
+                                <a href="{% url 'product_review' storage.variant_id %}" 
+                                   class="variant-storage-box {% if storage.is_current %}active{% endif %}">
+                                    {{ storage.value }}
+                                </a>
+                            {% endfor %}
                         </div>
                     </div>
+                    {% endif %}
 
-                    <div class="d-flex flex-wrap align-items-center gap-4 mb-3">
+                    <div class="d-flex flex-wrap align-items-center gap-4 mb-3 mt-3">
                         <div>
-                            <div class="product-price-lg mb-0">{{product_details.discount_price}}</div>
-                            <div class="product-price-lg-sub">
-                                Inclusive of all taxes • Limited‑time launch offers
+                            <div class="product-price-lg mb-0">
+                                {% if product_details.discount_price %}
+                                    ₹{{product_details.discount_price}}
+                                    <span class="text-muted text-decoration-line-through ms-2" style="font-size: 1.1rem; font-weight: 500;">₹{{product_details.price}}</span>
+                                {% else %}
+                                    ₹{{product_details.price}}
+                                {% endif %}
                             </div>
+                            <div class="product-price-lg-sub">Inclusive of all taxes • Limited‑time launch offers</div>
                         </div>
                         <div class="rating-summary-lg">
-                            <strong>4.7</strong>
-                            <i class="bi bi-star-fill"></i>
-                            <span>· 1,284 reviews</span>
+                            <strong>4.7</strong> <i class="bi bi-star-fill"></i><span>· 1,284 reviews</span>
                         </div>
                     </div>
 
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <button class="btn btn-primary-main">
-                            Buy now
-                        </button>
-                        <button class="btn btn-outline-light-soft">
-                            <i class="bi bi-cart-plus me-1"></i>Add to cart
-                        </button>
+                    <div class="d-flex flex-wrap gap-3 mt-5 w-100">
+                        <button class="btn btn-primary-main flex-grow-1">Buy now</button>
+                        <button class="btn btn-outline-light-soft flex-grow-1"><i class="bi bi-cart-plus me-1"></i>Add to cart</button>
                     </div>
 
-                    <p class="hero-sub-meta mb-0">
-                        Exchange bonus, no‑cost EMI and bank cashback offers available on select cards.
-                    </p>
+                    <p class="hero-sub-meta mb-0 mt-3">Exchange bonus, no‑cost EMI and bank cashback offers available.</p>
                 </div>
             </div>
         </div>
@@ -725,18 +348,10 @@
 <div class="tabs-bar">
     <div class="container">
         <ul class="nav nav-pills py-2 gap-2">
-            <li class="nav-item">
-                <a href="#overview" class="nav-link active-tab">Overview</a>
-            </li>
-            <li class="nav-item">
-                <a href="#specs" class="nav-link">Specifications</a>
-            </li>
-            <li class="nav-item">
-                <a href="#reviews" class="nav-link">User reviews</a>
-            </li>
-            <li class="nav-item">
-                <a href="#faq" class="nav-link">FAQ</a>
-            </li>
+            <li class="nav-item"><a href="#overview" class="nav-link active-tab">Overview</a></li>
+            <li class="nav-item"><a href="#specs" class="nav-link">Specifications</a></li>
+            <li class="nav-item"><a href="#reviews" class="nav-link">User reviews</a></li>
+            <li class="nav-item"><a href="#faq" class="nav-link">FAQ</a></li>
         </ul>
     </div>
 </div>
@@ -750,9 +365,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <h2 class="section-title mb-1">Built for work and play</h2>
-                            <p class="section-subtitle mb-0">
-                                Clean layout with clear highlights helps users scan the key benefits quickly before scrolling into reviews. [web:125][web:144]
-                            </p>
+                            <p class="section-subtitle mb-0">Clean layout with clear highlights helps users scan the key benefits.</p>
                         </div>
                     </div>
 
@@ -760,33 +373,13 @@
                         <div class="col-md-6">
                             <div class="card-soft p-3 h-100">
                                 <h6 class="mb-1">Pro‑grade camera, day and night</h6>
-                                <p class="section-subtitle mb-0">
-                                    Large sensor, advanced stabilization and night mode help capture sharp photos and steady 8K video in most lighting conditions. [web:141]
-                                </p>
+                                <p class="section-subtitle mb-0">Large sensor, advanced stabilization and night mode help capture sharp photos.</p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="card-soft p-3 h-100">
                                 <h6 class="mb-1">Adaptive 120Hz viewing</h6>
-                                <p class="section-subtitle mb-0">
-                                    High refresh rate keeps scrolling and gaming fluid, while adaptive mode reduces power use when content is static. [web:144]
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card-soft p-3 h-100">
-                                <h6 class="mb-1">All‑day battery with fast charge</h6>
-                                <p class="section-subtitle mb-0">
-                                    Optimised hardware–software integration and fast charging support daily work, travel and gaming without frequent top‑ups. [web:125]
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card-soft p-3 h-100">
-                                <h6 class="mb-1">Refined One UI experience</h6>
-                                <p class="section-subtitle mb-0">
-                                    One UI focuses key controls near the bottom of the screen and keeps settings structured for easy reach and quick changes. [web:116][web:131]
-                                </p>
+                                <p class="section-subtitle mb-0">High refresh rate keeps scrolling and gaming fluid.</p>
                             </div>
                         </div>
                     </div>
@@ -796,57 +389,25 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <h2 class="section-title mb-1">Key specifications</h2>
-                            <p class="section-subtitle mb-0">
-                                Technical details users typically check before buying a flagship phone. [web:125][web:138]
-                            </p>
+                            <p class="section-subtitle mb-0">Technical details and features for this product.</p>
                         </div>
                     </div>
 
-                    <div class="card-soft p-3">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-between">
-                                    <span class="spec-row-label">Display</span>
-                                    <span class="spec-row-value text-end">6.8" QHD+ Dynamic AMOLED 2X, 1–120Hz</span>
-                                </div>
-                                <hr class="my-2">
-                                <div class="d-flex justify-content-between">
-                                    <span class="spec-row-label">Processor</span>
-                                    <span class="spec-row-value text-end">Snapdragon® for Galaxy</span>
-                                </div>
-                                <hr class="my-2">
-                                <div class="d-flex justify-content-between">
-                                    <span class="spec-row-label">RAM & storage</span>
-                                    <span class="spec-row-value text-end">Up to 16GB + 1TB</span>
-                                </div>
-                                <hr class="my-2">
-                                <div class="d-flex justify-content-between">
-                                    <span class="spec-row-label">Battery</span>
-                                    <span class="spec-row-value text-end">5000 mAh, 45W fast charging</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-between">
-                                    <span class="spec-row-label">Rear camera</span>
-                                    <span class="spec-row-value text-end">200MP + 50MP + 12MP + 10MP</span>
-                                </div>
-                                <hr class="my-2">
-                                <div class="d-flex justify-content-between">
-                                    <span class="spec-row-label">Front camera</span>
-                                    <span class="spec-row-value text-end">12MP</span>
-                                </div>
-                                <hr class="my-2">
-                                <div class="d-flex justify-content-between">
-                                    <span class="spec-row-label">Connectivity</span>
-                                    <span class="spec-row-value text-end">5G, Wi‑Fi 6E, Bluetooth 5.3, NFC</span>
-                                </div>
-                                <hr class="my-2">
-                                <div class="d-flex justify-content-between">
-                                    <span class="spec-row-label">Durability</span>
-                                    <span class="spec-row-value text-end">IP68 • Gorilla® Glass</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="card-soft p-0 overflow-hidden">
+                        <table class="spec-table mb-0">
+                            <tbody>
+                                {% for spec in all_specifications %}
+                                <tr>
+                                    <td class="spec-title">{{ spec.title }}</td>
+                                    <td class="spec-value">{{ spec.value }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted py-4">No detailed specifications listed for this product.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -854,125 +415,20 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <h2 class="section-title mb-1">User reviews & ratings</h2>
-                            <p class="section-subtitle mb-0">
-                                Genuine feedback from buyers helps new customers make confident decisions. [web:120][web:125]
-                            </p>
+                            <p class="section-subtitle mb-0">Genuine feedback from buyers helps new customers make confident decisions.</p>
                         </div>
                     </div>
 
                     <div class="card-soft p-3 mb-3">
                         <div class="row g-3 align-items-center">
                             <div class="col-md-4 text-center text-md-start">
-                                <div class="review-score-main mb-1">
-                                    4.7 <i class="bi bi-star-fill ms-1"></i>
-                                </div>
-                                <div class="review-count-text mb-1">
-                                    Based on 1,284 verified ratings
-                                </div>
-                                <div class="review-count-text">
-                                    91% of reviewers would recommend this product.
-                                </div>
+                                <div class="review-score-main mb-1">4.7 <i class="bi bi-star-fill ms-1"></i></div>
+                                <div class="review-count-text mb-1">Based on 1,284 verified ratings</div>
                             </div>
                             <div class="col-md-8">
-                                <div class="rating-bar-row d-flex align-items-center gap-2 mb-1">
-                                    <span>5★</span>
-                                    <div class="flex-grow-1 rating-bar-track">
-                                        <div class="rating-bar-fill" style="width: 70%;"></div>
-                                    </div>
-                                    <span class="text-muted">70%</span>
-                                </div>
-                                <div class="rating-bar-row d-flex align-items-center gap-2 mb-1">
-                                    <span>4★</span>
-                                    <div class="flex-grow-1 rating-bar-track">
-                                        <div class="rating-bar-fill" style="width: 18%;"></div>
-                                    </div>
-                                    <span class="text-muted">18%</span>
-                                </div>
-                                <div class="rating-bar-row d-flex align-items-center gap-2 mb-1">
-                                    <span>3★</span>
-                                    <div class="flex-grow-1 rating-bar-track">
-                                        <div class="rating-bar-fill" style="width: 7%;"></div>
-                                    </div>
-                                    <span class="text-muted">7%</span>
-                                </div>
-                                <div class="rating-bar-row d-flex align-items-center gap-2 mb-1">
-                                    <span>2★</span>
-                                    <div class="flex-grow-1 rating-bar-track">
-                                        <div class="rating-bar-fill" style="width: 3%;"></div>
-                                    </div>
-                                    <span class="text-muted">3%</span>
-                                </div>
-                                <div class="rating-bar-row d-flex align-items-center gap-2">
-                                    <span>1★</span>
-                                    <div class="flex-grow-1 rating-bar-track">
-                                        <div class="rating-bar-fill" style="width: 2%;"></div>
-                                    </div>
-                                    <span class="text-muted">2%</span>
-                                </div>
+                                <div class="rating-bar-row d-flex align-items-center gap-2 mb-1"><span>5★</span><div class="flex-grow-1 rating-bar-track"><div class="rating-bar-fill" style="width: 70%;"></div></div><span class="text-muted">70%</span></div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="review-card p-3 mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <div>
-                                <div class="reviewer-name">Rahul Sharma</div>
-                                <div class="reviewer-meta">
-                                    <i class="bi bi-geo-alt me-1"></i>Bengaluru · Using for 2 months
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge-verified mb-1">
-                                    <i class="bi bi-check-circle me-1"></i>Verified purchase
-                                </span>
-                                <div class="text-warning" style="font-size:0.78rem;">
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-half"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="review-title mb-1">Excellent camera and display</div>
-                        <p class="review-body mb-0">
-                            The 120Hz display and brightness make a visible difference outdoors, and the camera delivers sharp images with good dynamic range.
-                            Battery easily lasts a full workday with calls, mails and social apps. [web:120][web:129]
-                        </p>
-                    </div>
-
-                    <div class="review-card p-3 mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <div>
-                                <div class="reviewer-name">Sneha Verma</div>
-                                <div class="reviewer-meta">
-                                    <i class="bi bi-geo-alt me-1"></i>Mumbai · Using for 3 weeks
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge-verified mb-1">
-                                    <i class="bi bi-check-circle me-1"></i>Verified purchase
-                                </span>
-                                <div class="text-warning" style="font-size:0.78rem;">
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="review-title mb-1">Smooth for work and travel</div>
-                        <p class="review-body mb-0">
-                            Multitasking in split‑screen is very smooth and the phone handles Teams calls and documents without any lag.
-                            5G speeds and battery backup are good enough for a full day of meetings and commuting. [web:120][web:138]
-                        </p>
-                    </div>
-
-                    <div class="text-center mb-3">
-                        <button class="btn btn-outline-secondary btn-sm rounded-pill px-3">
-                            Load more reviews
-                        </button>
                     </div>
                 </div>
 
@@ -980,60 +436,20 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <h2 class="section-title mb-1">Frequently asked questions</h2>
-                            <p class="section-subtitle mb-0">
-                                Clear answers to common questions reduce support queries and returns. [web:144]
-                            </p>
+                            <p class="section-subtitle mb-0">Clear answers to common questions reduce support queries.</p>
                         </div>
                     </div>
 
                     <div class="accordion" id="productFaq">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="faqOne">
-                                <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#faqOneContent">
-                                    How many years of software updates does this device get?
-                                </button>
-                            </h2>
-                            <div id="faqOneContent" class="accordion-collapse collapse"
-                                 data-bs-parent="#productFaq">
-                                <div class="accordion-body" style="font-size:0.86rem;">
-                                    The device is planned to receive multiple years of OS and security updates,
-                                    helping it stay secure and reliable over its lifetime. Check the official brand
-                                    site for region‑specific update policies. [web:125][web:142]
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="faqTwo">
-                                <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#faqTwoContent">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqOneContent">
                                     Is a charger included in the box?
                                 </button>
                             </h2>
-                            <div id="faqTwoContent" class="accordion-collapse collapse"
-                                 data-bs-parent="#productFaq">
+                            <div id="faqOneContent" class="accordion-collapse collapse" data-bs-parent="#productFaq">
                                 <div class="accordion-body" style="font-size:0.86rem;">
-                                    Many current‑generation flagships ship without a power adapter to minimise
-                                    packaging and e‑waste. You can use a compatible USB‑C fast charger you already
-                                    own, or purchase an officially supported charger separately. [web:121][web:144]
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="faqThree">
-                                <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#faqThreeContent">
-                                    Does this support 5G on all major operators in India?
-                                </button>
-                            </h2>
-                            <div id="faqThreeContent" class="accordion-collapse collapse"
-                                 data-bs-parent="#productFaq">
-                                <div class="accordion-body" style="font-size:0.86rem;">
-                                    The phone supports widely used 5G bands, but live 5G coverage depends on your
-                                    operator and circle. Check with your carrier for band support and availability
-                                    in your area before purchase. [web:121][web:148]
+                                    Many current‑generation flagships ship without a power adapter to minimise packaging and e‑waste.
                                 </div>
                             </div>
                         </div>
@@ -1043,12 +459,9 @@
             </div>
 
             <div class="col-lg-4">
-
                 <div class="write-review-card p-3 mb-3">
                     <h5 class="mb-1">Write a review</h5>
-                    <p class="section-subtitle mb-2" style="color:#e5e7eb;">
-                        Short, specific reviews about real usage help other buyers decide faster. [web:120][web:123]
-                    </p>
+                    <p class="section-subtitle mb-2" style="color:#e5e7eb;">Short, specific reviews about real usage help other buyers decide faster.</p>
 
                     <form>
                         <div class="mb-2">
@@ -1056,29 +469,17 @@
                             <select class="form-select-dark form-select">
                                 <option selected>Choose rating</option>
                                 <option>5 - Excellent</option>
-                                <option>4 - Good</option>
-                                <option>3 - Average</option>
-                                <option>2 - Below average</option>
-                                <option>1 - Poor</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="write-label mb-1">Your review</label>
-                            <textarea rows="5" class="form-control-dark form-control"
-                                      placeholder="Share your experience about performance, camera, battery, software or anything important."></textarea>
+                            <textarea rows="5" class="form-control-dark form-control" placeholder="Share your experience..."></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary-main w-100">
-                            Submit review
-                        </button>
-
-                        <p class="section-subtitle mt-2 mb-0" style="color:#9ca3af;">
-                            By submitting, you confirm this feedback reflects your actual experience with this product. [web:120]
-                        </p>
+                        <button type="submit" class="btn btn-primary-main w-100">Submit review</button>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
@@ -1088,42 +489,20 @@
     <div class="container pb-3">
         <div class="row g-4">
             <div class="col-md-4">
-                <h5 class="text-light mb-2">Electro</h5>
-                <p style="font-size:0.85rem;">
-                    Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
-                </p>
+                <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro" style="width: 180px; margin-left: -20px; margin-bottom: 10px;">
+                <p style="font-size:0.85rem;">Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.</p>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2 ms-auto">
                 <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
                 <ul class="list-unstyled mb-0">
-                    <li><a href="products.html">All products</a></li>
-                    <li><a href="products.html">Mobiles</a></li>
-                    <li><a href="products.html">Laptops</a></li>
-                    <li><a href="products.html">Televisions</a></li>
+                    <li><a href="{% url 'products' %}">All products</a></li>
                 </ul>
-            </div>
-            <div class="col-md-2">
-                <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
-                <ul class="list-unstyled mb-0">
-                    <li><a href="profile.html">Profile</a></li>
-                    <li><a href="orders.html">Orders</a></li>
-                    <li><a href="wishlist.html">Wishlist</a></li>
-                    <li><a href="cart.html">Cart</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h6 class="text-light mb-2" style="font-size:0.9rem;">Stay updated</h6>
-                <p style="font-size:0.82rem;">Get early access to new launches and exclusive offers.</p>
-                <form class="d-flex gap-2">
-                    <input type="email" class="form-control form-control-sm" placeholder="Enter your email">
-                    <button class="btn btn-sm btn-success" type="submit">Subscribe</button>
-                </form>
             </div>
         </div>
         <hr class="border-secondary mt-4 mb-2">
         <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
-            <span>© 2025 Electro. All rights reserved.</span>
-            <span>Made with Bootstrap &amp; HTML/CSS.</span>
+            <span>© 2026 Veintro. All rights reserved.</span>
+            <span>Made with Bootstrap & HTML/CSS.</span>
         </div>
     </div>
 </footer>

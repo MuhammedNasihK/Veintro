@@ -111,33 +111,116 @@ def profile(request):
 
 
 
-def product_review(request,variant_id):
-    variant = get_object_or_404(ProductVariant.objects.select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set','product__specification_set','product__specification_set__spec'),id=variant_id)
-    product_details = []
-    
-    images = variant.productimage_set.all()
-    main_image = next((img for img in images if img.is_main), None)
-    specifications = variant.product.specification_set.all()
-    
+from django.shortcuts import render, get_object_or_404
+from .models import ProductVariant # Make sure this is imported
 
+from django.shortcuts import render, get_object_or_404
+from .models import ProductVariant 
+
+def product_review(request, variant_id):
+    # 1. Fetch the specific variant the user is viewing
+    variant = get_object_or_404(
+        ProductVariant.objects.select_related('product','product__category','product__brand')
+        .prefetch_related('attribute__attribute','productimage_set','product__specification_set__spec'),
+        id=variant_id
+    )
+    
+    base_product = variant.product
+
+    # 2. Fetch and Format Specifications
+    specs = base_product.specification_set.all()
+    specifications = [{'title': s.spec.name, 'value': s.value} for s in specs]
+
+    # 3. Fetch Images for the current variant
+    images = variant.productimage_set.all()
+    main_image = next((img for img in images if img.is_main), None) or images.first()
+
+    # 4. Fetch All Sibling Variants to build the Flipkart Selectors
+    sibling_variants = ProductVariant.objects.filter(
+        product=base_product, is_active=True
+    ).prefetch_related('attribute__attribute', 'productimage_set')
+    
+    # Identify the CURRENT color and storage the user is viewing
+    current_color = None
+    current_storage = None
+    for attr_val in variant.attribute.all():
+        name = attr_val.attribute.name.lower()
+        if name in ['color', 'colour']:
+            current_color = attr_val.value
+        elif name in ['storage', 'ram', 'storage & ram', 'capacity']:
+            current_storage = attr_val.value
+
+    # Map the variants to group them by Color
+    # Looks like: {'Titanium Gray': [{'variant': obj, 'storage': '256GB'}, ...]}
+    color_map = {}
+    for sib in sibling_variants:
+        c = None
+        s = None
+        for attr_val in sib.attribute.all():
+            n = attr_val.attribute.name.lower()
+            if n in ['color', 'colour']: c = attr_val.value
+            elif n in ['storage', 'ram', 'storage & ram', 'capacity']: s = attr_val.value
+        
+        if c:
+            if c not in color_map:
+                color_map[c] = []
+            color_map[c].append({'variant': sib, 'storage': s})
+
+    available_colors = []
+    available_storage = []
+
+    # 5. Build the Color Buttons
+    for color_name, var_list in color_map.items():
+        # Smart routing: If we switch colors, try to stay on the same storage size. 
+        # If that storage doesn't exist in the new color, just pick the first available one.
+        target_variant = next((item['variant'] for item in var_list if item['storage'] == current_storage), var_list[0]['variant'])
+        
+        first_img = target_variant.productimage_set.first()
+        available_colors.append({
+            'variant_id': target_variant.id,
+            'value': color_name,
+            'img_url': first_img.image.url if first_img else None,
+            'is_current': (color_name == current_color)
+        })
+
+    # 6. Build the Storage Buttons (ONLY show storages for the CURRENT color)
+    if current_color in color_map:
+        for item in color_map[current_color]:
+            if item['storage']:
+                available_storage.append({
+                    'variant_id': item['variant'].id,
+                    'value': item['storage'],
+                    'is_current': (item['storage'] == current_storage)
+                })
+
+    # 7. Create a clean subtitle for the current selection
+    current_attributes = " • ".join([a.value for a in variant.attribute.all()])
+
+    # 8. Package everything for the template
     product_details = {
-        'product_id':variant.product.id,
-        'variant_id':variant.id,
-        'product_name':variant.product.name,
-        'category':variant.product.category.name,
-        'brand':variant.product.brand.name,
-        'price':variant.price,
-        'discount_price':variant.discount_price,
-        'discount_percentage':variant.discount_percentage(),
-        'specifications':[a.value for a in specifications],
-        'main_image':main_image.image.url if main_image else None,
-        'other_images':[a.image.url for a in images]
+        'product_id': base_product.id,
+        'variant_id': variant.id,
+        'product_name': base_product.name,
+        'description': getattr(base_product, 'description', ''), 
+        'category': base_product.category.name,
+        'brand': base_product.brand.name,
+        'price': variant.price,
+        'discount_price': variant.discount_price,
+        'discount_percentage': variant.discount_percentage() if hasattr(variant, 'discount_percentage') else 0,
+        'current_attributes': current_attributes,
+        'spec_highlights': specifications[:4], 
+        'main_image': main_image.image.url if main_image else None,
+        'all_images': [img.image.url for img in images]
     }
 
     context = {
-        'product_details':product_details
+        'product_details': product_details,
+        'available_colors': available_colors,     
+        'available_storage': available_storage,   
+        'all_specifications': specifications,
+        'current_color': current_color, # Send current color name to HTML
     }
-    return render(request,'product review.html',context)
+    return render(request, 'product review.html', context)
 
 def cart(request):
     return render(request,'cart.html')
