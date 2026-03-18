@@ -813,7 +813,7 @@
         </div>
 
         <div class="row g-4 mb-3">
-            {% for v in product_list %}
+            {% for v in product_list|slice:":8" %}
             <div class="col-6 col-md-3">
                 <div class="product-card p-2 h-100" onclick="location.href='{% url 'product_review' v.variant_id %}'" style="cursor:pointer;">
                     <div class="product-image-wrapper">

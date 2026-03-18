@@ -6,54 +6,262 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electro - Product Review</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
-        :root { --primary-dark: #0b1020; --primary: #0f172a; --accent: #22c55e; --accent-soft: rgba(34, 197, 94, 0.12); --muted: #6b7280; --card-bg: #ffffff; --badge-bg: #0b1020; }
-        body { background: #f3f4f6; font-family: 'Poppins', sans-serif; }
+        :root {
+            --primary-dark: #0b1020;
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --accent-soft: rgba(34, 197, 94, 0.12);
+            --muted: #6b7280;
+            --card-bg: #ffffff;
+            --badge-bg: #0b1020;
+        }
 
-        .navbar { background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important; height: 72px; padding: 0 !important; display: flex; align-items: center; }
-        .container-fluid-custom { width: 100%; max-width: 1320px; padding-inline: 20px; margin-inline: auto; display: flex; align-items: center; justify-content: space-between; }
-        .navbar-brand { padding: 0; margin: 0; display: flex; align-items: center; height: 100%; margin-left: -45px; }
-        .navbar-brand img { width: 240px; height: auto; object-fit: contain; display: block; }
-        .navbar-right-section { display: flex; align-items: center; gap: 8px; }
-        .navbar .nav-link { color: #e5e7eb !important; font-weight: 500; font-size: 0.95rem; }
-        .navbar .nav-link.special-hover { position: relative; border-radius: 999px; padding-inline: 14px; overflow: hidden; }
-        .navbar .nav-link.special-hover::after { content: ""; position: absolute; left: 50%; bottom: 2px; width: 0; height: 2px; background: #22c55e; transform: translateX(-50%); transition: width 0.25s ease-out; border-radius: 999px; }
-        .navbar .nav-link.special-hover:hover::after { width: 60%; }
-        .navbar .nav-link.special-hover:hover { background: rgba(31, 41, 55, 0.7); }
-        .icon-btn { border-radius: 999px; border-color: #1f2937; color: #e5e7eb; background: transparent; transition: all 0.2s ease; }
-        .icon-btn i { font-size: 1.1rem; }
-        .icon-btn:hover { background: rgba(34, 197, 94, 0.1); border-color: #22c55e; color: #bbf7d0; transform: translateY(-1px) scale(1.03); box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2); }
-        .dropdown-toggle::after { display: none; }
+        body {
+            background: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+        }
 
-        .page-header { background: #0f172a; color: #e5e7eb; padding: 24px 0 18px; border-bottom: 1px solid rgba(148, 163, 184, 0.25); }
-        .breadcrumb-custom { font-size: 0.8rem; color: #9ca3af; }
-        .breadcrumb-custom a { color: #9ca3af; text-decoration: none; }
-        .breadcrumb-custom a:hover { color: #f9fafb; }
+        /* --- NAVBAR - UPDATED TO MATCH LOGIN PAGE --- */
+        .navbar {
+            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+            height: 72px;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
+        }
 
-        .product-hero { background: #0b1020; color: #f9fafb; padding: 32px 0 26px; }
-        .hero-gallery-card { background: radial-gradient(circle at top left, rgba(34,197,94,0.2), #020617); border-radius: 18px; padding: 18px; border: 1px solid rgba(148, 163, 184, 0.16); box-shadow: 0 26px 60px rgba(15, 23, 42, 0.85); position: relative; }
-        .hero-main-image-wrapper { background: #ffffff; border-radius: 14px; padding: 16px; text-align: center; position: relative; }
-        .hero-main-image { width: 100%; height: 360px; object-fit: contain; }
+        .container-fluid-custom {
+            width: 100%;
+            max-width: 1320px;
+            padding-inline: 20px;
+            margin-inline: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-brand {
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin-left: -45px;
+        }
+
+        .navbar-brand img {
+            width: 240px;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .navbar-right-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar .nav-link {
+            color: #e5e7eb !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .navbar .nav-link.special-hover {
+            position: relative;
+            border-radius: 999px;
+            padding-inline: 14px;
+            overflow: hidden;
+        }
+        .navbar .nav-link.special-hover::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            width: 0;
+            height: 2px;
+            background: #22c55e;
+            transform: translateX(-50%);
+            transition: width 0.25s ease-out;
+            border-radius: 999px;
+        }
+        .navbar .nav-link.special-hover:hover::after {
+            width: 60%;
+        }
+        .navbar .nav-link.special-hover:hover {
+            background: rgba(31, 41, 55, 0.7);
+        }
+
+        .icon-btn {
+            border-radius: 999px;
+            border-color: #1f2937;
+            color: #e5e7eb;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .icon-btn i {
+            font-size: 1.1rem;
+        }
+        .icon-btn:hover {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #bbf7d0;
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        .dropdown-toggle::after {
+            display: none;
+        }
+
+        /* Page header / breadcrumb */
+        .page-header {
+            background: #0f172a;
+            color: #e5e7eb;
+            padding: 24px 0 18px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+        }
+        .breadcrumb-custom {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+        .breadcrumb-custom a {
+            color: #9ca3af;
+            text-decoration: none;
+        }
+        .breadcrumb-custom a:hover {
+            color: #f9fafb;
+        }
+
+        /* PRODUCT HERO – image left, content right */
+        .product-hero {
+            background: #0b1020;
+            color: #f9fafb;
+            padding: 32px 0 26px;
+        }
+
+        /* Big image card with wishlist heart */
+        .hero-gallery-card {
+            background: radial-gradient(circle at top left, rgba(34,197,94,0.2), #020617);
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            box-shadow: 0 26px 60px rgba(15, 23, 42, 0.85);
+            position: relative;
+        }
+        .hero-main-image-wrapper {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            position: relative;
+        }
+        .hero-main-image {
+            width: 100%;
+            max-height: 360px;
+            object-fit: contain;
+        }
         
-        .hero-thumb-row { margin-top: 10px; gap: 8px; }
-        .hero-thumb { width: calc(20% - 6.4px); flex: 0 0 auto; background: #ffffff; border-radius: 10px; padding: 4px; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease; }
-        .hero-thumb img { width: 100%; height: 70px; object-fit: contain; border-radius: 6px; }
-        .hero-sub-meta { font-size: 0.76rem; color: #9ca3af; margin-top: 6px; }
+        .hero-thumb-row {
+            margin-top: 10px;
+            gap: 8px; /* The gap is 8px */
+        }
+        
+        .hero-thumb {
+            width: calc(20% - 6.4px); /* Forces exactly 5 items per row, accounting for the 8px gaps */
+            flex-shrink: 0; /* Prevents the items from squishing */
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 6px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            cursor: pointer;
+        }
+        
+        .hero-thumb img {
+            width: 100%;
+            height: 70px;
+            object-fit: contain;
+        }
+        .hero-sub-meta {
+            font-size: 0.76rem;
+            color: #9ca3af;
+            margin-top: 6px;
+        }
 
-        .wishlist-toggle { position: absolute; top: 10px; right: 12px; opacity: 0; width: 0; height: 0; }
-        .wishlist-label { position: absolute; top: 10px; right: 12px; width: 34px; height: 34px; border-radius: 999px; background: rgba(15, 23, 42, 0.9); color: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; border: 1px solid rgba(148, 163, 184, 0.7); transition: all 0.2s ease; }
-        .wishlist-label:hover { background: rgba(15, 23, 42, 1); transform: translateY(-1px); }
-        .wishlist-toggle:checked + .wishlist-label { background: #22c55e; color: #022c22; border-color: #16a34a; box-shadow: 0 10px 22px rgba(34, 197, 94, 0.5); }
+        /* Wishlist heart checkbox (top-right on image) */
+        .wishlist-toggle {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .wishlist-label {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            cursor: pointer;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            transition: all 0.2s ease;
+        }
+        .wishlist-label:hover {
+            background: rgba(15, 23, 42, 1);
+            transform: translateY(-1px);
+        }
+        .wishlist-toggle:checked + .wishlist-label {
+            background: #22c55e;
+            color: #022c22;
+            border-color: #16a34a;
+            box-shadow: 0 10px 22px rgba(34, 197, 94, 0.5);
+        }
 
-        .product-hero-right { max-width: 520px; margin-left: auto; }
-        .product-tagline { font-size: 0.82rem; letter-spacing: 0.16em; text-transform: uppercase; color: #9ca3af; }
-        .product-name { font-size: 2rem; font-weight: 700; }
-        .product-name span { color: #22c55e; }
-        .product-keypoints { font-size: 0.9rem; color: #d1d5db; }
-        .pill-spec { font-size: 0.78rem; border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.6); padding: 3px 10px; color: #e5e7eb; background: rgba(15, 23, 42, 0.85); }
+        /* Right product content */
+        .product-hero-right {
+            max-width: 520px;
+            margin-left: auto;
+        }
+        .product-tagline {
+            font-size: 0.82rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #9ca3af;
+        }
+        .product-name {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .product-name span {
+            color: #22c55e;
+        }
+        .product-keypoints {
+            font-size: 0.9rem;
+            color: #d1d5db;
+        }
+        .pill-spec {
+            font-size: 0.78rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            padding: 3px 10px;
+            color: #e5e7eb;
+            background: rgba(15, 23, 42, 0.85);
+        }
 
         /* FLIPKART STYLE VARIANTS */
         .variant-group-title { font-size: 0.9rem; color: #f9fafb; font-weight: 500; }
@@ -65,9 +273,44 @@
         .variant-swatch-box:hover { border-color: #6b7280; }
         .variant-swatch-box.active { border-color: #22c55e; box-shadow: 0 0 0 1px #22c55e; }
 
-        .variant-storage-box { border: 1px solid #4b5563; border-radius: 6px; padding: 10px 16px; color: #e5e7eb; font-size: 0.85rem; font-weight: 500; text-decoration: none; background: transparent; transition: 0.2s ease; display: inline-flex; align-items: center; }
+        /* --- UPDATED STORAGE BOX CSS --- */
+        .variant-storage-box {
+            border: 1px solid #4b5563;
+            border-radius: 6px;
+            padding: 10px 14px;
+            color: #e5e7eb;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            background: transparent;
+            transition: 0.2s ease;
+            display: inline-flex;
+            flex-direction: column; /* Stack RAM and Price vertically */
+            align-items: flex-start;
+            justify-content: center;
+            min-width: 100px;
+        }
         .variant-storage-box:hover { border-color: #9ca3af; color: #f9fafb; }
         .variant-storage-box.active { border-color: #22c55e; color: #22c55e; background: rgba(34, 197, 94, 0.1); box-shadow: 0 0 0 1px #22c55e; }
+        
+        /* New Price styling inside the box */
+        .variant-storage-price { font-size: 0.82rem; font-weight: 700; margin-top: 4px; color: #e5e7eb; }
+        .variant-storage-box.active .variant-storage-price { color: #22c55e; }
+        
+        /* Out of Stock Styling */
+        .variant-storage-box.out-of-stock {
+            opacity: 0.5;
+            pointer-events: none; /* Makes it unclickable */
+            border-style: dashed;
+            background: rgba(31, 41, 55, 0.5);
+        }
+        .variant-storage-oos-text {
+            font-size: 0.7rem;
+            color: #ef4444;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        /* ---------------------------------- */
 
         .product-price-lg { font-size: 1.45rem; font-weight: 700; color: #22c55e; }
         .product-price-lg-sub { font-size: 0.8rem; color: #9ca3af; }
@@ -151,8 +394,12 @@
         <div class="collapse navbar-collapse justify-content-end" id="mainNav">
             <div class="navbar-right-section">
                 <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                    </li>
                 </ul>
 
                 <a class="btn icon-btn fw-semibold" href="{% url 'wishlist' %}"><i class="bi bi-heart"></i></a>
@@ -307,15 +554,20 @@
                         </div>
                         <div class="variant-pill-group">
                             {% for storage in available_storage %}
-                                <a href="{% url 'product_review' storage.variant_id %}" 
-                                   class="variant-storage-box {% if storage.is_current %}active{% endif %}">
-                                    {{ storage.value }}
+                                <a href="{% if storage.stock > 0 %}{% url 'product_review' storage.variant_id %}{% else %}#{% endif %}" 
+                                   class="variant-storage-box {% if storage.is_current %}active{% endif %} {% if storage.stock <= 0 %}out-of-stock{% endif %}">
+                                    <div>{{ storage.value }}</div>
+                                    <div class="variant-storage-price">
+                                        {% if storage.discount_price %}₹{{ storage.discount_price }}{% else %}₹{{ storage.price }}{% endif %}
+                                    </div>
+                                    {% if storage.stock <= 0 %}
+                                        <div class="variant-storage-oos-text">Out of stock</div>
+                                    {% endif %}
                                 </a>
                             {% endfor %}
                         </div>
                     </div>
                     {% endif %}
-
                     <div class="d-flex flex-wrap align-items-center gap-4 mb-3 mt-3">
                         <div>
                             <div class="product-price-lg mb-0">

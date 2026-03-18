@@ -109,13 +109,7 @@ def profile(request):
     }
     return render(request,'profile.html',context)
 
-
-
-from django.shortcuts import render, get_object_or_404
-from .models import ProductVariant # Make sure this is imported
-
-from django.shortcuts import render, get_object_or_404
-from .models import ProductVariant 
+ 
 
 def product_review(request, variant_id):
     # 1. Fetch the specific variant the user is viewing
@@ -135,32 +129,50 @@ def product_review(request, variant_id):
     images = variant.productimage_set.all()
     main_image = next((img for img in images if img.is_main), None) or images.first()
 
-    # 4. Fetch All Sibling Variants to build the Flipkart Selectors
+    # 4. Fetch All Sibling Variants
     sibling_variants = ProductVariant.objects.filter(
         product=base_product, is_active=True
     ).prefetch_related('attribute__attribute', 'productimage_set')
     
-    # Identify the CURRENT color and storage the user is viewing
-    current_color = None
-    current_storage = None
-    for attr_val in variant.attribute.all():
-        name = attr_val.attribute.name.lower()
-        if name in ['color', 'colour']:
-            current_color = attr_val.value
-        elif name in ['storage', 'ram', 'storage & ram', 'capacity']:
-            current_storage = attr_val.value
+    # HELPER FUNCTION: Safely extracts and combines Color, RAM, and Storage
+    def get_variant_attributes(var_obj):
+        color_val = None
+        ram_val = None
+        storage_val = None
+        combo_val = None
+        
+        for attr in var_obj.attribute.all():
+            name = attr.attribute.name.lower().strip()
+            if name in ['color', 'colour']:
+                color_val = attr.value
+            elif name == 'ram':
+                ram_val = attr.value
+            elif name == 'storage':
+                storage_val = attr.value
+            elif name in ['storage & ram', 'capacity', 'ram+storage']:
+                combo_val = attr.value
+                
+        # Logic to combine RAM and Storage into a single label
+        final_storage = None
+        if combo_val:
+            final_storage = combo_val
+        elif ram_val and storage_val:
+            final_storage = f"{ram_val} + {storage_val}" # Combines them! (e.g. "8GB + 128GB")
+        elif storage_val:
+            final_storage = storage_val
+        elif ram_val:
+            final_storage = ram_val
+            
+        return color_val, final_storage
+
+    # Get current variant's Color and Combined Storage
+    current_color, current_storage = get_variant_attributes(variant)
 
     # Map the variants to group them by Color
-    # Looks like: {'Titanium Gray': [{'variant': obj, 'storage': '256GB'}, ...]}
+    # Looks like: {'Titanium Gray': [{'variant': obj, 'storage': '12GB + 256GB'}, ...]}
     color_map = {}
     for sib in sibling_variants:
-        c = None
-        s = None
-        for attr_val in sib.attribute.all():
-            n = attr_val.attribute.name.lower()
-            if n in ['color', 'colour']: c = attr_val.value
-            elif n in ['storage', 'ram', 'storage & ram', 'capacity']: s = attr_val.value
-        
+        c, s = get_variant_attributes(sib)
         if c:
             if c not in color_map:
                 color_map[c] = []
@@ -171,8 +183,8 @@ def product_review(request, variant_id):
 
     # 5. Build the Color Buttons
     for color_name, var_list in color_map.items():
-        # Smart routing: If we switch colors, try to stay on the same storage size. 
-        # If that storage doesn't exist in the new color, just pick the first available one.
+        # Smart routing: If we switch colors, try to stay on the same RAM+Storage size. 
+        # If that storage doesn't exist in the new color, pick the first available one.
         target_variant = next((item['variant'] for item in var_list if item['storage'] == current_storage), var_list[0]['variant'])
         
         first_img = target_variant.productimage_set.first()
@@ -183,14 +195,17 @@ def product_review(request, variant_id):
             'is_current': (color_name == current_color)
         })
 
-    # 6. Build the Storage Buttons (ONLY show storages for the CURRENT color)
+    # 6. Build the RAM+Storage Buttons (ONLY show storages for the CURRENT color)
     if current_color in color_map:
         for item in color_map[current_color]:
             if item['storage']:
                 available_storage.append({
                     'variant_id': item['variant'].id,
-                    'value': item['storage'],
-                    'is_current': (item['storage'] == current_storage)
+                    'value': item['storage'], # This is now "RAM + Storage"
+                    'is_current': (item['storage'] == current_storage),
+                    'price': item['variant'].price,
+                    'discount_price': item['variant'].discount_price,
+                    'stock': item['variant'].stock
                 })
 
     # 7. Create a clean subtitle for the current selection
@@ -213,14 +228,17 @@ def product_review(request, variant_id):
         'all_images': [img.image.url for img in images]
     }
 
+
     context = {
         'product_details': product_details,
         'available_colors': available_colors,     
         'available_storage': available_storage,   
         'all_specifications': specifications,
-        'current_color': current_color, # Send current color name to HTML
+        'current_color': current_color, 
     }
     return render(request, 'product review.html', context)
+
+
 
 def cart(request):
     return render(request,'cart.html')
