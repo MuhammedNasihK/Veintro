@@ -111,6 +111,12 @@ def profile(request):
 
  
 
+from django.shortcuts import render, get_object_or_404
+from .models import ProductVariant, Product # Make sure Product is imported
+
+from django.shortcuts import render, get_object_or_404
+from .models import ProductVariant, Product
+
 def product_review(request, variant_id):
     # 1. Fetch the specific variant the user is viewing
     variant = get_object_or_404(
@@ -157,7 +163,7 @@ def product_review(request, variant_id):
         if combo_val:
             final_storage = combo_val
         elif ram_val and storage_val:
-            final_storage = f"{ram_val} + {storage_val}" # Combines them! (e.g. "8GB + 128GB")
+            final_storage = f"{ram_val} + {storage_val}"
         elif storage_val:
             final_storage = storage_val
         elif ram_val:
@@ -201,7 +207,7 @@ def product_review(request, variant_id):
             if item['storage']:
                 available_storage.append({
                     'variant_id': item['variant'].id,
-                    'value': item['storage'], # This is now "RAM + Storage"
+                    'value': item['storage'], # This is now combined "RAM + Storage"
                     'is_current': (item['storage'] == current_storage),
                     'price': item['variant'].price,
                     'discount_price': item['variant'].discount_price,
@@ -228,6 +234,29 @@ def product_review(request, variant_id):
         'all_images': [img.image.url for img in images]
     }
 
+    # 9. Fetch ALL Similar Products from the same Category
+    similar_base_products = Product.objects.filter(
+        category=base_product.category, 
+        is_active=True
+    ).exclude(id=base_product.id) # Removed the slice so it fetches ALL active products in this category
+    
+    similar_products = []
+    for p in similar_base_products:
+        # Get the first active variant of this similar product to display on the card
+        s_var = ProductVariant.objects.filter(product=p, is_active=True).first()
+        if s_var:
+            s_img = s_var.productimage_set.first()
+            _, s_storage = get_variant_attributes(s_var)
+            
+            similar_products.append({
+                'variant_id': s_var.id,
+                'name': p.name,
+                'brand': p.brand.name,
+                'image_url': s_img.image.url if s_img else None,
+                'price': s_var.price,
+                'discount_price': s_var.discount_price,
+                'attributes': s_storage if s_storage else p.brand.name
+            })
 
     context = {
         'product_details': product_details,
@@ -235,6 +264,7 @@ def product_review(request, variant_id):
         'available_storage': available_storage,   
         'all_specifications': specifications,
         'current_color': current_color, 
+        'similar_products': similar_products,
     }
     return render(request, 'product review.html', context)
 
