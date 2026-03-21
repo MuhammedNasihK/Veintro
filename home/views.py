@@ -12,7 +12,7 @@ User = get_user_model()
 # Create your views here.
 
 def home(request):                                                                                                            # here the first attribute is attribute field in ProductVariant which is related to AttributeValue by using ManyToMany relation and the second attribute is the attribute field in the AttributeValue table which is related to Attribute table by using ForeignKey relation.
-    trending_products = ProductVariant.objects.select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
+    trending_products = ProductVariant.objects.filter(is_active=True).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
     product_list=[]
     for v in trending_products:
         main_image = v.productimage_set.filter(is_main=True).first()
@@ -111,11 +111,6 @@ def profile(request):
 
  
 
-from django.shortcuts import render, get_object_or_404
-from .models import ProductVariant, Product # Make sure Product is imported
-
-from django.shortcuts import render, get_object_or_404
-from .models import ProductVariant, Product
 
 def product_review(request, variant_id):
     # 1. Fetch the specific variant the user is viewing
@@ -255,6 +250,7 @@ def product_review(request, variant_id):
                 'image_url': s_img.image.url if s_img else None,
                 'price': s_var.price,
                 'discount_price': s_var.discount_price,
+                'discount_percentage':s_var.discount_percentage(),
                 'attributes': s_storage if s_storage else p.brand.name
             })
 
