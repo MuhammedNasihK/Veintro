@@ -39,4 +39,12 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.user.username}-{self.city}"
+    
+
+
+class Cart(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+
+    variant = models.ForeignKey('admin_panel.ProductVariant',on_delete=models.CASCADE)
+
 

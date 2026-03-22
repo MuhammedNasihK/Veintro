@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from admin_panel.models import *
 from .models import *
+from .forms import *
 import random
 
 
@@ -104,6 +105,14 @@ def wishlist(request):
 @login_required
 def profile(request):
     profile_data = Profile.objects.filter(user=request.user)
+
+    if request.method == 'POST':
+        p_img = request.FILES
+        img_form = ProfileImageForm(p_img)
+        if img_form.is_valid():
+            new_img = img_form.save(commit=False)
+            new_img.user = request.user
+            new_img.save()
     context ={
         'profile':profile_data
     }
@@ -267,7 +276,43 @@ def product_review(request, variant_id):
 
 
 def cart(request):
-    return render(request,'cart.html')
+    cart_objects = Cart.objects.select_related('variant','variant__product','variant__product__category','variant__product__brand').prefetch_related('variant__attribute','variant__productimage_set')
+    product_details =[]
+
+    for c in cart_objects:
+
+        
+        main_img = c.variant.productimage_set.filter(variant=c.variant,is_main=True).first()
+        product_details.append({
+            'cart_id':c.pk,
+            'product_id':c.variant.product.id,
+            'variant_id':c.variant.id,
+            'product_name':c.variant.product.name,
+            'category':c.variant.product.category.name,
+            'brand':c.variant.product.brand.name,
+            'price':c.variant.price,
+            'discount_price':c.variant.discount_price if c.variant.discount_price else None,
+            'discount_percentage':c.variant.discount_percentage() if c.variant.discount_price else None,
+            'image':main_img.image.url if main_img else None
+
+            
+        })
+    context = {
+        'product_details': product_details
+    }
+    return render(request,'cart.html',context)
+
+
+def add_to_cart(request,variant_id):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
+        user = request.user
+        variant = get_object_or_404(ProductVariant,id=variant_id)
+        if not Cart.objects.filter(variant=variant).exists():
+            Cart.objects.create(user=user,variant=variant)
+
+    return redirect(request.META.get('HTTP_REFERER','product_review'))
 
 def payment(request):
     return render(request,'payment.html')

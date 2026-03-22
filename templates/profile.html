@@ -245,7 +245,7 @@
                     <h5 class="fw-bold mb-1">{{ request.user.username|default:"Welcome Back" }}</h5>
                     <p class="text-muted mb-2" style="font-size: 0.85rem;">{{ request.user.email }}</p>
                     
-                    <form action="#" method="POST" enctype="multipart/form-data">
+                    <form  method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <label for="profilePicInput" class="btn-upload-img">
                             <i class="bi bi-camera"></i> Change photo

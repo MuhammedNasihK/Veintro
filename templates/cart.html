@@ -405,17 +405,18 @@
                     </div>
 
                     <!-- Example cart item 1 -->
+                     {% for p in product_details%}
                     <div class="cart-item">
                         <div class="row g-3 align-items-center">
                             <div class="col-3 col-md-2">
                                 <div class="cart-item-img-wrap">
-                                    <img src="img/p1.png" alt="iPhone 14">
+                                    <img src="{{p.image}}" alt="iPhone 14">
                                 </div>
                             </div>
                             <div class="col-9 col-md-5">
-                                <div class="cart-item-title mb-1">iPhone 14 (128GB)</div>
+                                <div class="cart-item-title mb-1">{{p.brand}} {{p.product_name}}</div>
                                 <div class="cart-item-meta mb-2">
-                                    Midnight • 128GB • 6.1" display
+                                    {{p.attribute}}
                                 </div>
                                 <div class="cart-item-actions d-flex flex-wrap gap-2">
                                     <button type="button" class="cart-action-link">
@@ -431,15 +432,16 @@
                             </div>
                             <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
                                 <div>
-                                    <span class="cart-price-main">₹68,999</span>
-                                    <span class="cart-price-old ms-1">₹74,999</span>
+                                    <span class="cart-price-main">₹{{p.discount_price}}</span>
+                                    <span class="cart-price-old ms-1">₹{{p.price}}</span>
                                 </div>
                                 <div class="mt-1">
-                                    <span class="cart-price-save">You save ₹6,000</span>
+                                    <span class="cart-price-save">{{p.discount_percentage}}% OFFER</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
 
                     <!-- Example cart item 2 -->
                     <div class="cart-item">
