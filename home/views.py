@@ -276,6 +276,7 @@ def product_review(request, variant_id):
 
 
 def cart(request):
+
     cart_objects = Cart.objects.select_related('variant','variant__product','variant__product__category','variant__product__brand').prefetch_related('variant__attribute','variant__productimage_set')
     product_details =[]
 
@@ -297,6 +298,7 @@ def cart(request):
 
             
         })
+
     context = {
         'product_details': product_details
     }
@@ -304,15 +306,22 @@ def cart(request):
 
 
 def add_to_cart(request,variant_id):
-    if request.method == 'POST':
-        if not request.user.is_authenticated:
+
+    if not request.user.is_authenticated:
             return redirect('login')
+    
+    if request.method == 'POST':
         user = request.user
         variant = get_object_or_404(ProductVariant,id=variant_id)
-        if not Cart.objects.filter(variant=variant).exists():
-            Cart.objects.create(user=user,variant=variant)
+        action = request.POST.get('action')
+        if action == 'remove':
+            Cart.objects.filter(user=user,variant=variant).delete() 
+        
+        else:
+            if not Cart.objects.filter(variant=variant,user=user).exists():
+                Cart.objects.create(user=user,variant=variant)
 
-    return redirect(request.META.get('HTTP_REFERER','product_review'))
+    return redirect(request.META.get('HTTP_REFERER','home'))
 
 def payment(request):
     return render(request,'payment.html')
