@@ -12,6 +12,7 @@ urlpatterns = [
     path('banners/',views.admin_banners,name='admin_banners'),
     path('add_products/',views.admin_add_products,name='admin_add_products'),
     path('add_variants/<int:product_id>',views.admin_add_variants,name='admin_product_variants'),
+    path('delete_variant/<int:variant_id>',views.delete_variant,name='admin_delete_variant'),
     path('add_product_image/<int:product_id>',views.admin_product_image,name='product_image'),
     path('delete_image/<int:image_id>/<int:variant_id>',views.delete_product_image,name='delete_product_image'),
     path('logout/',views.admin_logout,name='admin_logout'),

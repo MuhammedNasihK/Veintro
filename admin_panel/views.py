@@ -234,6 +234,14 @@ def admin_add_variants(request, product_id):
     return render(request, 'admin_product_variants.html', context)
 
 
+@admin_login_required
+def delete_variant(request,variant_id):
+    if request.method == "POST":
+        variant = get_object_or_404(ProductVariant,id=variant_id)
+        product = variant.product
+        variant.delete()
+    return redirect(request.META.get('HTTP_REFERER','admin_products'))
+
 
 
 @admin_login_required

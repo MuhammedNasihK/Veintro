@@ -44,7 +44,6 @@ class Address(models.Model):
 
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-
     variant = models.ForeignKey('admin_panel.ProductVariant',on_delete=models.CASCADE)
 
 

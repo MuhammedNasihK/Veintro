@@ -188,10 +188,12 @@
                                         <a href="{% url 'product_image' v.id %}" class="btn btn-outline-primary btn-sm me-1" style="font-size:0.7rem; padding: 2px 8px;">
                                             <i class="bi bi-images"></i> Add Images
                                         </a>
-                                        
-                                        <button class="btn btn-outline-danger btn-sm" style="font-size:0.7rem; padding: 2px 8px;">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        <form action="{% url 'admin_delete_variant' v.id %}" method='POST'>
+                                            {% csrf_token %}
+                                            <button class="btn btn-outline-danger btn-sm" style="font-size:0.7rem; padding: 2px 8px;">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             {% empty %}

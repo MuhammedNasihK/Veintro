@@ -107,8 +107,7 @@ def profile(request):
     profile_data = Profile.objects.filter(user=request.user)
 
     if request.method == 'POST':
-        p_img = request.FILES
-        img_form = ProfileImageForm(p_img)
+        img_form = ProfileImageForm(request.FILES)
         if img_form.is_valid():
             new_img = img_form.save(commit=False)
             new_img.user = request.user

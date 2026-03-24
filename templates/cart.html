@@ -399,7 +399,7 @@
                 <div class="cart-card p-3 p-md-4 mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="h6 mb-0">Items in your cart</h2>
-                        <a class="btn btn-sm btn-continue" href="products.html">
+                        <a class="btn btn-sm btn-continue" href="{%url 'products'%}">
                             <i class="bi bi-arrow-left me-1"></i> Continue shopping
                         </a>
                     </div>
@@ -420,16 +420,18 @@
                                             {{p.attribute}}
                                         </div>
                                         <div class="cart-item-actions d-flex flex-wrap gap-2">
-                                            <form action="" method="POST">
+                                            <form action="{%url 'add_to_wishlist' p.variant_id %}" method="POST">
                                                 {% csrf_token %}
-                                                <button type="button" class="cart-action-link">
+                                                <button type="submit" class="cart-action-link">
                                                     <i class="bi bi-heart"></i> Move to wishlist
                                                 </button>
                                             </form>
                                             <form action="{% url 'add_to_cart' p.variant_id%}" method="POST">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="action" value="remove">
-                                                <button class="btn btn-outline-light-soft flex-grow-1"><i class="bi bi-cart-plus me-1"></i>Remove</button>
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-x-lg"></i> Remove
+                                                </button>
                                                 
                                             </form>
                                         </div>
@@ -460,7 +462,7 @@
                                 <p class="empty-cart-text mb-3">
                                     Add products you like to your cart. Review them here before checkout.
                                 </p>
-                                <a href="products.html" class="btn btn-continue px-4">
+                                <a href="{% url 'products' %}" class="btn btn-continue px-4">
                                     <i class="bi bi-arrow-left me-1"></i> Browse products
                                 </a>
                             </div>

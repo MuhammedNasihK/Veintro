@@ -840,7 +840,10 @@
                             </div>
                             <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">{{ v.percentage }}% OFFER</span>
                         </div>
-                        <button class="btn btn-cart w-100" type="button" onclick="event.stopPropagation();">Add to cart</button>
+                        <form action="{% url 'add_to_cart' v.variant_id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="btn btn-cart w-100" type="submit" onclick="event.stopPropagation();">Add to cart</button>
+                        </form>
                     </div>
                 </div>
             </div>
