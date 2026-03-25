@@ -1,17 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electro - Cart</title>
+    <title>Veintro - Cart</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- Custom CSS (same theme as home) -->
     <style>
         :root {
             --primary-dark: #0b1020;
@@ -28,18 +26,47 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Navbar with your gradient */
+        /* Navbar - UPDATED TO MATCH HOME PAGE */
         .navbar {
             background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+            height: 72px;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
         }
+        
+        .container-fluid-custom {
+            width: 100%;
+            max-width: 1320px;
+            padding-inline: 20px;
+            margin-inline: auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; 
+        }
+        
         .navbar-brand {
-            letter-spacing: 1px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin-left: -45px; 
         }
+
+        .navbar-brand img {
+            width: 240px;
+            height: auto;  
+            object-fit: contain;
+            display: block;
+        }
+        
         .navbar .nav-link {
             color: #e5e7eb !important;
             font-weight: 500;
             font-size: 0.95rem;
         }
+
         .navbar .nav-link.special-hover {
             position: relative;
             border-radius: 999px;
@@ -65,26 +92,6 @@
             background: rgba(31, 41, 55, 0.7);
         }
 
-        .search-input {
-            border-radius: 999px;
-            border: 1px solid #1f2937;
-            background: #020617;
-            color: #e5e7eb;
-            font-size: 0.9rem;
-        }
-        .search-input::placeholder {
-            color: #6b7280;
-        }
-        .search-btn {
-            border-radius: 999px;
-            background: #22c55e;
-            border: none;
-            font-weight: 600;
-        }
-        .search-btn:hover {
-            background: #16a34a;
-        }
-
         .icon-btn {
             border-radius: 999px;
             border-color: #1f2937;
@@ -101,6 +108,18 @@
             color: #bbf7d0;
             transform: translateY(-1px) scale(1.03);
             box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Show dropdown arrow */
+        .dropdown-toggle::after {
+            display: inline-block !important;
+            margin-left: 0.255em;
+            vertical-align: 0.255em;
+            content: "";
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
         }
 
         /* Simple page heading (no banner) */
@@ -312,14 +331,21 @@
         footer a:hover {
             color: #f9fafb;
         }
+        
+        @media (max-width: 991.98px) {
+            .navbar-brand { margin-left: -20px; }
+            .navbar-brand img { width: 180px; }
+        }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!-- NAVBAR - UPDATED TO MATCH HOME PAGE -->
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+    <div class="container-fluid-custom">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro">
+        </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
@@ -335,24 +361,43 @@
                     <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
                 </li>
 
-                <!-- Profile dropdown (icon) -->
+                <li class="nav-item">
+                    <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                        <i class="bi bi-heart"></i>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                        <i class="bi bi-cart"></i>
+                    </a>
+                </li>
+
                 <li class="nav-item dropdown ms-3">
                     <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
                        href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-5"></i>
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.email }}
+                        {% else %}
+                            <i class="bi bi-person-circle fs-5"></i>
+                        {% endif %}
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                        {% if request.user.is_authenticated %}
                         <li>
                             <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
                                 <i class="bi bi-person-circle me-2"></i> Profile
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.is_authenticated %}
                         <li>
                             <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
                                 <i class="bi bi-bag-check me-2"></i> Orders
                             </a>
                         </li>
+                        {% endif %}
                         <li>
                             <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
                                 <i class="bi bi-info-circle me-2"></i> About
@@ -360,27 +405,23 @@
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                            </a>
+                            {% if request.user.is_authenticated %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Logout
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                                </a>
+                            {% endif %}
                         </li>
                     </ul>
                 </li>
             </ul>
-
-            <!-- Wishlist -->
-            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
-                <i class="bi bi-heart"></i>
-            </a>
-            <!-- Cart -->
-            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
-                <i class="bi bi-cart"></i>
-            </a>
         </div>
     </div>
 </nav>
 
-<!-- SIMPLE PAGE TITLE (no banner) -->
 <section class="cart-page-header">
     <div class="container">
         <h1 class="cart-title mb-1">Your cart</h1>
@@ -390,11 +431,9 @@
     </div>
 </section>
 
-<!-- CART CONTENT -->
 <section class="cart-container">
     <div class="container">
         <div class="row g-4">
-            <!-- Left: Cart items -->
             <div class="col-lg-8">
                 <div class="cart-card p-3 p-md-4 mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -404,14 +443,13 @@
                         </a>
                     </div>
 
-                    <!-- Example cart item 1 -->
                     {%if product_details%}
                         {% for p in product_details%}
                             <div class="cart-item">
                                 <div class="row g-3 align-items-center">
                                     <div class="col-3 col-md-2">
                                         <div class="cart-item-img-wrap">
-                                            <img src="{{p.image}}" alt="iPhone 14">
+                                            <img src="{{p.image}}" alt="{{p.product_name}}">
                                         </div>
                                     </div>
                                     <div class="col-9 col-md-5">
@@ -426,19 +464,22 @@
                                                     <i class="bi bi-heart"></i> Move to wishlist
                                                 </button>
                                             </form>
+                                            
                                             <form action="{% url 'add_to_cart' p.variant_id%}" method="POST">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="action" value="remove">
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="bi bi-x-lg"></i> Remove
+                                                <button type="submit" class="cart-action-link text-danger">
+                                                    <i class="bi bi-trash3"></i> Remove
                                                 </button>
-                                                
                                             </form>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-6 col-md-2 mt-2 mt-md-0">
+                                        <div class="mb-1" style="font-size: 0.75rem; color: #6b7280; font-weight: 500; padding-left: 8px;">Qty</div>
                                         <input type="number" class="form-control form-control-sm qty-input" min="1" value="1">
                                     </div>
+                                    
                                     <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
                                         <div>
                                             <span class="cart-price-main">₹{{p.discount_price}}</span>
@@ -452,7 +493,6 @@
                             </div>
                         {% endfor %}
                     {%else%}
-                        <!-- Empty cart example (comment out above items and show this when no items) -->
                         <div class="cart-card p-4">
                             <div class="empty-cart">
                                 <div class="empty-cart-icon">
@@ -468,21 +508,16 @@
                             </div>
                         </div>
                     {%endif%}
-            </div>
-                    
-
                 </div>
+            </div>
 
-                
-
-            <!-- Right: Summary -->
             <div class="col-lg-4">
                 <div class="summary-card p-3 p-md-4">
                     <h2 class="summary-title mb-3">Price details</h2>
 
                     <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                         <span>Price (4 items)</span>
-                        <span>₹1,32,?96</span>
+                        <span>₹1,32,996</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                         <span>Discount</span>
@@ -510,7 +545,7 @@
                     <button class="btn btn-checkout w-100 mb-2" type="button" onclick="window.location.href='{% url 'checkout' %}'">
                         Proceed to checkout
                     </button>
-                    <a class="btn btn-continue w-100" href="products.html">
+                    <a class="btn btn-continue w-100 text-center d-block py-2" href="{% url 'products' %}">
                         <i class="bi bi-arrow-left me-1"></i> Continue shopping
                     </a>
 
@@ -528,12 +563,11 @@
     </div>
 </section>
 
-<!-- FOOTER (same as home) -->
 <footer class="pt-4 mt-4">
     <div class="container pb-3">
         <div class="row g-4">
             <div class="col-md-4">
-                <h5 class="text-light mb-2">Electro</h5>
+                <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro" style="width: 180px; margin-left: -20px; margin-bottom: 10px;">
                 <p style="font-size:0.85rem;">
                     Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
                 </p>
@@ -541,19 +575,19 @@
             <div class="col-md-2">
                 <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
                 <ul class="list-unstyled mb-0">
-                    <li><a href="products.html">All products</a></li>
-                    <li><a href="products.html">Mobiles</a></li>
-                    <li><a href="products.html">Laptops</a></li>
-                    <li><a href="products.html">Televisions</a></li>
+                    <li><a href="{% url 'products' %}">All products</a></li>
+                    <li><a href="{% url 'products' %}">Mobiles</a></li>
+                    <li><a href="{% url 'products' %}">Laptops</a></li>
+                    <li><a href="{% url 'products' %}">Televisions</a></li>
                 </ul>
             </div>
             <div class="col-md-2">
                 <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
                 <ul class="list-unstyled mb-0">
-                    <li><a href="profile.html">Profile</a></li>
-                    <li><a href="orders.html">Orders</a></li>
-                    <li><a href="wishlist.html">Wishlist</a></li>
-                    <li><a href="cart.html">Cart</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'orders' %}">Orders</a></li>
+                    <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+                    <li><a href="{% url 'cart' %}">Cart</a></li>
                 </ul>
             </div>
             <div class="col-md-4">
@@ -567,15 +601,13 @@
         </div>
         <hr class="border-secondary mt-4 mb-2">
         <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
-            <span>© 2025 Electro. All rights reserved.</span>
-            <span>Made with Bootstrap &amp; HTML/CSS.</span>
+            <span>© 2026 Veintro. All rights reserved.</span>
+            <span>Made with Bootstrap & HTML/CSS.</span>
         </div>
     </div>
 </footer>
 
-<!-- Bootstrap JS only -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
-

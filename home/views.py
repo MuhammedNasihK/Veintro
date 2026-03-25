@@ -102,20 +102,30 @@ def wishlist(request):
     return render(request,'wishlist.html',context)
 
 
-@login_required
+
+
+@login_required()
 def profile(request):
-    profile_data = Profile.objects.filter(user=request.user)
+    
+    # 1. Fetch the existing profile, or create an empty one if it doesn't exist.
+    # This completely fixes the "UNIQUE constraint failed" error.
+    user_profile, created = Profile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        img_form = ProfileImageForm(request.FILES)
-        if img_form.is_valid():
-            new_img = img_form.save(commit=False)
-            new_img.user = request.user
-            new_img.save()
-    context ={
-        'profile':profile_data
+        # 2. Check if a file named 'profile_picture' was uploaded from the HTML
+        if 'profile_picture' in request.FILES:
+            
+            # 3. Assign the image directly to the model without using forms.py
+            user_profile.profile_picture = request.FILES['profile_picture']
+            user_profile.save()
+            
+            # Refresh the page so the new image loads
+            return redirect('profile')
+
+    context = {
+        'profile': user_profile  # Passes the single object to the template
     }
-    return render(request,'profile.html',context)
+    return render(request, 'profile.html', context)
 
  
 
@@ -319,6 +329,8 @@ def add_to_cart(request,variant_id):
         else:
             if not Cart.objects.filter(variant=variant,user=user).exists():
                 Cart.objects.create(user=user,variant=variant)
+            else:
+                return redirect('cart')
 
     return redirect(request.META.get('HTTP_REFERER','home'))
 
