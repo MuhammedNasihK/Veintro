@@ -107,15 +107,15 @@ def wishlist(request):
 @login_required()
 def profile(request):
     
-    # 1. Fetch the existing profile, or create an empty one if it doesn't exist.
+    # Fetch the existing profile, or create an empty one if it doesn't exist.
     # This completely fixes the "UNIQUE constraint failed" error.
     user_profile, created = Profile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        # 2. Check if a file named 'profile_picture' was uploaded from the HTML
+        # Check if a file named 'profile_picture' was uploaded from the HTML
         if 'profile_picture' in request.FILES:
             
-            # 3. Assign the image directly to the model without using forms.py
+            # Assign the image directly to the model without using forms.py
             user_profile.profile_picture = request.FILES['profile_picture']
             user_profile.save()
             
