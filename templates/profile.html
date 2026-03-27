@@ -321,12 +321,6 @@
                     </li>
                 </ul>
 
-                <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
-                    <i class="bi bi-heart"></i>
-                </a>
-                <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
-                    <i class="bi bi-cart"></i>
-                </a>
                 
                 <div class="dropdown ms-3">
                     <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -456,9 +450,9 @@
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                         {% else %}
-                                            <button class="btn btn-sm text-success" style="font-size: 0.85rem; font-weight: 500; background: #dcfce7; border-radius: 6px;">
+                                            <a href="{% url 'add_primary_mobile_number' %}" class="btn btn-sm text-success" style="font-size: 0.85rem; font-weight: 500; background: #dcfce7; border-radius: 6px;">
                                                 <i class="bi bi-plus-lg"></i> Add
-                                            </button>
+                                            </a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -479,9 +473,9 @@
                 <div class="content-card">
                     <div class="content-card-header">
                         <h3 class="content-card-title">Saved Addresses</h3>
-                        <button class="btn btn-primary-custom btn-sm">
+                        <a href="{% url 'add_address' %}" class="btn btn-primary-custom btn-sm">
                             <i class="bi bi-plus-lg me-1"></i> Add New
-                        </button>
+                        </a>
                     </div>
                     <div class="content-card-body">
                         <div class="empty-address-box">
@@ -492,9 +486,9 @@
                             <p class="text-muted mb-3" style="font-size: 0.85rem; max-width: 300px; margin: 0 auto;">
                                 You haven't saved any delivery addresses yet. Add one now for a faster checkout experience.
                             </p>
-                            <button class="btn btn-outline-dark btn-sm rounded-pill px-4">
+                            <a href="{% url 'add_address' %}" class="btn btn-outline-dark btn-sm rounded-pill px-4">
                                 Add Address
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>

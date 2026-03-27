@@ -1,0 +1,436 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Veintro - Add Address</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-dark: #0b1020;
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --accent-soft: rgba(34, 197, 94, 0.12);
+            --border-soft: #e5e7eb;
+            --muted: #6b7280;
+            --bg-soft: #f3f4f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-soft);
+            color: #111827;
+        }
+
+        /* --- EXACT NAVBAR CSS FROM LOGIN/PROFILE PAGE --- */
+        .navbar { 
+            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important; 
+            height: 72px; 
+            padding: 0 !important; 
+            display: flex; 
+            align-items: center; 
+        }
+
+        .container-fluid-custom { 
+            width: 100%; 
+            max-width: 1320px; 
+            padding-inline: 20px; 
+            margin-inline: auto; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+        }
+        
+        /* EXACT LOGO POSITION AND SIZE */
+        .navbar-brand { 
+            padding: 0; 
+            margin: 0; 
+            display: flex; 
+            align-items: center; 
+            height: 100%; 
+            margin-left: -45px; 
+        }
+
+        .navbar-brand img { 
+            width: 240px; 
+            height: auto;  
+            object-fit: contain; 
+            display: block; 
+        }
+        /* ---------------------------------------- */
+
+        .navbar-right-section { display: flex; align-items: center; gap: 8px; }
+        .navbar .nav-link { color: #e5e7eb !important; font-weight: 500; font-size: 0.95rem; }
+        .navbar .nav-link.special-hover { position: relative; border-radius: 999px; padding-inline: 14px; overflow: hidden; }
+        .navbar .nav-link.special-hover::after { content: ""; position: absolute; left: 50%; bottom: 2px; width: 0; height: 2px; background: #22c55e; transform: translateX(-50%); transition: width 0.25s ease-out; border-radius: 999px; }
+        .navbar .nav-link.special-hover:hover::after { width: 60%; }
+        .navbar .nav-link.special-hover:hover { background: rgba(31, 41, 55, 0.7); }
+        .icon-btn { border-radius: 999px; border-color: #1f2937; color: #e5e7eb; background: transparent; transition: all 0.2s ease; }
+        .icon-btn i { font-size: 1.1rem; }
+        .icon-btn:hover { background: rgba(34, 197, 94, 0.1); border-color: #22c55e; color: #bbf7d0; transform: translateY(-1px) scale(1.03); box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2); }
+        .dropdown-toggle::after { display: none; }
+
+        /* --- PAGE HEADER --- */
+        .profile-page-header {
+            background: #0f172a;
+            color: #e5e7eb;
+            padding: 24px 0 18px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+        }
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #f9fafb;
+        }
+        .breadcrumb-custom {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+        .breadcrumb-custom a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .breadcrumb-custom a:hover {
+            color: #f9fafb;
+        }
+
+        /* --- ADDRESS FORM LAYOUT --- */
+        .form-wrapper {
+            padding: 40px 0 60px;
+        }
+        
+        .address-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-soft);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            max-width: 850px; /* Increased width to accommodate 2 columns */
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .address-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-soft);
+            background: #fcfcfc;
+        }
+
+        .address-card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+        .address-card-body {
+            padding: 28px 24px;
+        }
+
+        /* Form Inputs */
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .custom-input {
+            border-radius: 8px; 
+            border: 1px solid #d1d5db;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            color: #111827;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+        }
+        
+        .custom-input:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+            outline: none;
+        }
+
+        .custom-input::placeholder {
+            color: #9ca3af;
+            font-size: 0.85rem;
+        }
+        
+        .custom-input:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+            color: #6b7280;
+        }
+
+        .form-subtext {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Button */
+        .btn-primary-custom {
+            background: #22c55e;
+            color: #ffffff;
+            border: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background: #16a34a;
+            color: #ffffff;
+            box-shadow: 0 6px 16px rgba(22, 163, 74, 0.25);
+            transform: translateY(-1px);
+        }
+
+        
+
+        /* Footer */
+        footer { background: #020617; color: #9ca3af; }
+        footer a { color: #9ca3af; text-decoration: none; font-size: 0.85rem; }
+        footer a:hover { color: #f9fafb; }
+        
+        @media (max-width: 991.98px) {
+            .navbar-brand { margin-left: -20px; }
+            .navbar-brand img { width: 180px; height: auto; }
+            .address-card { margin: 0 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container-fluid-custom">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+            <div class="navbar-right-section">
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                    </li>
+                </ul>
+
+                <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                    <i class="bi bi-heart"></i>
+                </a>
+                <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                    <i class="bi bi-cart"></i>
+                </a>
+                
+                <div class="dropdown ms-3">
+                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.email|truncatechars:15 }}
+                        {% else %}
+                            <i class="bi bi-person-circle fs-5"></i>
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                        {% if request.user.is_authenticated %}
+                        <li><a class="dropdown-item fw-semibold" href="{% url 'profile' %}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item fw-semibold" href="{% url 'orders' %}"><i class="bi bi-bag-check me-2"></i> Orders</a></li>
+                        {% endif %}
+                        <li><a class="dropdown-item fw-semibold" href="{% url 'about' %}"><i class="bi bi-info-circle me-2"></i> About</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            {% if request.user.is_authenticated %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'logout' %}"><i class="bi bi-box-arrow-in-right me-2"></i> Logout</a>
+                            {% else %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right me-2"></i> Login</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="profile-page-header">
+    <div class="container-fluid-custom">
+        <div>
+            <div class="breadcrumb-custom mb-1">
+                <a href="{% url 'home' %}">Home</a> /
+                <a href="{% url 'profile' %}">My Account</a> /
+                <span>Add Address</span>
+            </div>
+            <h1 class="page-title mb-0">Add a new address</h1>
+        </div>
+    </div>
+</section>
+
+<div class="form-wrapper">
+    <div class="container-fluid-custom">
+        
+        <div class="address-card">
+            <div class="address-card-header">
+                <h3 class="address-card-title">Enter delivery details</h3>
+            </div>
+            
+            <div class="address-card-body">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Country/Region</label>
+                            <select class="form-select custom-input" disabled>
+                                <option selected>India</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Full name (First and Last name)</label>
+                            <input type="text" name="full_name" class="form-control custom-input" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Mobile number</label>
+                            <input type="text" name="mobile_number" class="form-control custom-input" placeholder="10-digit mobile number" required>
+                            <div class="form-subtext">May be used to assist delivery</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Pincode</label>
+                            <input type="text" name="pincode" class="form-control custom-input" placeholder="6 digits [0-9] PIN code" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Flat, House no., Building, Company, Apartment</label>
+                            <input type="text" name="flat" class="form-control custom-input" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Area, Street, Sector, Village</label>
+                            <input type="text" name="area" class="form-control custom-input" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Landmark</label>
+                            <input type="text" name="landmark" class="form-control custom-input" placeholder="E.g. near apollo hospital">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Town/City</label>
+                            <input type="text" name="city" class="form-control custom-input" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">State</label>
+                            <select name="state" class="form-select custom-input" required>
+                                <option value="" selected disabled>Choose a state</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                <option value="Chandigarh">Chandigarh</option>
+                                <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                <option value="Ladakh">Ladakh</option>
+                                <option value="Lakshadweep">Lakshadweep</option>
+                                <option value="Puducherry">Puducherry</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-2">
+                        <form action="{% url 'add_address'%}" method="POST">
+                            <button type="submit" class="btn btn-primary-custom w-100">Save address</button>
+                        </form>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer class="pt-4 mt-4">
+    <div class="container pb-3">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro" style="width: 180px; margin-left: -20px; margin-bottom: 10px;">
+                <p style="font-size:0.85rem;">
+                    Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
+                </p>
+            </div>
+            <div class="col-md-2 ms-auto">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="{% url 'products' %}">All products</a></li>
+                    <li><a href="{% url 'products' %}">Mobiles</a></li>
+                    <li><a href="{% url 'products' %}">Laptops</a></li>
+                    <li><a href="{% url 'products' %}">Televisions</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'orders' %}">Orders</a></li>
+                    <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+                    <li><a href="{% url 'cart' %}">Cart</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Stay updated</h6>
+                <p style="font-size:0.82rem;">Get early access to new launches and exclusive offers.</p>
+                <form class="d-flex gap-2">
+                    <input type="email" class="form-control form-control-sm bg-transparent border-secondary text-light" placeholder="Enter your email">
+                    <button class="btn btn-sm btn-success" type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <hr class="border-secondary mt-4 mb-2">
+        <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
+            <span>© 2026 Veintro. All rights reserved.</span>
+            <span>Made with Bootstrap & HTML/CSS.</span>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

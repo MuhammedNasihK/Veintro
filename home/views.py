@@ -127,6 +127,14 @@ def profile(request):
     }
     return render(request, 'profile.html', context)
 
+
+
+def add_primary_mobile_number(request):
+    return render(request,'add_primary_mobile_number.html')
+
+def add_address(request):
+    return render(request,'add_address.html')
+
  
 
 
