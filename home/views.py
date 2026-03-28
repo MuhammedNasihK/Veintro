@@ -130,6 +130,16 @@ def profile(request):
 
 
 def add_primary_mobile_number(request):
+    if request.method=='POST':
+        action = request.POST.get('primary_mobile_number')
+        if len(action) < 10 or not int(action):
+            messages.error(request,'Please Enter Valid Mobile Number')
+        else:
+            user_profile,created = Profile.objects.get_or_create(user=request.user)
+            user_profile.primary_mobile_number = str(action)
+            user_profile.save()
+
+            return redirect('profile')
     return render(request,'add_primary_mobile_number.html')
 
 def add_address(request):

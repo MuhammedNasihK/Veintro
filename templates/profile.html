@@ -444,11 +444,11 @@
                                         </div>
                                     </div>
                                     
-                                    <div>
+                                    <div> 
                                         {% if profile.primary_mobile_number %}
-                                            <button class="btn btn-outline-secondary btn-sm border-0" style="font-size: 0.8rem;" title="Edit Phone Number">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
+                                            <a href="{% url 'add_primary_mobile_number' %}" class="btn btn-outline-secondary btn-sm border-0" style="font-size: 0.85rem; font-weight: 500; background: #dcfce7; border-radius: 6px;">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </a>
                                         {% else %}
                                             <a href="{% url 'add_primary_mobile_number' %}" class="btn btn-sm text-success" style="font-size: 0.85rem; font-weight: 500; background: #dcfce7; border-radius: 6px;">
                                                 <i class="bi bi-plus-lg"></i> Add

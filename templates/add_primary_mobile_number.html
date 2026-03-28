@@ -223,39 +223,6 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-
-        <div class="collapse navbar-collapse justify-content-end" id="mainNav">
-            <div class="navbar-right-section">
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a></li>
-                </ul>
-
-                <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}"><i class="bi bi-heart"></i></a>
-                <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}"><i class="bi bi-cart"></i></a>
-                
-                <div class="dropdown ms-3">
-                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {% if request.user.is_authenticated %}{{ request.user.email|truncatechars:15 }}{% else %}<i class="bi bi-person-circle fs-5"></i>{% endif %}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
-                        {% if request.user.is_authenticated %}
-                        <li><a class="dropdown-item fw-semibold" href="{% url 'profile' %}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
-                        <li><a class="dropdown-item fw-semibold" href="{% url 'orders' %}"><i class="bi bi-bag-check me-2"></i> Orders</a></li>
-                        {% endif %}
-                        <li><a class="dropdown-item fw-semibold" href="{% url 'about' %}"><i class="bi bi-info-circle me-2"></i> About</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            {% if request.user.is_authenticated %}
-                                <a class="dropdown-item fw-semibold" href="{% url 'logout' %}"><i class="bi bi-box-arrow-in-right me-2"></i> Logout</a>
-                            {% else %}
-                                <a class="dropdown-item fw-semibold" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right me-2"></i> Login</a>
-                            {% endif %}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
 </nav>
 
@@ -272,7 +239,7 @@
                 Link a mobile number to your Veintro account for better security, faster password recovery, and important order updates.
             </p>
             
-            <form method="POST" action="">
+            <form method="POST">
                 {% csrf_token %}
                 
                 <div>
