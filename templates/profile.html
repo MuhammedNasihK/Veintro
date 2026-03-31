@@ -27,15 +27,14 @@
             color: #111827;
         }
 
-        /* --- EXACT NAVBAR CSS FROM LOGIN PAGE --- */
+        /* --- EXACT NAVBAR CSS FROM LOGIN/PROFILE PAGE --- */
         .navbar { 
             background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important; 
-            height: 72px; /* Fixed height */
+            height: 72px; 
             padding: 0 !important; 
             display: flex; 
             align-items: center; 
         }
-
         .container-fluid-custom { 
             width: 100%; 
             max-width: 1320px; 
@@ -45,24 +44,20 @@
             align-items: center; 
             justify-content: space-between; 
         }
-        
         .navbar-brand { 
             padding: 0; 
             margin: 0; 
             display: flex; 
             align-items: center; 
             height: 100%; 
-            margin-left: -45px; /* EXACT POSITION PRESERVED */
+            margin-left: -45px; 
         }
-
         .navbar-brand img { 
             width: 240px; 
-            height: auto;  /* MUST BE AUTO TO PRESERVE ASPECT RATIO */
+            height: auto;  
             object-fit: contain; 
             display: block; 
         }
-        /* ---------------------------------------- */
-
         .navbar-right-section { display: flex; align-items: center; gap: 8px; }
         .navbar .nav-link { color: #e5e7eb !important; font-weight: 500; font-size: 0.95rem; }
         .navbar .nav-link.special-hover { position: relative; border-radius: 999px; padding-inline: 14px; overflow: hidden; }
@@ -112,14 +107,12 @@
             position: sticky;
             top: 90px;
         }
-        
         .sidebar-header {
             padding: 24px 20px;
             text-align: center;
             border-bottom: 1px solid var(--border-soft);
             background: #f9fafb;
         }
-
         .avatar-circle {
             width: 100px;
             height: 100px;
@@ -142,7 +135,6 @@
             font-size: 3.5rem;
             color: #d1d5db;
         }
-
         .sidebar-menu .list-group-item {
             border: none;
             padding: 14px 20px;
@@ -225,7 +217,131 @@
             color: #1f2937;
         }
 
-        /* Address Box */
+        /* --- DYNAMIC ADDRESS CARDS (PREMIUM SINGLE COLUMN) --- */
+        .address-display-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        
+        /* Adds a sleek green accent line on the left when hovered */
+        .address-display-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: transparent;
+            transition: background 0.2s ease;
+        }
+        .address-display-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            transform: translateY(-2px);
+        }
+        .address-display-card:hover::before {
+            background: var(--accent);
+        }
+
+        .address-info {
+            flex: 1;
+            padding-right: 24px;
+        }
+        .address-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .address-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .address-text {
+            font-size: 0.9rem;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        /* Styled phone number box */
+        .address-phone {
+            font-size: 0.85rem;
+            color: #1f2937;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .address-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 130px;
+        }
+        .btn-action-custom {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-block;
+            width: 100%;
+        }
+        .btn-edit {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        .btn-edit:hover {
+            background: #f8fafc;
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+        .btn-remove {
+            background: #fff1f2;
+            border: 1px solid #ffe4e6;
+            color: #e11d48;
+        }
+        .btn-remove:hover {
+            background: #ffe4e6;
+            color: #be123c;
+        }
+
+        /* Mobile layout: stack actions below the text */
+        @media (max-width: 767.98px) {
+            .address-display-card { flex-direction: column; padding: 20px; }
+            .address-info { padding-right: 0; margin-bottom: 20px; }
+            .address-actions { flex-direction: row; width: 100%; border-top: 1px solid #f3f4f6; padding-top: 20px; }
+            .btn-action-custom { flex: 1; }
+        }
+
+        /* Empty Address Box */
         .empty-address-box {
             border-radius: 12px;
             border: 2px dashed #e5e7eb;
@@ -296,6 +412,10 @@
         footer a { color: #9ca3af; text-decoration: none; font-size: 0.85rem; }
         footer a:hover { color: #f9fafb; }
         
+        @media (max-width: 991.98px) {
+            .navbar-brand { margin-left: -20px; }
+            .navbar-brand img { width: 180px; height: auto; }
+        }
     </style>
 </head>
 <body>
@@ -313,22 +433,16 @@
         <div class="collapse navbar-collapse justify-content-end" id="mainNav">
             <div class="navbar-right-section">
                 <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a></li>
                 </ul>
 
+                <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}"><i class="bi bi-heart"></i></a>
+                <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}"><i class="bi bi-cart"></i></a>
                 
                 <div class="dropdown ms-3">
                     <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {% if request.user.is_authenticated %}
-                            {{ request.user.email|truncatechars:15 }}
-                        {% else %}
-                            <i class="bi bi-person-circle fs-5"></i>
-                        {% endif %}
+                        {% if request.user.is_authenticated %}{{ request.user.email|truncatechars:15 }}{% else %}<i class="bi bi-person-circle fs-5"></i>{% endif %}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
                         {% if request.user.is_authenticated %}
@@ -478,18 +592,57 @@
                         </a>
                     </div>
                     <div class="content-card-body">
-                        <div class="empty-address-box">
-                            <div class="empty-address-icon">
-                                <i class="bi bi-geo-alt"></i>
+                        
+                        {% if addresses %}
+                            <div class="row g-4"> {% for address in addresses %}
+                                <div class="col-12"> <div class="address-display-card">
+                                        
+                                        <div class="address-info">
+                                            <div class="address-name">
+                                                {{ address.full_name }}
+                                            </div>
+                                            
+                                            <div class="address-text">
+                                                {{ address.flat }}, {{ address.area }}<br>
+                                                {% if address.landmark %}
+                                                    {{ address.landmark }}<br>
+                                                {% endif %}
+                                                {{ address.city }}, {{ address.state }} - <strong>{{ address.pincode }}</strong>
+                                            </div>
+                                            
+                                            <div class="address-phone">
+                                                <i class="bi bi-telephone text-success"></i> +91 {{ address.mobile_number }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="address-actions">
+                                            <a href="#" class="btn-action-custom btn-edit">
+                                                <i class="bi bi-pencil me-1"></i> Edit
+                                            </a>
+                                            <a href="#" class="btn-action-custom btn-remove">
+                                                <i class="bi bi-trash3 me-1"></i> Remove
+                                            </a>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                {% endfor %}
                             </div>
-                            <h6 class="fw-bold text-dark mb-1">No Addresses Found</h6>
-                            <p class="text-muted mb-3" style="font-size: 0.85rem; max-width: 300px; margin: 0 auto;">
-                                You haven't saved any delivery addresses yet. Add one now for a faster checkout experience.
-                            </p>
-                            <a href="{% url 'add_address' %}" class="btn btn-outline-dark btn-sm rounded-pill px-4">
-                                Add Address
-                            </a>
-                        </div>
+                        {% else %}
+                            <div class="empty-address-box">
+                                <div class="empty-address-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-1">No Addresses Found</h6>
+                                <p class="text-muted mb-3" style="font-size: 0.85rem; max-width: 300px; margin: 0 auto;">
+                                    You haven't saved any delivery addresses yet. Add one now for a faster checkout experience.
+                                </p>
+                                <a href="{% url 'add_address' %}" class="btn btn-outline-dark btn-sm rounded-pill px-4">
+                                    Add Address
+                                </a>
+                            </div>
+                        {% endif %}
+
                     </div>
                 </div>
 

@@ -111,6 +111,8 @@ def profile(request):
     # This completely fixes the "UNIQUE constraint failed" error.
     user_profile, created = Profile.objects.get_or_create(user=request.user)
 
+    user_addresses = Address.objects.filter(user=request.user)
+
     if request.method == 'POST':
         # Check if a file named 'profile_picture' was uploaded from the HTML
         if 'profile_picture' in request.FILES:
@@ -123,7 +125,8 @@ def profile(request):
             return redirect('profile')
 
     context = {
-        'profile': user_profile  # Passes the single object to the template
+        'profile': user_profile,  # Passes the single object to the template
+        'addresses': user_addresses
     }
     return render(request, 'profile.html', context)
 
@@ -142,8 +145,25 @@ def add_primary_mobile_number(request):
             return redirect('profile')
     return render(request,'add_primary_mobile_number.html')
 
+
+@login_required
 def add_address(request):
-    return render(request,'add_address.html')
+
+    if request.method=='POST':
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            user_address = form.save(commit=False)
+            user_address.user = request.user
+            user_address.save()
+            return redirect('profile')
+
+    else:
+        form = AddressForm()
+
+    context = {
+        'form':form
+    }
+    return render(request,'add_address.html',context)
 
  
 
