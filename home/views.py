@@ -460,6 +460,21 @@ def product_review(request, variant_id):
 
 def cart(request):
 
+    if request.method == 'POST':
+        cart_items = Cart.objects.filter(user=request.user)
+
+        for i in cart_items:
+            item_id = f"quantity_{i.variant.id}"
+
+            selected_qty = request.POST.get(item_id)
+
+            if selected_qty:
+                i.quantity = int(selected_qty)
+                i.save(update_fields=['quantity'])
+
+
+
+
     total_price = 0
     total_discount = 0
 
@@ -481,6 +496,7 @@ def cart(request):
                 'brand':c.variant.product.brand.name,
                 'price':c.variant.price,
                 'stock':range(1,6) if c.variant.stock > 5 else range(1,c.variant.stock + 1),
+                'selected_quantity' : c.quantity,
                 'discount_price':c.variant.discount_price,
                 'discount_percentage':c.variant.discount_percentage(),
                 'image':main_img.image.url if main_img else None

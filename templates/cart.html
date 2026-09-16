@@ -26,7 +26,6 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Navbar - UPDATED TO MATCH HOME PAGE */
         .navbar {
             background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
             height: 72px;
@@ -110,7 +109,6 @@
             box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
         }
 
-        /* Show dropdown arrow */
         .dropdown-toggle::after {
             display: inline-block !important;
             margin-left: 0.255em;
@@ -122,7 +120,6 @@
             border-left: 0.3em solid transparent;
         }
 
-        /* Simple page heading (no banner) */
         .cart-page-header {
             padding: 20px 0 10px;
         }
@@ -135,7 +132,6 @@
             color: #6b7280;
         }
 
-        /* Cart layout */
         .cart-container {
             padding-top: 8px;
             padding-bottom: 40px;
@@ -211,7 +207,6 @@
             padding: 2px 8px;
         }
 
-        /* Quantity control: dropdown */
         .qty-input {
             width: 75px;
             border-radius: 999px;
@@ -226,7 +221,6 @@
             box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
         }
 
-        /* More professional inline action buttons */
         .cart-item-actions {
             font-size: 0.78rem;
             position: relative;
@@ -257,7 +251,6 @@
             color: #b91c1c;
         }
 
-        /* Summary card */
         .summary-card {
             background: #ffffff;
             border-radius: 14px;
@@ -316,7 +309,6 @@
             color: #111827;
         }
 
-        /* Empty cart state */
         .empty-cart {
             text-align: center;
             padding: 40px 0;
@@ -342,7 +334,6 @@
             color: #6b7280;
         }
 
-        /* Footer (same as home) */
         footer {
             background: #020617;
             color: #9ca3af;
@@ -379,23 +370,19 @@
                 <li class="nav-item">
                     <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
                         <i class="bi bi-heart"></i>
                     </a>
                 </li>
-                
                 <li class="nav-item">
                     <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
                         <i class="bi bi-cart"></i>
                     </a>
                 </li>
-
                 <li class="nav-item dropdown ms-3">
                     <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
                        href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -405,7 +392,6 @@
                             <i class="bi bi-person-circle fs-5"></i>
                         {% endif %}
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
                         {% if request.user.is_authenticated %}
                         <li>
@@ -455,9 +441,9 @@
 <section class="cart-container">
     <div class="container">
         <div class="row g-4">
-            
+
             {% if not request.user.is_authenticated %}
-            
+
                 <div class="col-12 col-md-8 mx-auto mt-4">
                     <div class="cart-card p-5 text-center shadow-sm">
                         <div class="empty-cart-icon mx-auto mb-3" style="background: #eff6ff; color: #3b82f6; width: 72px; height: 72px; font-size: 1.8rem;">
@@ -474,120 +460,128 @@
                 </div>
 
             {% else %}
-            
+
+                <!-- LEFT COLUMN — cart items -->
                 <div class="col-lg-8">
                     <div class="cart-card p-3 p-md-4 mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h2 class="h6 mb-0">Items in your cart</h2>
-                            <a class="btn btn-sm btn-continue py-1 px-3" href="{%url 'products'%}">
+                            <a class="btn btn-sm btn-continue py-1 px-3" href="{% url 'products' %}">
                                 <i class="bi bi-arrow-left me-1"></i> Continue shopping
                             </a>
                         </div>
 
                         {% if product_details %}
                             {% for p in product_details %}
-                                <div class="cart-item">
-                                    <div class="row g-3 align-items-center">
-                                        <div class="col-3 col-md-2">
-                                            <a href="{% url 'product_review' p.variant_id %}" class="text-decoration-none d-block">
-                                                <div class="cart-item-img-wrap">
-                                                    <img src="{{p.image}}" alt="{{p.product_name}}">
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <div class="col-9 col-md-5">
-                                            <a href="{% url 'product_review' p.variant_id %}" class="text-decoration-none text-dark d-block mb-2">
-                                                <div class="cart-item-title mb-1">{{p.brand}} {{p.product_name}}</div>
-                                                <div class="cart-item-meta">
-                                                    {{p.attribute}}
-                                                </div>
-                                            </a>
-                                            <div class="cart-item-actions d-flex flex-wrap gap-2">
-                                                <form action="{%url 'add_to_wishlist' p.variant_id %}" method="POST" class="m-0">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="cart-action-link">
-                                                        <i class="bi bi-heart"></i> Move to wishlist
-                                                    </button>
-                                                </form>
-                                                
-                                                <form action="{% url 'add_to_cart' p.variant_id%}" method="POST" class="m-0">
-                                                    {% csrf_token %}
-                                                    <input type="hidden" name="action" value="remove">
-                                                    <button type="submit" class="cart-action-link text-danger">
-                                                        <i class="bi bi-trash3"></i> Remove
-                                                    </button>
-                                                </form>
+                            <div class="cart-item">
+                                <div class="row g-3 align-items-center">
+
+                                    <div class="col-3 col-md-2">
+                                        <a href="{% url 'product_review' p.variant_id %}" class="text-decoration-none d-block">
+                                            <div class="cart-item-img-wrap">
+                                                <img src="{{ p.image }}" alt="{{ p.product_name }}">
                                             </div>
+                                        </a>
+                                    </div>
+
+                                    <div class="col-9 col-md-5">
+                                        <a href="{% url 'product_review' p.variant_id %}" class="text-decoration-none text-dark d-block mb-2">
+                                            <div class="cart-item-title mb-1">{{ p.brand }} {{ p.product_name }}</div>
+                                            <div class="cart-item-meta">{{ p.attribute }}</div>
+                                        </a>
+                                        <div class="cart-item-actions d-flex flex-wrap gap-2">
+
+                                            <form action="{% url 'add_to_wishlist' p.variant_id %}" method="POST" class="m-0">
+                                                {% csrf_token %}
+                                                <button type="submit" class="cart-action-link">
+                                                    <i class="bi bi-heart"></i> Move to wishlist
+                                                </button>
+                                            </form>
+
+                                            <form action="{% url 'add_to_cart' p.variant_id %}" method="POST" class="m-0">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="remove">
+                                                <button type="submit" class="cart-action-link text-danger">
+                                                    <i class="bi bi-trash3"></i> Remove
+                                                </button>
+                                            </form>
+
                                         </div>
-                                        
-                                        <div class="col-6 col-md-2 mt-2 mt-md-0">
-                                            <div class="mb-1" style="font-size: 0.75rem; color: #6b7280; font-weight: 500; padding-left: 8px;">Qty</div>
-                                            <select class="form-select form-select-sm qty-input">
-                                                {%for i in p.stock%}
-                                                    <option value={{i}}>{{i}}</option>
-                                                {%endfor%}
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
-                                            <a href="{% url 'product_review' p.variant_id %}" class="text-decoration-none text-dark d-block">
-                                                {%if p.discount_price%}
-                                                    <div>
-                                                        <span class="cart-price-main">₹{{p.discount_price|intcomma}}</span>
-                                                        <span class="cart-price-old ms-1">₹{{p.price|intcomma}}</span>
-                                                    </div>
-                                                {%else%}
-                                                    <div>
-                                                        <span class="cart-price-main">₹{{p.price|intcomma}}</span>
-                                                    </div>
-                                                {%endif%}
-                                                <div class="mt-1">
-                                                    <span class="cart-price-save">{{p.discount_percentage}}% OFFER</span>
+                                    </div>
+
+                                    <div class="col-6 col-md-2 mt-2 mt-md-0">
+                                        <div class="mb-1" style="font-size: 0.75rem; color: #6b7280; font-weight: 500; padding-left: 8px;">Qty</div>
+                                        <select class="form-select form-select-sm qty-input" name="quantity_{{ p.variant_id }}" form="checkout-form">
+                                            {% for i in p.stock %}
+                                                <option value="{{ i }}" {% if i == p.selected_quantity %}selected{% endif %}>{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
+                                        <a href="{% url 'product_review' p.variant_id %}" class="text-decoration-none text-dark d-block">
+                                            {% if p.discount_price %}
+                                                <div>
+                                                    <span class="cart-price-main">₹{{ p.discount_price|intcomma }}</span>
+                                                    <span class="cart-price-old ms-1">₹{{ p.price|intcomma }}</span>
                                                 </div>
-                                            </a>
-                                        </div>
+                                            {% else %}
+                                                <div>
+                                                    <span class="cart-price-main">₹{{ p.price|intcomma }}</span>
+                                                </div>
+                                            {% endif %}
+                                            <div class="mt-1">
+                                                <span class="cart-price-save">{{ p.discount_percentage }}% OFFER</span>
+                                            </div>
+                                        </a>
                                     </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="cart-card p-4 border-0">
-                                <div class="empty-cart">
-                                    <div class="empty-cart-icon">
-                                        <i class="bi bi-cart-x"></i>
-                                    </div>
-                                    <div class="empty-cart-title mb-1">Your cart is empty</div>
-                                    <p class="empty-cart-text mb-3">
-                                        Add products you like to your cart. Review them here before checkout.
-                                    </p>
-                                    <a href="{% url 'products' %}" class="btn btn-continue py-2 px-4">
-                                        <i class="bi bi-arrow-left me-1"></i> Browse products
-                                    </a>
+
                                 </div>
                             </div>
+                            {% endfor %}
+
+                        {% else %}
+                            <div class="empty-cart">
+                                <div class="empty-cart-icon">
+                                    <i class="bi bi-cart-x"></i>
+                                </div>
+                                <div class="empty-cart-title mb-1">Your cart is empty</div>
+                                <p class="empty-cart-text mb-3">
+                                    Add products you like to your cart. Review them here before checkout.
+                                </p>
+                                <a href="{% url 'products' %}" class="btn btn-continue py-2 px-4">
+                                    <i class="bi bi-arrow-left me-1"></i> Browse products
+                                </a>
+                            </div>
                         {% endif %}
+
                     </div>
                 </div>
+                <!-- END LEFT COLUMN -->
 
+                <!-- RIGHT COLUMN — summary -->
                 <div class="col-lg-4">
+
+                    <!-- hidden checkout form — no nesting issues -->
+                    <form id="checkout-form" method="POST" action="">
+                        {% csrf_token %}
+                    </form>
+
                     <div class="summary-card p-3 p-md-4">
                         <h2 class="summary-title mb-3">Price details</h2>
 
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
-                            <span>Price ({{product_count}} Items)</span>
-                            <span>₹{{total_price|intcomma}}</span>
+                            <span>Price ({{ product_count }} Items)</span>
+                            <span>₹{{ total_price|intcomma }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                             <span>Discount</span>
-                            <span class="text-success">− ₹{{total_discount|intcomma}}</span>
+                            <span class="text-success">− ₹{{ total_discount|intcomma }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                             <span>Delivery charges</span>
                             <span class="text-success">
-                                {%if total_amount and total_amount < 15000%}
-                                    ₹29
-                                {%else%}
-                                    ₹0
-                                {%endif%}
+                                {% if total_amount and total_amount < 15000 %}₹29{% else %}₹0{% endif %}
                             </span>
                         </div>
 
@@ -595,18 +589,16 @@
 
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="summary-total">Total amount</span>
-                            <span class="summary-total">₹{{total_amount|intcomma}}</span>
+                            <span class="summary-total">₹{{ total_amount|intcomma }}</span>
                         </div>
                         <p class="summary-note mb-3">
-                            You will save <span class="text-success fw-semibold">₹{{total_discount|intcomma}}</span> on this order compared to MRP.
+                            You will save <span class="text-success fw-semibold">₹{{ total_discount|intcomma }}</span> on this order compared to MRP.
                         </p>
 
-                        <form method="POST" action="">
-                            {% csrf_token %}
-                            <button class="btn btn-checkout w-100 mb-2 py-2" type="submit">
-                                Proceed to checkout
-                            </button>
-                        </form>
+                        <button type="submit" form="checkout-form" class="btn btn-checkout w-100 mb-2 py-2">
+                            Proceed to checkout
+                        </button>
+
                         <a class="btn btn-continue w-100 text-center d-block py-2" href="{% url 'products' %}">
                             <i class="bi bi-arrow-left me-1"></i> Continue shopping
                         </a>
@@ -620,7 +612,10 @@
                             </span>
                         </div>
                     </div>
+
                 </div>
+                <!-- END RIGHT COLUMN -->
+
             {% endif %}
 
         </div>
