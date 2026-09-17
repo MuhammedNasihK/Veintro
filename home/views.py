@@ -472,6 +472,8 @@ def cart(request):
                 i.quantity = int(selected_qty)
                 i.save(update_fields=['quantity'])
 
+        return redirect('cart')
+
 
 
 
@@ -509,8 +511,8 @@ def cart(request):
     total_discount = 0 
 
     for i in product_details:
-        price = i['price']
-        discount_price = i['discount_price']
+        price = i['price'] * i['selected_quantity']
+        discount_price = i['discount_price'] * i['selected_quantity'] if i['discount_price'] else 0 
 
         total_price += price
 
