@@ -545,7 +545,7 @@
                     {% if address_list %}
                         {% for a in address_list %}
                         <div class="col-12 col-md-6 mb-3">
-                            <input type="radio" name="addressMode" id="address_{{ forloop.counter }}" value="{{ a.id }}" class="address-radio d-none" {% if forloop.first %}checked{% endif %} required>
+                            <input type="radio" name="addressid" id="address_{{ forloop.counter }}" value="{{ a.id }}" class="address-radio d-none" {% if forloop.first %}checked{% endif %} required>
                             
                             <label class="address-card-wrapper w-100 h-100 m-0" for="address_{{ forloop.counter }}">
                                 <div class="address-card">

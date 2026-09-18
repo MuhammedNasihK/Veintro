@@ -473,6 +473,7 @@
                         
                         <form id="update-form" method="POST" action="{% url 'cart' %}" >
                             {% csrf_token %}
+                            <input type="hidden" name="action" value="update">
                         </form>
 
                         {% if product_details %}
@@ -567,8 +568,9 @@
                 <div class="col-lg-4">
 
                     <!-- hidden checkout form — no nesting issues -->
-                    <form id="checkout-form" method="POST" action="{% url 'checkout' request.user.id %}">
+                    <form id="checkout-form" method="POST" action="{% url 'cart' %}">
                         {% csrf_token %}
+                        <input type="hidden" name="action" value="submit">
                     </form>
 
                    

@@ -461,19 +461,23 @@ def product_review(request, variant_id):
 def cart(request):
 
     if request.method == 'POST':
-        cart_items = Cart.objects.filter(user=request.user)
+        action = request.POST.get('action')
+        if action == 'update':
+            cart_items = Cart.objects.filter(user=request.user)
 
-        for i in cart_items:
-            item_id = f"quantity_{i.variant.id}"
+            for i in cart_items:
+                item_id = f"quantity_{i.variant.id}"
 
-            selected_qty = request.POST.get(item_id)
+                selected_qty = request.POST.get(item_id)
 
-            if selected_qty:
-                i.quantity = int(selected_qty)
-                i.save(update_fields=['quantity'])
+                if selected_qty:
+                    i.quantity = int(selected_qty)
+                    i.save(update_fields=['quantity'])
 
-        return redirect('cart')
+            return redirect('cart')
 
+        elif action == 'submit':
+            return redirect('checkout',user_id = request.user.id)
 
 
 
@@ -611,12 +615,13 @@ def checkout(request,user_id):
     user_address = Address.objects.filter(user = request.user)
 
     if request.method == 'POST':
-        address_id = request.POST.get('addressMode')
+        address_id = request.POST.get('addressid')
 
         address = get_object_or_404(Address,id = address_id,user = request.user)
         if address:
             request.session['address_id'] = address_id
             return redirect('payment')
+        
     
     address_list = []
 
