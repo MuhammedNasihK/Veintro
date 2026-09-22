@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electro - Payment</title>
+    <title>Veintro - Payment</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
@@ -25,7 +23,6 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Navbar */
         .navbar {
             background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
         }
@@ -80,12 +77,11 @@
             box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
         }
 
-        /* Header */
         .payment-header {
             padding: 24px 0 10px;
         }
         .payment-title {
-            font-size: 1.7rem;
+            font-size: 1.5rem;
             font-weight: 700;
         }
         .payment-subtitle {
@@ -98,14 +94,14 @@
         }
 
         .payment-layout {
-            max-width: 850px;
+            max-width: 650px;
         }
 
         .payment-card {
             background: #ffffff;
             border-radius: 18px;
             border: 1px solid #e5e7eb;
-            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12);
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
         }
 
         .section-heading {
@@ -137,28 +133,80 @@
             padding: 4px 10px;
         }
 
-        /* Tabs */
-        .nav-pills .nav-link {
-            border-radius: 999px;
-            font-size: 0.82rem;
-            padding: 8px 16px;
-            color: #374151;
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            margin-right: 6px;
+        /* Payment method option cards */
+        .method-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fff;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 10px;
         }
-        .nav-pills .nav-link i {
-            font-size: 0.9rem;
-        }
-        .nav-pills .nav-link.active {
-            background: #ecfdf5;
-            color: #166534;
+        .method-option:hover {
             border-color: #22c55e;
+            background: #f0fdf4;
+        }
+        .method-option.selected {
+            border-color: #22c55e;
+            background: #f0fdf4;
             box-shadow: 0 0 0 1px rgba(34,197,94,0.3);
         }
+        .method-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #ecfdf5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #16a34a;
+            flex-shrink: 0;
+        }
+        .method-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+        .method-desc {
+            font-size: 0.76rem;
+            color: #6b7280;
+            margin: 0;
+        }
+        .method-check {
+            margin-left: auto;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .method-option.selected .method-check {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: #fff;
+            font-size: 0.7rem;
+        }
 
-        .tab-pane {
-            padding-top: 16px;
+        /* COD detail box — shown only when COD is selected */
+        .cod-detail {
+            display: none;
+            margin-top: 4px;
+            margin-bottom: 6px;
+        }
+        .cod-detail.show {
+            display: block;
         }
 
         .btn-pay {
@@ -168,6 +216,8 @@
             font-weight: 600;
             font-size: 0.9rem;
             color: #0f172a;
+            padding: 10px 28px;
+            transition: all 0.2s ease;
         }
         .btn-pay:hover {
             background: #16a34a;
@@ -181,9 +231,11 @@
             font-size: 0.85rem;
             color: #374151;
             background: #f9fafb;
+            padding: 10px 20px;
         }
         .btn-back:hover {
             background: #ffffff;
+            color: #111827;
         }
 
         footer {
@@ -198,29 +250,36 @@
         footer a:hover {
             color: #f9fafb;
         }
+
+        @media (max-width: 575.98px) {
+            .payment-title { font-size: 1.2rem; }
+            .payment-card { border-radius: 12px; }
+            .method-option { padding: 12px 12px; gap: 10px; }
+            .method-icon { width: 36px; height: 36px; font-size: 1rem; }
+            .method-label { font-size: 0.85rem; }
+            .btn-pay, .btn-back { width: 100%; text-align: center; }
+            .action-row { flex-direction: column-reverse !important; gap: 10px !important; }
+        }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR (only brand + profile) -->
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+        <a class="navbar-brand fw-bold text-light fs-4" href="{% url 'home' %}">Electro</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="mainNav">
-
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <!-- PROFILE ICON DROPDOWN -->
                 <li class="nav-item dropdown">
-                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown"
-                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
+                       href="#" id="menuDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-circle fs-5"></i>
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
                         <li>
                             <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
@@ -229,21 +288,21 @@
                         </li>
                         <li>
                             <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
-                                <i class="bi bi-bag-check me-2"></i> Orders</a>
+                                <i class="bi bi-bag-check me-2"></i> Orders
+                            </a>
                         </li>
                         <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> Login</a>
+                            <a class="dropdown-item fw-semibold" href="{% url 'logout' %}">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Logout
+                            </a>
                         </li>
                     </ul>
                 </li>
             </ul>
-
         </div>
     </div>
 </nav>
 
-<!-- PAYMENT HEADER -->
 <section class="payment-header">
     <div class="container payment-layout">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
@@ -252,191 +311,127 @@
                 <p class="payment-subtitle mb-1">
                     Choose a secure payment method to complete your order.
                 </p>
-                <p class="payment-steps mb-0">
-                    Step 2 of 2 · Payment
-                </p>
+                <p class="payment-steps mb-0">Step 2 of 2 · Payment</p>
             </div>
-            <div class="text-end">
-                <span class="badge bg-light text-dark me-1" style="font-size:0.75rem;">
-                    <i class="bi bi-lock-fill me-1 text-success"></i> 256-bit encrypted checkout
+            <div>
+                <span class="badge bg-light text-dark" style="font-size:0.75rem;">
+                    <i class="bi bi-lock-fill me-1 text-success"></i> 256-bit encrypted
                 </span>
             </div>
         </div>
     </div>
 </section>
 
-<!-- PAYMENT CONTENT -->
-<section class="pb-4">
+<section class="pb-5">
     <div class="container payment-layout">
         <div class="payment-card p-3 p-md-4">
+
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <div class="section-heading">Select payment method</div>
-                    <div class="section-caption">
-                        Pick a method to see the required details.
-                    </div>
+                    <div class="section-caption">Pick how you'd like to pay.</div>
                 </div>
                 <span class="badge bg-success-subtle text-success badge-method">
-                    <i class="bi bi-shield-check me-1"></i> Secure gateways
+                    <i class="bi bi-shield-check me-1"></i> Secure
                 </span>
             </div>
 
-            <!-- Method tabs -->
-            <ul class="nav nav-pills mb-3" id="payment-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="upi-tab" data-bs-toggle="pill" data-bs-target="#upi-pane" type="button"
-                            role="tab" aria-controls="upi-pane" aria-selected="true">
-                        <i class="bi bi-phone me-1"></i> UPI
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="card-tab" data-bs-toggle="pill" data-bs-target="#card-pane" type="button"
-                            role="tab" aria-controls="card-pane" aria-selected="false">
-                        <i class="bi bi-credit-card-2-front me-1"></i> Card
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="netbanking-tab" data-bs-toggle="pill" data-bs-target="#netbanking-pane" type="button"
-                            role="tab" aria-controls="netbanking-pane" aria-selected="false">
-                        <i class="bi bi-bank me-1"></i> Netbanking
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="cod-tab" data-bs-toggle="pill" data-bs-target="#cod-pane" type="button"
-                            role="tab" aria-controls="cod-pane" aria-selected="false">
-                        <i class="bi bi-cash-coin me-1"></i> Cash on delivery
-                    </button>
-                </li>
-            </ul>
+            <!-- Payment form -->
+            <form method="POST" action="{% url 'payment' %}" id="payment-form">
+                {% csrf_token %}
+                <input type="hidden" name="payment_method" id="payment_method_input" value="">
 
-            <!-- Method panes: only active one is visible -->
-            <div class="tab-content" id="payment-tabContent">
-                <!-- UPI -->
-                <div class="tab-pane fade show active" id="upi-pane" role="tabpanel" aria-labelledby="upi-tab">
-                    <div class="section-heading mb-2">Pay via UPI</div>
-                    <div class="section-caption mb-3">
-                        Enter your UPI ID and approve the request in your UPI app.
+                <!-- UPI option -->
+                <button type="button" class="method-option" id="opt-upi" onclick="selectMethod('upi')">
+                    <div class="method-icon">
+                        <i class="bi bi-phone"></i>
                     </div>
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label">UPI ID</label>
-                            <input type="text" class="form-control" placeholder="yourname@upi">
-                        </div>
-                        <div class="col-12">
-                            <div class="form-check" style="font-size:0.8rem;">
-                                <input class="form-check-input" type="checkbox" id="saveUpi">
-                                <label class="form-check-label" for="saveUpi">
-                                    Securely save this UPI ID for future payments
-                                </label>
-                            </div>
-                        </div>
+                    <div>
+                        <p class="method-label">UPI</p>
+                        <p class="method-desc">Google Pay, PhonePe, Paytm, BHIM & more</p>
                     </div>
-                </div>
+                    <div class="method-check" id="check-upi"></div>
+                </button>
 
-                <!-- Card -->
-                <div class="tab-pane fade" id="card-pane" role="tabpanel" aria-labelledby="card-tab">
-                    <div class="section-heading mb-2">Card details</div>
-                    <div class="section-caption mb-3">
-                        Supports Visa, Mastercard, RuPay and more.
+                <!-- Card option -->
+                <button type="button" class="method-option" id="opt-card" onclick="selectMethod('card')">
+                    <div class="method-icon">
+                        <i class="bi bi-credit-card-2-front"></i>
                     </div>
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label">Card number</label>
-                            <input type="text" class="form-control" placeholder="XXXX XXXX XXXX 1234">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Name on card</label>
-                            <input type="text" class="form-control" placeholder="John Doe">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Expiry</label>
-                            <input type="text" class="form-control" placeholder="MM/YY">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">CVV</label>
-                            <input type="password" class="form-control" placeholder="***">
-                        </div>
-                        <div class="col-12">
-                            <div class="form-check" style="font-size:0.8rem;">
-                                <input class="form-check-input" type="checkbox" id="saveCard">
-                                <label class="form-check-label" for="saveCard">
-                                    Save this card for faster checkout next time
-                                </label>
-                            </div>
-                        </div>
+                    <div>
+                        <p class="method-label">Credit / Debit Card</p>
+                        <p class="method-desc">Visa, Mastercard, RuPay and more</p>
                     </div>
-                </div>
+                    <div class="method-check" id="check-card"></div>
+                </button>
 
-                <!-- Netbanking -->
-                <div class="tab-pane fade" id="netbanking-pane" role="tabpanel" aria-labelledby="netbanking-tab">
-                    <div class="section-heading mb-2">Netbanking</div>
-                    <div class="section-caption mb-3">
-                        You will be redirected to your bank’s secure page to complete the payment.
+                <!-- Netbanking option -->
+                <button type="button" class="method-option" id="opt-netbanking" onclick="selectMethod('netbanking')">
+                    <div class="method-icon">
+                        <i class="bi bi-bank"></i>
                     </div>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Select bank</label>
-                            <select class="form-select">
-                                <option selected disabled>Select bank</option>
-                                <option>HDFC Bank</option>
-                                <option>ICICI Bank</option>
-                                <option>SBI</option>
-                                <option>Axis Bank</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 d-flex align-items-center" style="font-size:0.82rem;">
-                            <div class="border rounded-3 w-100 p-2 bg-light">
-                                <i class="bi bi-info-circle me-1 text-primary"></i>
-                                You will return to Electro after completing payment.
-                            </div>
-                        </div>
+                    <div>
+                        <p class="method-label">Netbanking</p>
+                        <p class="method-desc">All major Indian banks supported</p>
                     </div>
-                </div>
+                    <div class="method-check" id="check-netbanking"></div>
+                </button>
 
-                <!-- Cash on Delivery -->
-                <div class="tab-pane fade" id="cod-pane" role="tabpanel" aria-labelledby="cod-tab">
-                    <div class="section-heading mb-2">Cash on delivery</div>
-                    <div class="section-caption mb-3">
-                        Pay in cash or card at the time of delivery.
+                <!-- COD option -->
+                <button type="button" class="method-option" id="opt-cod" onclick="selectMethod('cod')">
+                    <div class="method-icon">
+                        <i class="bi bi-cash-coin"></i>
                     </div>
-                    <div class="border rounded-3 p-3 bg-light" style="font-size:0.83rem;">
-                        <div class="mb-2">
+                    <div>
+                        <p class="method-label">Cash on Delivery</p>
+                        <p class="method-desc">Pay in cash when your order arrives</p>
+                    </div>
+                    <div class="method-check" id="check-cod"></div>
+                </button>
+
+                <!-- COD detail box — only visible when COD is selected -->
+                <div class="cod-detail" id="cod-detail">
+                    <div class="border rounded-3 p-3 bg-light" style="font-size:0.82rem;">
+                        <div class="mb-2 fw-semibold">
                             <i class="bi bi-cash-coin text-success me-1"></i>
-                            COD is available for your delivery address.
+                            Cash on delivery is available for your address.
                         </div>
-                        <ul class="mb-2 ps-3" style="font-size:0.8rem;">
+                        <ul class="mb-2 ps-3" style="font-size:0.8rem; color:#4b5563;">
                             <li>Exact change is appreciated to speed up delivery.</li>
-                            <li>Delivery partner may carry a card machine in selected locations.</li>
+                            <li>Delivery partner may carry a card machine in select locations.</li>
+                            <li>Order may be auto-cancelled if payment is refused at delivery.</li>
                         </ul>
-                        <div class="form-check" style="font-size:0.8rem;">
-                            <input class="form-check-input" type="checkbox" id="codConfirm">
+                        <div class="form-check mt-2" style="font-size:0.8rem;">
+                            <input class="form-check-input" type="checkbox" id="codConfirm" name="cod_confirm">
                             <label class="form-check-label" for="codConfirm">
-                                I understand that my order may be auto-cancelled if payment is refused at delivery.
+                                I understand and agree to the COD terms above.
                             </label>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Actions -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4">
-                <a href="{% url 'checkout' %}" class="btn btn-back">
-                    <i class="bi bi-arrow-left me-1"></i> Back to address
-                </a>
-                <button type="submit" class="btn btn-pay">
-                    Pay securely &amp; place order
-                </button>
-            </div>
+                <!-- Actions -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4 action-row">
+                    <a href="{% url 'checkout' request.user.id %}" class="btn btn-back">
+                        <i class="bi bi-arrow-left me-1"></i> Back to address
+                    </a>
+                    <button type="submit" class="btn btn-pay" id="pay-btn" disabled>
+                        <i class="bi bi-lock-fill me-1"></i>
+                        <span id="pay-btn-text">Select a method</span>
+                    </button>
+                </div>
+
+            </form>
 
             <p class="mt-3 mb-0 section-caption d-flex align-items-start gap-2">
-                <i class="bi bi-shield-lock text-success mt-1"></i>
-                All payments are processed securely. Card, UPI and banking credentials are never stored directly on Electro servers.
+                <i class="bi bi-shield-lock text-success mt-1 flex-shrink-0"></i>
+                All payments are processed securely. Card, UPI and banking credentials are never stored on our servers.
             </p>
+
         </div>
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="pt-4 mt-4">
     <div class="container pb-3">
         <div class="row g-4">
@@ -449,19 +444,19 @@
             <div class="col-md-2">
                 <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
                 <ul class="list-unstyled mb-0">
-                    <li><a href="products.html">All products</a></li>
-                    <li><a href="products.html">Mobiles</a></li>
-                    <li><a href="products.html">Laptops</a></li>
-                    <li><a href="products.html">Televisions</a></li>
+                    <li><a href="{% url 'products' %}">All products</a></li>
+                    <li><a href="{% url 'products' %}">Mobiles</a></li>
+                    <li><a href="{% url 'products' %}">Laptops</a></li>
+                    <li><a href="{% url 'products' %}">Televisions</a></li>
                 </ul>
             </div>
             <div class="col-md-2">
                 <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
                 <ul class="list-unstyled mb-0">
-                    <li><a href="profile.html">Profile</a></li>
-                    <li><a href="orders.html">Orders</a></li>
-                    <li><a href="wishlist.html">Wishlist</a></li>
-                    <li><a href="cart.html">Cart</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'orders' %}">Orders</a></li>
+                    <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+                    <li><a href="{% url 'cart' %}">Cart</a></li>
                 </ul>
             </div>
             <div class="col-md-4">
@@ -474,15 +469,55 @@
             </div>
         </div>
         <hr class="border-secondary mt-4 mb-2">
-        <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
-            <span>© 2025 Electro. All rights reserved.</span>
-            <span>Made with Bootstrap &amp; HTML/CSS.</span>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size:0.8rem;">
+            <span>© 2026 Electro. All rights reserved.</span>
+            <span>Made with Bootstrap & HTML/CSS.</span>
         </div>
     </div>
 </footer>
 
-<!-- Bootstrap JS only (required for tabs) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const methods     = ['upi', 'card', 'netbanking', 'cod'];
+    const payLabels   = {
+        upi        : 'Continue with UPI',
+        card       : 'Continue with Card',
+        netbanking : 'Continue with Netbanking',
+        cod        : 'Place COD Order',
+    };
+
+    function selectMethod(selected) {
+        // reset all options
+        methods.forEach(function(m) {
+            var opt   = document.getElementById('opt-' + m);
+            var check = document.getElementById('check-' + m);
+            opt.classList.remove('selected');
+            check.innerHTML = '';
+        });
+
+        // mark selected
+        document.getElementById('opt-' + selected).classList.add('selected');
+        document.getElementById('check-' + selected).innerHTML = '<i class="bi bi-check"></i>';
+
+        // set hidden input value
+        document.getElementById('payment_method_input').value = selected;
+
+        // show / hide COD detail box
+        var codBox = document.getElementById('cod-detail');
+        if (selected === 'cod') {
+            codBox.classList.add('show');
+        } else {
+            codBox.classList.remove('show');
+        }
+
+        // enable pay button and update its label
+        var btn  = document.getElementById('pay-btn');
+        var text = document.getElementById('pay-btn-text');
+        btn.disabled  = false;
+        text.textContent = payLabels[selected];
+    }
+</script>
 
 </body>
 </html>

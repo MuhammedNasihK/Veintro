@@ -617,16 +617,19 @@ def checkout(request,user_id):
     if request.method == 'POST':
         address_id = request.POST.get('addressid')
 
-        address = get_object_or_404(Address,id = address_id,user = request.user)
-        if address:
-            request.session['address_id'] = address_id
-            return redirect('payment')
+        if address_id:
+            address_id = int(address_id)
+            address = get_object_or_404(Address,id = address_id,user = request.user)
+            if address:
+                request.session['address_id'] = address_id
+                return redirect('payment')
         
     
     address_list = []
 
     for a in user_address:
         address_list.append({
+            'address_id' : a.pk,
             'full_name' : a.full_name,
             'mobile_number' : a.mobile_number,
             'pincode' : a.pincode,
