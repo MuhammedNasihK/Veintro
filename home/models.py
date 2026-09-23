@@ -48,28 +48,6 @@ class Cart(models.Model):
     quantity = models.PositiveIntegerField(default=1)
 
 
-class Orders(models.Model):
-
-    # Order details --->
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-    address = models.OneToOneField(Address,on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=15,decimal_places=2)
-    added_date = models.DateTimeField(auto_now_add=True)
-
-    # Address --->
-    full_name = models.CharField(max_length=250)
-    mobile_number = models.CharField(max_length=14)
-    pincode = models.CharField(max_length=10)
-    flat = models.CharField(max_length=250,verbose_name="Flat, House no., Building, Company, Apartment")
-    area = models.CharField(max_length=250,verbose_name="Area, Street, Sector, Village")
-    landmark = models.CharField(max_length=250,blank=True,null=True)
-    city = models.CharField(max_length=250,verbose_name='Town/City')
-    state = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"{self.user.username}-{self.city}"
-
 
 
 class Order(models.Model):
@@ -102,9 +80,14 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Orders,on_delete=models.CASCADE)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE)
     variant = models.ForeignKey(ProductVariant,on_delete=models.CASCADE)
+
+    product_name = models.CharField(max_length=250)
+    price = models.DecimalField(max_digits=12,decimal_places=2)
     quantity = models.PositiveIntegerField()
+    total_price = models.DecimalField(max_digits=15,decimal_places=2)
+
 
     def total_price(self):
         return f"{self.quantity} X {self.variant.product.name} (Order #{self.order.pk})"
@@ -116,7 +99,7 @@ class Payment(models.Model):
         ('Failed',"Failed")
     )
 
-    order = models.OneToOneField(Orders,on_delete=models.CASCADE)
+    order = models.OneToOneField(Order,on_delete=models.CASCADE)
     razorpay_payment_link_id = models.CharField(max_length=250)
     razorpay_payment_id = models.CharField(max_length=200)
     payment_status = models.CharField(max_length=100,choices=PAYMENT_STATUS)

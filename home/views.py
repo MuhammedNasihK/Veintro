@@ -9,6 +9,7 @@ from .models import *
 from .forms import *
 from decimal import Decimal
 import random
+import razorpay
 
 
 User = get_user_model()
@@ -604,6 +605,32 @@ def buy_now(request,variant_id):
 
 
 def payment(request):
+
+    if request.method == 'POST':
+        razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
+        payment_method = request.POST.get('payment_method')
+
+        cart_items = Cart.objects.get(user=request.user)
+        if not cart_items.exists():
+            return redirect('cart')
+        
+        total_amount = 0
+        for i in cart_items:
+            price = i.variant.discount_price if i.variant.discount_price > 0 else i.variant.price
+            total_amount += price * i.quantity            
+
+        if total_amount < 15000:
+            total_amount += 29 
+
+        selected_address_id = request.session.get('address_id')
+
+        if not selected_address_id:
+            return redirect('cart')
+        selected_address = Address.objects.get(id=selected_address_id)
+
+        
+
+
     return render(request,'payment.html')
 
 def orders(request):
