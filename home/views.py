@@ -16,6 +16,8 @@ User = get_user_model()
 
 # Create your views here.
 
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
+
 def home(request):                                                                                                            # here the first attribute is attribute field in ProductVariant which is related to AttributeValue by using ManyToMany relation and the second attribute is the attribute field in the AttributeValue table which is related to Attribute table by using ForeignKey relation.
     trending_products = ProductVariant.objects.filter(is_active=True).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
     latest_mobiles = trending_products.filter(product__category=1).order_by("-added_date")
@@ -607,10 +609,10 @@ def buy_now(request,variant_id):
 def payment(request):
 
     if request.method == 'POST':
-        razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
+        
         payment_method = request.POST.get('payment_method')
 
-        cart_items = Cart.objects.get(user=request.user)
+        cart_items = Cart.objects.filter(user=request.user).select_related('variant','variant__product')
         if not cart_items.exists():
             return redirect('cart')
         
@@ -619,16 +621,42 @@ def payment(request):
             price = i.variant.discount_price if i.variant.discount_price > 0 else i.variant.price
             total_amount += price * i.quantity            
 
-        if total_amount < 15000:
-            total_amount += 29 
+        delivery_charge = 29 if total_amount < 15000 else 0
+        total_amount = total_amount + delivery_charge 
 
         selected_address_id = request.session.get('address_id')
 
         if not selected_address_id:
-            return redirect('cart')
-        selected_address = Address.objects.get(id=selected_address_id)
+            return redirect('checkout')
+        selected_address = get_object_or_404(Address,id=selected_address_id)
 
-        
+        if payment_method == "cod":
+            order = Order.objects.create(
+                user = request.user,
+                full_name = selected_address.full_name,
+                mobile_number = selected_address.mobile_number,
+                pincode = selected_address.pincode,
+                flat = selected_address.flat,
+                area = selected_address.area,
+                landmark = selected_address.landmark,
+                city = selected_address.city,
+                state = selected_address.state,
+                total_amount = total_amount,
+                status = 'Placed',
+                payment_method = payment_method
+            )
+
+        for i in cart_items:
+            variant = i.variant
+            item_price = variant.discount_price if variant.discount_price > 0 else variant.price
+            OrderItem.objects.create(
+                order = order,
+                variant = variant,
+                product_name = variant.product.name,
+                price = item_price,
+                quantity = i.quantity,
+                total_amount = item_price * i.quantity
+            )
 
 
     return render(request,'payment.html')

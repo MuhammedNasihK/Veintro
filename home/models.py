@@ -53,10 +53,19 @@ class Cart(models.Model):
 class Order(models.Model):
     STATUS_CHOICE = (
         ('Pending','Pending'),
+        ('Placed','Placed'),
         ('Shipped','Shipped'),
         ('Delivered','Delivered'),
         ('Cancelled','Cancelled')
     )
+
+    PAYMENT_METHOD_CHOICE = (
+        ('UPI','UPI'),
+        ('Netbanking','Netbanking'),
+        ('Card','Card'),
+        ('Cash on Delivery','Cash on Delivery')
+    )
+
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
@@ -73,6 +82,7 @@ class Order(models.Model):
 
     total_amount = models.DecimalField(max_digits=12,decimal_places=2)
     status = models.CharField(choices=STATUS_CHOICE,default='Pending')
+    payment_method = models.CharField(choices=PAYMENT_METHOD_CHOICE,null=True,blank=True)
     created_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -81,7 +91,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order,on_delete=models.CASCADE)
-    variant = models.ForeignKey(ProductVariant,on_delete=models.CASCADE)
+    variant = models.ForeignKey(ProductVariant,on_delete=models.SET_NULL,null=True)
 
     product_name = models.CharField(max_length=250)
     price = models.DecimalField(max_digits=12,decimal_places=2)
@@ -96,12 +106,23 @@ class Payment(models.Model):
     PAYMENT_STATUS = (
         ('Pending',"Pending"),
         ('Success',"Success"),
-        ('Failed',"Failed")
+        ('Failed',"Failed"),
+        ('Refunded','Refunded')
     )
 
+    PAYMENT_METHOD_CHOICE = (
+        ('UPI','UPI'),
+        ('Netbanking','Netbanking'),
+        ('Card','Card'),
+        ('Cash on Delivery','Cash on Delivery')
+    )
+
+
     order = models.OneToOneField(Order,on_delete=models.CASCADE)
-    razorpay_payment_link_id = models.CharField(max_length=250)
-    razorpay_payment_id = models.CharField(max_length=200)
+    payment_method = models.CharField(choices=PAYMENT_METHOD_CHOICE,null=True,blank=True)
+    razorpay_order_id = models.CharField(max_length=300,null=True,blank=True)
+    razorpay_payment_id = models.CharField(max_length=300,null=True,blank=True)
+    razorpay_signature = models.CharField(max_length=300,null=True,blank=True)
     payment_status = models.CharField(max_length=100,choices=PAYMENT_STATUS)
     amount = models.DecimalField(max_digits=10,decimal_places=2)
     payment_at = models.DateTimeField(auto_now_add=True)
