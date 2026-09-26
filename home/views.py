@@ -628,23 +628,23 @@ def payment(request):
 
         if not selected_address_id:
             return redirect('checkout')
-        selected_address = get_object_or_404(Address,id=selected_address_id)
+        selected_address = get_object_or_404(Address,id=selected_address_id,user = request.user)
 
-        if payment_method == "cod":
-            order = Order.objects.create(
-                user = request.user,
-                full_name = selected_address.full_name,
-                mobile_number = selected_address.mobile_number,
-                pincode = selected_address.pincode,
-                flat = selected_address.flat,
-                area = selected_address.area,
-                landmark = selected_address.landmark,
-                city = selected_address.city,
-                state = selected_address.state,
-                total_amount = total_amount,
-                status = 'Placed',
-                payment_method = payment_method
-            )
+        
+        order = Order.objects.create(
+            user = request.user,
+            full_name = selected_address.full_name,
+            mobile_number = selected_address.mobile_number,
+            pincode = selected_address.pincode,
+            flat = selected_address.flat,
+            area = selected_address.area,
+            landmark = selected_address.landmark,
+            city = selected_address.city,
+            state = selected_address.state,
+            total_amount = total_amount,
+            status = 'Pending',
+            payment_method = payment_method
+        )
 
         for i in cart_items:
             variant = i.variant
@@ -657,6 +657,22 @@ def payment(request):
                 quantity = i.quantity,
                 total_amount = item_price * i.quantity
             )
+
+        if payment_method == "cod":
+            Payment.objects.create(
+                order = order,
+                payment_method = 'Cash on Delivery',
+                payment_status = 'Pending',
+                amount = total_amount
+            )
+
+            order.status = 'Placed'
+            order.save()
+
+            cart_items.delete()
+            del request.session['address_id']
+
+            return redirect()
 
 
     return render(request,'payment.html')

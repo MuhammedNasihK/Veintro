@@ -473,7 +473,8 @@
                         
                         <form id="update-form" method="POST" action="{% url 'cart' %}" >
                             {% csrf_token %}
-                            <input type="hidden" name="action" value="update">
+                            <input type="hidden" name="action" value="update
+                            ">
                         </form>
 
                         {% if product_details %}
