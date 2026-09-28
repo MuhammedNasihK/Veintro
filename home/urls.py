@@ -20,6 +20,8 @@ urlpatterns = [
     path('orders/',views.orders,name='orders'),
     path('buy_now/<int:variant_id>',views.buy_now,name='buy_now'),
     path('payment/',views.payment,name='payment'),
-    path('about/',views.about,name='about'),
-    path()
+    path('payment_callback',views.payment_callback,name='payment_callback'),
+    path('payment_success/<int:order_id>',views.payment_success,name='payment_success'),
+    path('payment_failed',views.payment_failed,name='payment_failed'),
+    path('about/',views.about,name='about')
 ]

@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from admin_panel.models import *
 from django.db.models import Q,When,Case,F,DecimalField
@@ -540,6 +541,7 @@ def cart(request):
     return render(request,'cart.html',context)
 
 
+@login_required
 @never_cache
 def add_to_cart(request,variant_id):
 
@@ -562,6 +564,7 @@ def add_to_cart(request,variant_id):
     return redirect(request.META.get('HTTP_REFERER','home'))
 
 
+@login_required
 @login_required
 def buy_now(request,variant_id):
     
@@ -605,7 +608,7 @@ def buy_now(request,variant_id):
     return render(request,'buy_now.html',context)
 
 
-
+@login_required
 def payment(request):
 
     if request.method == 'POST':
@@ -672,10 +675,114 @@ def payment(request):
             cart_items.delete()
             del request.session['address_id']
 
-            return redirect()
+            return redirect('payment_success',order_id = order.id)
+
+        razorpay_amount = int(total_amount * 100)
+
+        razorpay_order = razorpay_client.order.create({
+            'amount' : razorpay_amount,
+            'currency' : 'INR',
+            'receipt' : f"order_{order.id}",
+            'payment_capture' : 1
+        })
+
+        Payment.objects.create(
+            order = order,
+            payment_method = payment_method,
+            amount = total_amount,
+            payment_status = 'Pending',
+            razorpay_order_id = razorpay_order['id']
+        )
+
+        context = {
+            'razorpay_key_id'  : settings.RAZORPAY_KEY_ID,
+            'razorpay_order_id': razorpay_order['id'],
+            'amount'           : razorpay_amount,
+            'amount_display'   : total_amount,
+            'name'             : request.user.get_full_name() or request.user.username,
+            'email'            : request.user.email,
+            'order_id'         : order.id,
+            'callback_url'     : request.build_absolute_uri('/payment/callback/'),
+            'cancel_url'       : request.build_absolute_uri('/payment/failed/'),
+        }
+
+
+        return render(request, 'razorpay_redirect.html', context)
 
 
     return render(request,'payment.html')
+
+
+@login_required
+@csrf_exempt
+def payment_callback(request):
+
+    if request.method == 'POST':
+        razorpay_payment_id = request.POST.get('razorpay_payment_id',"")
+        razorpay_order_id = request.POST.get('razorpay_order_id',"")
+        razorpay_signature = request.POST.get('razorpay_signature','')
+
+        try:
+            razorpay_client.utility.verify_payment_signature({
+                'razorpay_payment_id' : razorpay_payment_id,
+                'razorpay_order_id' : razorpay_order_id,
+                'razorpay_signature' : razorpay_signature
+            })
+
+
+            payment_obj = Payment.objects.get(id=razorpay_payment_id)
+            payment_obj.razorpay_payment_id= razorpay_payment_id
+            payment_obj.razorpay_signature = razorpay_signature
+            payment_obj.payment_status = "Success"
+            payment_obj.save()
+
+            order = payment_obj.order
+            order.status = 'Placed'
+            order.save()
+
+            Cart.objects.get(user=order.user).delete()
+            if 'address_id' in request.session:
+                del request.session['address_id']
+
+                return redirect('order_success',order_id=order.id)
+
+        except razorpay.errors.SignatureVerificationError:
+
+            try:
+                payment_obj = Payment.objects.get(id=razorpay_payment_id)
+                payment_obj.payment_status = 'Failed'
+                payment_obj.save()
+
+                order = payment_obj.order
+                order.status = 'Cancelled'
+                order.save()
+
+            except Payment.DoesNotExist:
+                pass
+
+            return redirect('payment_failed')
+
+        
+    return redirect('cart')
+
+
+
+@login_required
+def payment_success(request,order_id):
+
+    order = get_object_or_404(Order,id = order_id,user = request.user)
+    items = order.items.all()
+
+    context = {
+        'order' : order,
+        'items' : items
+    }
+    return render(request,'payment_success.html',context)
+
+
+def payment_failed(request):
+    return render(request,'payment_failed.html')
+
 
 def orders(request):
     return render(request,'orders.html')
