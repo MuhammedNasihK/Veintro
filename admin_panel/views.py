@@ -5,6 +5,7 @@ from django.contrib import messages
 from .decorators import admin_login_required
 from django.views.decorators.cache import never_cache
 from django.db.models import Q
+from home.models import *
 from .forms import *
 from .models import *
 import random
@@ -33,12 +34,21 @@ def admin_dashboard(request):
     }
     return render(request,'admin dashboard.html',context)
 
+
 @never_cache
 @admin_login_required
 def admin_orders(request):
     if 'admin_id' in request.session:
         admin_data = User.objects.get(id = request.session['admin_id'])
-    return render(request,'admin orders.html',{"admin_data":admin_data})
+
+    orders = Order.objects.all()
+
+    context = {
+        'admin_data' : admin_data,
+        'orders' : orders
+    }
+    
+    return render(request,'admin orders.html',context)
 
 
 @never_cache

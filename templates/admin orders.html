@@ -108,27 +108,29 @@
             <div class="admin-card">
                 <div class="admin-card-header">
                     <div class="section-title">Orders</div>
-                    <div class="section-subtitle">Order status, payment, and basic actions. [web:433]</div>
+                    <div class="section-subtitle">Order status, payment, and basic actions.</div>
                 </div>
                 <div class="admin-card-body">
                     <div class="table-responsive">
                         <table class="table table-sm align-middle mb-0">
                             <thead class="table-light" style="font-size:0.8rem;">
                             <tr>
-                                <th>Order ID</th><th>User</th><th>Date</th><th>Amount</th>
+                                <th>Order ID</th><th>User</th><th>Date</th><th>Time</th><th>Amount</th>
                                 <th>Payment</th><th>Status</th><th>Actions</th>
                             </tr>
                             </thead>
                             <tbody style="font-size:0.82rem;">
+                            {% for i in orders%}    
                             <tr>
-                                <td>#ORD-1023</td><td>John Doe</td><td>2025-12-15</td><td>₹68,999</td>
-                                <td><span class="badge badge-soft-success">Paid · UPI</span></td>
-                                <td><span class="badge badge-soft-info">Processing</span></td>
+                                <td>#ORD-{{i.id}}</td><td>{{i.full_name}}</td><td>{{i.created_time | date:"d-M-Y"}}</td><td>{{i.created_time | time:"h:i A"}}</td><td>{{i.total_amount}}</td>
+                                <td><span class="badge badge-soft-success">Paid · {{i.payment_method|upper}}</span></td>
+                                <td><span class="badge badge-soft-info">{{i.status}}</span></td>
                                 <td>
                                     <button class="btn btn-outline-warning btn-xs">Update</button>
                                     <button class="btn btn-outline-success btn-xs">Mark shipped</button>
                                 </td>
                             </tr>
+                            {% endfor %}
                             <tr>
                                 <td>#ORD-1018</td><td>Jane Smith</td><td>2025-12-14</td><td>₹59,999</td>
                                 <td><span class="badge badge-soft-success">Paid · Card</span></td>

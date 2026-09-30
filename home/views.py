@@ -699,7 +699,7 @@ def payment(request):
             'razorpay_order_id': razorpay_order['id'],
             'amount'           : razorpay_amount,
             'amount_display'   : total_amount,
-            'name'             : request.user.get_full_name() or request.user.username,
+            'name'             : request.user.username,
             'email'            : request.user.email,
             'order_id'         : order.id,
             'callback_url'     : request.build_absolute_uri('/payment/callback/'),
@@ -771,7 +771,7 @@ def payment_callback(request):
 def payment_success(request,order_id):
 
     order = get_object_or_404(Order,id = order_id,user = request.user)
-    items = order.items.all()
+    items = order.orderitem_set.all()
 
     context = {
         'order' : order,
