@@ -701,6 +701,7 @@ def payment(request):
             'amount_display'   : total_amount,
             'name'             : request.user.username,
             'email'            : request.user.email,
+            'phone'            : order.mobile_number,
             'order_id'         : order.id,
             'callback_url'     : request.build_absolute_uri('/payment/callback/'),
             'cancel_url'       : request.build_absolute_uri('/payment/failed/'),
@@ -744,7 +745,7 @@ def payment_callback(request):
             if 'address_id' in request.session:
                 del request.session['address_id']
 
-                return redirect('order_success',order_id=order.id)
+                return redirect('payment_success',order_id=order.id)
 
         except razorpay.errors.SignatureVerificationError:
 
