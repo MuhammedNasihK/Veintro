@@ -704,7 +704,7 @@ def payment(request):
             'phone'            : order.mobile_number,
             'order_id'         : order.id,
             'callback_url'     : request.build_absolute_uri('/payment/callback/'),
-            'cancel_url'       : request.build_absolute_uri('/payment/failed/'),
+            'cancel_url'       : request.build_absolute_uri('/payment/callback/'),
         }
 
 
@@ -714,7 +714,7 @@ def payment(request):
     return render(request,'payment.html')
 
 
-@login_required
+
 @csrf_exempt
 def payment_callback(request):
 
@@ -731,7 +731,7 @@ def payment_callback(request):
             })
 
 
-            payment_obj = Payment.objects.get(id=razorpay_payment_id)
+            payment_obj = Payment.objects.get(razorpay_order_id=razorpay_order_id)
             payment_obj.razorpay_payment_id= razorpay_payment_id
             payment_obj.razorpay_signature = razorpay_signature
             payment_obj.payment_status = "Success"
@@ -741,16 +741,16 @@ def payment_callback(request):
             order.status = 'Placed'
             order.save()
 
-            Cart.objects.get(user=order.user).delete()
+            Cart.objects.filter(user=order.user).delete()
             if 'address_id' in request.session:
                 del request.session['address_id']
 
-                return redirect('payment_success',order_id=order.id)
+            return redirect('payment_success',order_id=order.id)
 
         except razorpay.errors.SignatureVerificationError:
-
+            
             try:
-                payment_obj = Payment.objects.get(id=razorpay_payment_id)
+                payment_obj = Payment.objects.get(razorpay_order_id=razorpay_order_id)
                 payment_obj.payment_status = 'Failed'
                 payment_obj.save()
 
@@ -758,10 +758,14 @@ def payment_callback(request):
                 order.status = 'Cancelled'
                 order.save()
 
+                
+
             except Payment.DoesNotExist:
                 pass
 
             return redirect('payment_failed')
+
+            
 
         
     return redirect('cart')
@@ -782,6 +786,7 @@ def payment_success(request,order_id):
 
 
 def payment_failed(request):
+    
     return render(request,'payment_failed.html')
 
 

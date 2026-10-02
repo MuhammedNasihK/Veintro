@@ -1,0 +1,388 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed | Veintro</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-dark: #0b1020;
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --muted: #6b7280;
+            --card-bg: #ffffff;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f3f4f6;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--primary-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            min-height: 72px;
+            background: linear-gradient(
+                90deg,
+                #16a34a 0%,
+                #0b1020 40%,
+                #020617 100%
+            );
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-brand img {
+            height: 48px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .navbar .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .navbar .nav-link:hover {
+            color: var(--accent);
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 15px;
+        }
+
+        .failed-card {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 45px 35px;
+            text-align: center;
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+        }
+
+        .failed-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .failed-title {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        .failed-message {
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.7;
+            max-width: 480px;
+            margin: 0 auto 25px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 18px;
+            background: #fee2e2;
+            color: #b91c1c;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 10px 0 25px;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--muted);
+        }
+
+        .info-value {
+            font-weight: 600;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .btn-primary-custom {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--accent);
+            color: #052e16;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-custom:hover {
+            background: #16a34a;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary-custom {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--primary-dark);
+            color: #ffffff;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #1e293b;
+            color: #ffffff;
+        }
+
+        .help-text {
+            margin-top: 25px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .help-text a {
+            color: #16a34a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            color: #9ca3af;
+            padding: 22px 15px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .footer span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        @media (max-width: 576px) {
+            .failed-card {
+                padding: 35px 20px;
+            }
+
+            .failed-title {
+                font-size: 25px;
+            }
+
+            .failed-icon {
+                width: 85px;
+                height: 85px;
+                font-size: 40px;
+            }
+
+            .action-buttons a {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'img/veintro_logo_3d.png' %}"
+                     alt="Veintro Logo">
+            </a>
+
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarContent"
+                    aria-controls="navbarContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="bi bi-house"></i> Home
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products' %}">
+                            <i class="bi bi-grid"></i> Products
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cart' %}">
+                            <i class="bi bi-cart3"></i> Cart
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+
+    <!-- Payment Failed Content -->
+    <main class="main-content">
+        <div class="failed-card">
+
+            <div class="failed-icon">
+                <i class="bi bi-x-lg"></i>
+            </div>
+
+            <h1 class="failed-title">Payment Failed!</h1>
+
+            <p class="failed-message">
+                Unfortunately, we couldn't complete your payment.
+                This may have happened because the payment was declined,
+                cancelled, or interrupted. Please try again.
+            </p>
+
+            <div class="status-badge">
+                <i class="bi bi-exclamation-circle me-1"></i>
+                Payment Unsuccessful
+            </div>
+
+            {% if order %}
+                <div class="info-box">
+
+                    <div class="info-row">
+                        <span class="info-label">Order ID</span>
+                        <span class="info-value">
+                            #{{ order.order_id }}
+                        </span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Order Date</span>
+                        <span class="info-value">
+                            {{ order.created_at|date:"d M Y" }}
+                        </span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Order Amount</span>
+                        <span class="info-value">
+                            ₹{{ order.total_amount|floatformat:2 }}
+                        </span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Order Status</span>
+                        <span class="info-value">
+                            {{ order.status }}
+                        </span>
+                    </div>
+
+                </div>
+            {% endif %}
+
+            <div class="action-buttons d-flex flex-column flex-sm-row justify-content-center gap-3">
+
+                <a href="{% url 'payment' %}" class="btn-primary-custom">
+                    <i class="bi bi-arrow-repeat me-1"></i>
+                    Try Again
+                </a>
+
+                <a href="{% url 'orders' %}" class="btn-secondary-custom">
+                    <i class="bi bi-box-seam me-1"></i>
+                    My Orders
+                </a>
+
+            </div>
+
+            <p class="help-text">
+                If money was deducted from your account, please check your
+                payment status before trying again.
+            </p>
+
+        </div>
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="mb-0">
+            &copy; {% now "Y" %} <span>Veintro</span>.
+            All rights reserved.
+        </p>
+    </footer>
+
+
+    <!-- Bootstrap bundle for the responsive navbar only -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
