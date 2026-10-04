@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,15 +26,44 @@
 
         .navbar {
             background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+            height: 72px;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
         }
+
+        .container-fluid-custom {
+            width: 100%;
+            max-width: 1320px;
+            padding-inline: 20px;
+            margin-inline: auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
         .navbar-brand {
-            letter-spacing: 1px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin-left: -45px;
         }
+
+        .navbar-brand img {
+            width: 240px;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
         .navbar .nav-link {
             color: #e5e7eb !important;
             font-weight: 500;
             font-size: 0.95rem;
         }
+
         .navbar .nav-link.special-hover {
             position: relative;
             border-radius: 999px;
@@ -52,12 +82,8 @@
             transition: width 0.25s ease-out;
             border-radius: 999px;
         }
-        .navbar .nav-link.special-hover:hover::after {
-            width: 60%;
-        }
-        .navbar .nav-link.special-hover:hover {
-            background: rgba(31, 41, 55, 0.7);
-        }
+        .navbar .nav-link.special-hover:hover::after { width: 60%; }
+        .navbar .nav-link.special-hover:hover { background: rgba(31, 41, 55, 0.7); }
 
         .icon-btn {
             border-radius: 999px;
@@ -66,15 +92,24 @@
             background: transparent;
             transition: all 0.2s ease;
         }
-        .icon-btn i {
-            font-size: 1.1rem;
-        }
+        .icon-btn i { font-size: 1.1rem; }
         .icon-btn:hover {
             background: rgba(34, 197, 94, 0.1);
             border-color: #22c55e;
             color: #bbf7d0;
             transform: translateY(-1px) scale(1.03);
             box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        .dropdown-toggle::after {
+            display: inline-block !important;
+            margin-left: 0.255em;
+            vertical-align: 0.255em;
+            content: "";
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
         }
 
         .payment-header {
@@ -133,7 +168,6 @@
             padding: 4px 10px;
         }
 
-        /* Payment method option cards */
         .method-option {
             display: flex;
             align-items: center;
@@ -199,7 +233,6 @@
             font-size: 0.7rem;
         }
 
-        /* COD detail box — shown only when COD is selected */
         .cod-detail {
             display: none;
             margin-top: 4px;
@@ -247,10 +280,12 @@
             text-decoration: none;
             font-size: 0.85rem;
         }
-        footer a:hover {
-            color: #f9fafb;
-        }
+        footer a:hover { color: #f9fafb; }
 
+        @media (max-width: 991.98px) {
+            .navbar-brand { margin-left: -20px; }
+            .navbar-brand img { width: 180px; }
+        }
         @media (max-width: 575.98px) {
             .payment-title { font-size: 1.2rem; }
             .payment-card { border-radius: 12px; }
@@ -265,40 +300,17 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-light fs-4" href="{% url 'home' %}">Electro</a>
+    <div class="container-fluid-custom">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro">
+        </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="mainNav">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item dropdown">
-                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
-                       href="#" id="menuDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-5"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
-                                <i class="bi bi-person-circle me-2"></i> Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
-                                <i class="bi bi-bag-check me-2"></i> Orders
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'logout' %}">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> Logout
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            
         </div>
     </div>
 </nav>
@@ -336,22 +348,9 @@
                 </span>
             </div>
 
-            <!-- Payment form -->
             <form method="POST" action="{% url 'payment' %}" id="payment-form">
                 {% csrf_token %}
                 <input type="hidden" name="payment_method" id="payment_method_input" value="">
-
-                <!-- UPI option -->
-                <button type="button" class="method-option" id="opt-upi" onclick="selectMethod('upi')">
-                    <div class="method-icon">
-                        <i class="bi bi-phone"></i>
-                    </div>
-                    <div>
-                        <p class="method-label">UPI</p>
-                        <p class="method-desc">Google Pay, PhonePe, Paytm, BHIM & more</p>
-                    </div>
-                    <div class="method-check" id="check-upi"></div>
-                </button>
 
                 <!-- Card option -->
                 <button type="button" class="method-option" id="opt-card" onclick="selectMethod('card')">
@@ -389,7 +388,7 @@
                     <div class="method-check" id="check-cod"></div>
                 </button>
 
-                <!-- COD detail box — only visible when COD is selected -->
+                <!-- COD detail box -->
                 <div class="cod-detail" id="cod-detail">
                     <div class="border rounded-3 p-3 bg-light" style="font-size:0.82rem;">
                         <div class="mb-2 fw-semibold">
@@ -436,7 +435,7 @@
     <div class="container pb-3">
         <div class="row g-4">
             <div class="col-md-4">
-                <h5 class="text-light mb-2">Electro</h5>
+                <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro" style="width:180px; margin-left:-20px; margin-bottom:10px;">
                 <p style="font-size:0.85rem;">
                     Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
                 </p>
@@ -470,7 +469,7 @@
         </div>
         <hr class="border-secondary mt-4 mb-2">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size:0.8rem;">
-            <span>© 2026 Electro. All rights reserved.</span>
+            <span>© 2026 Veintro. All rights reserved.</span>
             <span>Made with Bootstrap & HTML/CSS.</span>
         </div>
     </div>
@@ -479,16 +478,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    const methods     = ['upi', 'card', 'netbanking', 'cod'];
-    const payLabels   = {
-        upi        : 'Continue with UPI',
+    const methods   = ['card', 'netbanking', 'cod'];
+    const payLabels = {
         card       : 'Continue with Card',
         netbanking : 'Continue with Netbanking',
         cod        : 'Place COD Order',
     };
 
     function selectMethod(selected) {
-        // reset all options
         methods.forEach(function(m) {
             var opt   = document.getElementById('opt-' + m);
             var check = document.getElementById('check-' + m);
@@ -496,14 +493,10 @@
             check.innerHTML = '';
         });
 
-        // mark selected
         document.getElementById('opt-' + selected).classList.add('selected');
         document.getElementById('check-' + selected).innerHTML = '<i class="bi bi-check"></i>';
-
-        // set hidden input value
         document.getElementById('payment_method_input').value = selected;
 
-        // show / hide COD detail box
         var codBox = document.getElementById('cod-detail');
         if (selected === 'cod') {
             codBox.classList.add('show');
@@ -511,10 +504,9 @@
             codBox.classList.remove('show');
         }
 
-        // enable pay button and update its label
         var btn  = document.getElementById('pay-btn');
         var text = document.getElementById('pay-btn-text');
-        btn.disabled  = false;
+        btn.disabled     = false;
         text.textContent = payLabels[selected];
     }
 </script>

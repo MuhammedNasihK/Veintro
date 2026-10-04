@@ -94,6 +94,7 @@ class OrderItem(models.Model):
     variant = models.ForeignKey(ProductVariant,on_delete=models.SET_NULL,null=True)
 
     product_name = models.CharField(max_length=250)
+    product_image = models.ImageField(upload_to="ordered_product_image/",null=True,blank=True)
     price = models.DecimalField(max_digits=12,decimal_places=2)
     quantity = models.PositiveIntegerField()
     total_amount = models.DecimalField(max_digits=15,decimal_places=2)

@@ -651,11 +651,14 @@ def payment(request):
 
         for i in cart_items:
             variant = i.variant
+
+            main_image = ProductImage.objects.filter(variant=variant,is_main=True).first()
             item_price = variant.discount_price if variant.discount_price > 0 else variant.price
             OrderItem.objects.create(
                 order = order,
                 variant = variant,
                 product_name = variant.product.name,
+                product_image = main_image.image if main_image else None,
                 price = item_price,
                 quantity = i.quantity,
                 total_amount = item_price * i.quantity
@@ -790,8 +793,39 @@ def payment_failed(request):
     return render(request,'payment_failed.html')
 
 
+@login_required
 def orders(request):
-    return render(request,'orders.html')
+
+    orders = Order.objects.filter(user = request.user).prefetch_related('orderitem_set')
+    order_list = []
+    for order in orders:
+        items_list = []
+        for i in order.orderitem_set.all():
+            items_list.append({
+                'product_name' : i.product_name,
+                'product_image' : i.product_image.url if i.product_image else None,
+                'price' : i.price,
+                'quantity' : i.quantity,
+                'total_amount' : i.total_amount
+            })
+
+        order_list.append({
+            'order_id' : order.pk,
+            'mobile_number' : order.mobile_number,
+            'total_amount' : order.total_amount,
+            'status' : order.status,
+            'payment_method' : order.payment_method,
+            'created_time' : order.created_time.strftime('%I:%M %p'),
+            'created_date' : order.created_time.strftime('%d %b %Y'),
+            'items' : items_list,
+            'items_count' : len(items_list)
+        })
+
+    context = {
+        'order_list' : order_list
+    }
+
+    return render(request,'orders.html',context)
 
 
 @login_required

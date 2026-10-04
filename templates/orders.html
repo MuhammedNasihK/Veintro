@@ -303,21 +303,21 @@
     <!-- ORDERS LIST -->
     <main>
         <div class="orders-container">
-
+            {% for i in order_list%}
             <!-- ORDER 1 -->
             <div class="order-card">
                 <div class="d-flex justify-content-between align-items-center order-header-line mb-1">
                     <div>
                         
-                        <span class="text-muted ms-2">Placed on 15 Dec 2025 · 7:15 PM</span>
+                        <span class="text-muted ms-2">Placed on {{i.created_date}} · {{i.created_time}}</span>
                     </div>
-                    <span class="badge badge-soft-processing">Processing</span>
+                    <span class="badge badge-soft-processing">{{i.status}}</span>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center order-main-row gap-3 mt-2">
                     <div class="d-flex align-items-center gap-3">
                         <!-- Product image -->
-                        <img src="img/p1.png" alt="iPhone 14" class="order-product-img">
+                        <img src="{{i.items.product_image.url}}" alt="{{i.items.product_name}}" class="order-product-img">
                         <div>
                             <div class="fw-semibold" style="font-size:0.9rem;">iPhone 14 (128GB, Midnight)</div>
                             <div class="order-meta">
@@ -358,6 +358,7 @@
                     </p>
                 </div>
             </div>
+            {% endfor %}
 
             <!-- ORDER 2 -->
             <div class="order-card">
