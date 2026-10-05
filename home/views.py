@@ -822,7 +822,8 @@ def orders(request):
         })
 
     context = {
-        'order_list' : order_list
+        'order_list' : order_list,
+        'items' : items_list
     }
 
     return render(request,'orders.html',context)

@@ -319,21 +319,25 @@
                         <!-- Product image -->
                         <img src="{{i.items.product_image.url}}" alt="{{i.items.product_name}}" class="order-product-img">
                         <div>
-                            <div class="fw-semibold" style="font-size:0.9rem;">iPhone 14 (128GB, Midnight)</div>
+                            <div class="fw-semibold" style="font-size:0.9rem;">{{i.items.product_name}}</div>
                             <div class="order-meta">
-                                1 item · Expected delivery: 20–22 Dec 2025
+                                {{i.items.quantity}} item · Expected delivery: 20–22 Dec 2025
                             </div>
                         </div>
                     </div>
                     <div class="text-end">
-                        <div class="order-total">₹68,999</div>
-                        <div class="order-meta">Paid via UPI</div>
+                        <div class="order-total">₹{{i.total_amount}}</div>
+                        {% if i.status == "Placed" %}
+                            <div class="order-meta">Paid via {{i.payment_method}}</div>
+                        {%else%}
+                            <div class="order-meta">Not Paid</div>
+                        {%endif%}
                     </div>
                 </div>
 
                 <div class="mt-2 d-flex flex-wrap gap-2 justify-content-between align-items-center">
                     <div class="order-meta">
-                        Shipping to: John Doe, Mumbai
+                        Shipping to: {{i.full_name}}, Mumbai
                     </div>
                     <div class="d-flex flex-wrap gap-2">
                         <button class="btn btn-outline-secondary btn-xs">
@@ -360,108 +364,7 @@
             </div>
             {% endfor %}
 
-            <!-- ORDER 2 -->
-            <div class="order-card">
-                <div class="d-flex justify-content-between align-items-center order-header-line mb-1">
-                    <div>
-                        
-                        <span class="text-muted ms-2">Placed on 14 Dec 2025 · 3:42 PM</span>
-                    </div>
-                    <span class="badge badge-soft-delivered">Delivered</span>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center order-main-row gap-3 mt-2">
-                    <div class="d-flex align-items-center gap-3">
-                        <img src="img/new4.png" alt="HP Victus" class="order-product-img">
-                        <div>
-                            <div class="fw-semibold" style="font-size:0.9rem;">HP Victus Gaming Laptop</div>
-                            <div class="order-meta">
-                                1 item · Delivered on 17 Dec 2025
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-end">
-                        <div class="order-total">₹59,999</div>
-                        <div class="order-meta">Paid via Credit Card</div>
-                    </div>
-                </div>
-
-                <div class="mt-2 d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                    <div class="order-meta">
-                        Shipping to: Jane Smith, Bengaluru
-                    </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-outline-secondary btn-xs">
-                            <i class="bi bi-receipt me-1"></i>View details
-                        </button>
-                        <button class="btn btn-outline-secondary btn-xs">
-                            <i class="bi bi-download me-1"></i>Download invoice
-                        </button>
-                        <button class="btn btn-outline-secondary btn-xs">
-                            <i class="bi bi-arrow-repeat me-1"></i>Return / replace
-                        </button>
-                    </div>
-                </div>
-
-                <div class="order-detail-box mt-3">
-                    <h6>Delivered</h6>
-                    <p class="mb-1">
-                        <i class="bi bi-check-circle text-success me-1"></i>Package delivered to front door.
-                    </p>
-                    <p class="mb-0 text-muted">
-                        If you have any issue with the product, you can request a return within 7 days.
-                    </p>
-                </div>
-            </div>
-
-            <!-- ORDER 3 -->
-            <div class="order-card">
-                <div class="d-flex justify-content-between align-items-center order-header-line mb-1">
-                    <div>
-                        
-                        <span class="text-muted ms-2">Placed on 12 Dec 2025 · 11:05 AM</span>
-                    </div>
-                    <span class="badge badge-soft-cancelled">Cancelled</span>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center order-main-row gap-3 mt-2">
-                    <div class="d-flex align-items-center gap-3">
-                        <img src="img/watch.png" alt="Boat Smartwatch" class="order-product-img">
-                        <div>
-                            <div class="fw-semibold" style="font-size:0.9rem;">Boat Smartwatch</div>
-                            <div class="order-meta">
-                                1 item · Order cancelled
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-end">
-                        <div class="order-total">₹1,999</div>
-                        <div class="order-meta">Payment failed</div>
-                    </div>
-                </div>
-
-                <div class="mt-2 d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                    <div class="order-meta">
-                        Shipping to: Test User, Chennai
-                    </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-outline-secondary btn-xs">
-                            <i class="bi bi-arrow-clockwise me-1"></i>Reorder
-                        </button>
-                    </div>
-                </div>
-
-                <div class="order-detail-box mt-3">
-                    <h6>Why cancelled?</h6>
-                    <p class="mb-1 text-muted">
-                        Payment could not be completed with your bank. No amount was charged.
-                    </p>
-                    <p class="mb-0 text-muted">
-                        You can try placing the order again with another payment method.
-                    </p>
-                </div>
-            </div>
-
+            
         </div>
     </main>
 </div>
