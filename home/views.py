@@ -796,35 +796,42 @@ def payment_failed(request):
 @login_required
 def orders(request):
 
+    
     orders = Order.objects.filter(user = request.user).prefetch_related('orderitem_set')
     order_list = []
-    for order in orders:
-        items_list = []
-        for i in order.orderitem_set.all():
-            items_list.append({
-                'product_name' : i.product_name,
-                'product_image' : i.product_image.url if i.product_image else None,
-                'price' : i.price,
-                'quantity' : i.quantity,
-                'total_amount' : i.total_amount
+    if orders:
+        for order in orders:
+            items_list = []
+            for i in order.orderitem_set.all():
+                items_list.append({
+                    'product_name' : i.product_name,
+                    'product_image' : i.product_image.url if i.product_image else None,
+                    'price' : i.price,
+                    'quantity' : i.quantity,
+                    'total_amount' : i.total_amount
+                })
+
+            order_list.append({
+                'order_id' : order.pk,
+                'mobile_number' : order.mobile_number,
+                'total_amount' : order.total_amount,
+                'status' : order.status,
+                'payment_method' : order.payment_method,
+                'created_time' : order.created_time.strftime('%I:%M %p'),
+                'created_date' : order.created_time.strftime('%d %b %Y'),
+                'items' : items_list,
+                'items_count' : len(items_list)
             })
 
-        order_list.append({
-            'order_id' : order.pk,
-            'mobile_number' : order.mobile_number,
-            'total_amount' : order.total_amount,
-            'status' : order.status,
-            'payment_method' : order.payment_method,
-            'created_time' : order.created_time.strftime('%I:%M %p'),
-            'created_date' : order.created_time.strftime('%d %b %Y'),
-            'items' : items_list,
-            'items_count' : len(items_list)
-        })
-
-    context = {
-        'order_list' : order_list,
-        'items' : items_list
-    }
+        context = {
+                'order_list' : order_list,
+                'items' : items_list
+            }
+    else:
+        context = {
+            'user' : request.user
+        }
+    
 
     return render(request,'orders.html',context)
 

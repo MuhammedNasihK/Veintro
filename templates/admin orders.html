@@ -130,24 +130,15 @@
                                     <button class="btn btn-outline-success btn-xs">Mark shipped</button>
                                 </td>
                             </tr>
+                            {%empty%}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="bi bi-box-seam fs-1 d-block mb-2 opacity-25"></i>
+                                        No Orders found!
+                                    </td>
+                                </tr>
                             {% endfor %}
-                            <tr>
-                                <td>#ORD-1018</td><td>Jane Smith</td><td>2025-12-14</td><td>₹59,999</td>
-                                <td><span class="badge badge-soft-success">Paid · Card</span></td>
-                                <td><span class="badge badge-soft-success">Delivered</span></td>
-                                <td>
-                                    <button class="btn btn-outline-warning btn-xs">Update</button>
-                                    
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#ORD-1010</td><td>Test User</td><td>2025-12-12</td><td>₹1,999</td>
-                                <td><span class="badge badge-soft-danger">Failed</span></td>
-                                <td><span class="badge badge-soft-danger">Cancelled</span></td>
-                                <td>
-                                    <button class="btn btn-outline-warning btn-xs">Update</button>
-                                </td>
-                            </tr>
+                           
                             </tbody>
                         </table>
                     </div>

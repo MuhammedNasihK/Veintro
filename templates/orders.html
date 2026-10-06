@@ -1,14 +1,13 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Electro - My Orders</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
     <style>
         :root {
             --primary-dark:#0b1020;
@@ -18,263 +17,565 @@
             --muted:#6b7280;
             --bg-soft:#f3f4f6;
         }
-        body{
+        * {
+            box-sizing:border-box;
+        }
+        body {
+            margin:0;
             font-family:'Poppins',sans-serif;
             background:var(--bg-soft);
             color:#111827;
         }
-
-        /* Navbar (copied style from your Electro pages) */
-        .navbar {
-            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
-        }
-        .navbar-brand {
-            letter-spacing: 1px;
-        }
-        .navbar .nav-link {
-            color: #e5e7eb !important;
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-        .navbar .nav-link.special-hover {
-            position: relative;
-            border-radius: 999px;
-            padding-inline: 14px;
-            overflow: hidden;
-        }
-        .navbar .nav-link.special-hover::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            bottom: 2px;
-            width: 0;
-            height: 2px;
-            background: #22c55e;
-            transform: translateX(-50%);
-            transition: width 0.25s ease-out;
-            border-radius: 999px;
-        }
-        .navbar .nav-link.special-hover:hover::after {
-            width: 60%;
-        }
-        .navbar .nav-link.special-hover:hover {
-            background: rgba(31, 41, 55, 0.7);
-        }
-        .icon-btn {
-            border-radius: 999px;
-            border-color: #1f2937;
-            color: #e5e7eb;
-            background: transparent;
-            transition: all 0.2s ease;
-        }
-        .icon-btn i {
-            font-size: 1.1rem;
-        }
-        .icon-btn:hover {
-            background: rgba(34, 197, 94, 0.1);
-            border-color: #22c55e;
-            color: #bbf7d0;
-            transform: translateY(-1px) scale(1.03);
-            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
-        }
-
-        /* Orders page layout */
-        .orders-page-wrapper{
+        .orders-page-wrapper {
             min-height:100vh;
             display:flex;
             flex-direction:column;
         }
-        main{
+        main {
             flex:1;
         }
-
-        .orders-header{
-            background:#ffffff;
+        .navbar {
+            background:linear-gradient(90deg,#16a34a 0%,#0b1020 40%,#020617 100%) !important;
+        }
+        .navbar-brand {
+            letter-spacing:1px;
+        }
+        .navbar .nav-link {
+            color:#e5e7eb !important;
+            font-weight:500;
+            font-size:.95rem;
+        }
+        .navbar .nav-link.special-hover {
+            position:relative;
+            border-radius:999px;
+            padding-inline:14px;
+            overflow:hidden;
+        }
+        .navbar .nav-link.special-hover::after {
+            content:"";
+            position:absolute;
+            left:50%;
+            bottom:2px;
+            width:0;
+            height:2px;
+            background:#22c55e;
+            transform:translateX(-50%);
+            transition:width .25s ease-out;
+            border-radius:999px;
+        }
+        .navbar .nav-link.special-hover:hover::after {
+            width:60%;
+        }
+        .navbar .nav-link.special-hover:hover {
+            background:rgba(31,41,55,.7);
+        }
+        .icon-btn {
+            border-radius:999px;
+            border-color:#1f2937;
+            color:#e5e7eb;
+            background:transparent;
+            transition:all .2s ease;
+        }
+        .icon-btn i {
+            font-size:1.1rem;
+        }
+        .icon-btn:hover {
+            background:rgba(34,197,94,.1);
+            border-color:#22c55e;
+            color:#bbf7d0;
+            transform:translateY(-1px) scale(1.03);
+            box-shadow:0 0 0 1px rgba(34,197,94,.2);
+        }
+        .orders-header {
+            background:#fff;
             border-bottom:1px solid var(--border-soft);
         }
-        .orders-header-inner{
-            max-width:1100px;
+        .orders-header-inner {
+            max-width:1120px;
             margin:0 auto;
-            padding:16px 16px 12px;
+            padding:24px 18px 20px;
         }
-        .orders-title{
-            font-size:1.4rem;
+        .orders-title {
+            margin:0;
+            font-size:1.55rem;
+            font-weight:750;
+            letter-spacing:-.02em;
+            color:#111827;
+        }
+        .orders-subtitle {
+            margin-top:5px;
+            font-size:.86rem;
+            color:var(--muted);
+        }
+        .orders-filters {
+            background:#fff;
+            border-bottom:1px solid var(--border-soft);
+        }
+        .orders-filters-inner {
+            max-width:1120px;
+            margin:0 auto;
+            padding:12px 18px;
+        }
+        .orders-filters .form-select,
+        .orders-filters .form-control {
+            font-size:.82rem;
+            border-color:#d1d5db;
+            box-shadow:none;
+        }
+        .orders-filters .form-select:focus,
+        .orders-filters .form-control:focus {
+            border-color:#22c55e;
+            box-shadow:0 0 0 .15rem rgba(34,197,94,.12);
+        }
+        .orders-container {
+            max-width:1120px;
+            margin:22px auto 32px;
+            padding:0 18px;
+        }
+        .order-card {
+            background:#fff;
+            border:1px solid var(--border-soft);
+            border-radius:16px;
+            overflow:hidden;
+            margin-bottom:16px;
+            box-shadow:0 3px 12px rgba(15,23,42,.045);
+        }
+        .order-card:last-child {
+            margin-bottom:0;
+        }
+        .order-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:16px;
+            padding:14px 18px;
+            background:#fafafa;
+            border-bottom:1px solid #eef0f3;
+        }
+        .order-header-left {
+            min-width:0;
+        }
+        .order-header-label {
+            font-size:.7rem;
+            font-weight:700;
+            color:#9ca3af;
+            text-transform:uppercase;
+            letter-spacing:.07em;
+            margin-bottom:3px;
+        }
+        .order-date {
+            font-size:.82rem;
+            color:#6b7280;
+        }
+        .order-status {
+            flex-shrink:0;
+        }
+        .badge {
+            padding:6px 12px;
+            border-radius:999px;
+            font-size:.73rem;
             font-weight:700;
         }
-        .orders-subtitle{
-            font-size:0.85rem;
-            color:var(--muted);
-        }
-
-        .orders-filters{
-            background:#ffffff;
-            border-bottom:1px solid var(--border-soft);
-        }
-        .orders-filters-inner{
-            max-width:1100px;
-            margin:0 auto;
-            padding:8px 16px;
-        }
-
-        .orders-container{
-            max-width:1100px;
-            margin:16px auto 24px;
-            padding:0 16px;
-        }
-        .order-card{
-            background:#ffffff;
-            border-radius:14px;
-            border:1px solid var(--border-soft);
-            padding:14px 16px;
-            margin-bottom:12px;
-        }
-        .order-header-line{
-            font-size:0.85rem;
-        }
-        .order-id{
-            font-weight:600;
-        }
-        .order-meta{
-            font-size:0.8rem;
-            color:var(--muted);
-        }
-        .order-total{
-            font-weight:600;
-            font-size:0.95rem;
-        }
-
-        .badge-soft-placed{
-            background:#e0f2fe;
-            color:#0369a1;
-        }
-        .badge-soft-processing{
+        .badge-soft-processing {
             background:#fef9c3;
             color:#a16207;
         }
-        .badge-soft-delivered{
+        .badge-soft-placed {
+            background:#e0f2fe;
+            color:#0369a1;
+        }
+        .badge-soft-shipped {
+            background:#ede9fe;
+            color:#6d28d9;
+        }
+        .badge-soft-delivered {
             background:#dcfce7;
             color:#166534;
         }
-        .badge-soft-cancelled{
+        .badge-soft-cancelled {
             background:#fee2e2;
             color:#b91c1c;
         }
-
-        .btn-xs{
-            padding:2px 10px;
-            font-size:0.78rem;
-            border-radius:999px;
+        .order-content {
+            padding:18px;
         }
-
-        .order-detail-box{
-            font-size:0.8rem;
+        .order-main-grid {
+            display:grid;
+            grid-template-columns:minmax(0,1fr) 210px;
+            gap:24px;
+            align-items:stretch;
+        }
+        .product-section {
+            min-width:0;
+        }
+        .section-label {
+            font-size:.69rem;
+            font-weight:700;
+            color:#9ca3af;
+            text-transform:uppercase;
+            letter-spacing:.07em;
+            margin-bottom:10px;
+        }
+        .product-row {
+            display:flex;
+            align-items:center;
+            gap:14px;
+            min-width:0;
+        }
+        .order-product-img {
+            width:76px;
+            height:76px;
+            flex:0 0 76px;
+            object-fit:cover;
+            border-radius:12px;
+            border:1px solid #e5e7eb;
             background:#f9fafb;
-            border-radius:10px;
-            border:1px dashed #e5e7eb;
-            padding:10px 12px;
-            margin-top:8px;
         }
-        .order-detail-box h6{
-            font-size:0.8rem;
-            font-weight:600;
+        .product-info {
+            min-width:0;
+        }
+        .product-name {
+            margin-bottom:5px;
+            font-size:.94rem;
+            font-weight:700;
+            line-height:1.4;
+            color:#111827;
+            overflow-wrap:anywhere;
+        }
+        .product-meta {
+            font-size:.8rem;
+            line-height:1.7;
+            color:#6b7280;
+        }
+        .product-price {
+            font-weight:700;
+            color:#111827;
+        }
+        .price-summary {
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            padding:14px 16px;
+            background:#f9fafb;
+            border:1px solid #edf0f2;
+            border-radius:12px;
+        }
+        .price-label {
+            font-size:.69rem;
+            font-weight:700;
+            color:#9ca3af;
+            text-transform:uppercase;
+            letter-spacing:.07em;
             margin-bottom:4px;
         }
-
-        /* Product image in order row */
-        .order-product-img {
-            width:60px;
-            height:60px;
-            object-fit:cover;
-            border-radius:10px;
-            border:1px solid #e5e7eb;
+        .order-total {
+            font-size:1.18rem;
+            font-weight:750;
+            color:#111827;
+            line-height:1.3;
         }
-
-        @media (max-width: 768px) {
-            .order-main-row{
+        .payment-status {
+            margin-top:5px;
+            font-size:.78rem;
+            color:#6b7280;
+        }
+        .order-divider {
+            height:1px;
+            background:#eef0f3;
+            margin:18px 0;
+        }
+        .order-bottom-grid {
+            display:grid;
+            grid-template-columns:minmax(0,1fr) auto;
+            gap:20px;
+            align-items:center;
+        }
+        .shipping-section {
+            min-width:0;
+        }
+        .shipping-title {
+            font-size:.69rem;
+            font-weight:700;
+            color:#9ca3af;
+            text-transform:uppercase;
+            letter-spacing:.07em;
+            margin-bottom:5px;
+        }
+        .shipping-info {
+            font-size:.82rem;
+            color:#6b7280;
+            line-height:1.5;
+        }
+        .shipping-info strong {
+            color:#374151;
+            font-weight:650;
+        }
+        .order-actions {
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:flex-end;
+            gap:7px;
+        }
+        .btn-xs {
+            padding:5px 11px;
+            font-size:.76rem;
+            font-weight:600;
+            border-radius:999px;
+            white-space:nowrap;
+        }
+        .btn-xs i {
+            font-size:.74rem;
+        }
+        .btn-outline-secondary {
+            border-color:#d1d5db;
+            color:#4b5563;
+        }
+        .btn-outline-secondary:hover {
+            background:#f9fafb;
+            border-color:#9ca3af;
+            color:#111827;
+        }
+        .update-box {
+            display:flex;
+            align-items:flex-start;
+            gap:11px;
+            margin-top:18px;
+            padding:12px 14px;
+            background:#f8fafc;
+            border:1px dashed #dfe4ea;
+            border-radius:11px;
+        }
+        .update-icon {
+            width:30px;
+            height:30px;
+            flex:0 0 30px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:50%;
+            background:#dcfce7;
+            color:#15803d;
+            font-size:.82rem;
+        }
+        .update-content {
+            min-width:0;
+        }
+        .update-title {
+            margin:0 0 3px;
+            font-size:.79rem;
+            font-weight:700;
+            color:#374151;
+        }
+        .update-message {
+            margin:0;
+            font-size:.79rem;
+            line-height:1.55;
+            color:#4b5563;
+        }
+        .update-note {
+            margin:3px 0 0;
+            font-size:.76rem;
+            line-height:1.5;
+            color:#9ca3af;
+        }
+        @media (max-width:900px) {
+            .order-main-grid {
+                grid-template-columns:minmax(0,1fr) 180px;
+                gap:16px;
+            }
+        }
+        @media (max-width:768px) {
+            .orders-header-inner {
+                padding:20px 14px 17px;
+            }
+            .orders-title {
+                font-size:1.35rem;
+            }
+            .orders-filters-inner {
+                padding:10px 14px;
+            }
+            .orders-container {
+                margin:16px auto 24px;
+                padding:0 12px;
+            }
+            .order-header {
+                padding:13px 14px;
+            }
+            .order-content {
+                padding:14px;
+            }
+            .order-main-grid {
+                grid-template-columns:1fr;
+                gap:14px;
+            }
+            .price-summary {
+                display:grid;
+                grid-template-columns:1fr auto;
+                align-items:center;
+                gap:4px 12px;
+                padding:12px 14px;
+            }
+            .price-label {
+                margin:0;
+            }
+            .order-total {
+                text-align:right;
+                grid-row:1 / span 2;
+                grid-column:2;
+            }
+            .payment-status {
+                margin:0;
+                grid-column:1;
+                grid-row:2;
+            }
+            .order-bottom-grid {
+                grid-template-columns:1fr;
+                gap:13px;
+            }
+            .order-actions {
+                justify-content:flex-start;
+            }
+        }
+        @media (max-width:576px) {
+            .navbar .container {
+                padding-left:12px;
+                padding-right:12px;
+            }
+            .navbar-brand {
+                font-size:1.45rem !important;
+            }
+            .navbar .nav-item.dropdown {
+                margin-left:0 !important;
+            }
+            .navbar .icon-btn {
+                margin-left:4px !important;
+            }
+            .orders-filters-inner {
+                align-items:stretch !important;
+            }
+            .orders-filters-inner > div {
+                width:100%;
+            }
+            .orders-filters .form-select {
+                width:100% !important;
+            }
+            .orders-filters-inner > div:last-child {
+                max-width:none !important;
+            }
+            .order-header {
+                align-items:flex-start;
                 flex-direction:column;
-                align-items:flex-start !important;
+                gap:8px;
+            }
+            .order-status {
+                align-self:flex-start;
+            }
+            .product-row {
+                align-items:flex-start;
+                gap:11px;
+            }
+            .order-product-img {
+                width:62px;
+                height:62px;
+                flex-basis:62px;
+            }
+            .product-name {
+                font-size:.86rem;
+            }
+            .product-meta {
+                font-size:.76rem;
+            }
+            .price-summary {
+                grid-template-columns:1fr;
+            }
+            .order-total {
+                grid-column:1;
+                grid-row:auto;
+                text-align:left;
+                margin-top:2px;
+            }
+            .payment-status {
+                grid-column:1;
+                grid-row:auto;
+            }
+            .order-actions {
+                flex-direction:column;
+                width:100%;
+            }
+            .order-actions .btn {
+                width:100%;
+            }
+            .update-box {
+                padding:11px 12px;
             }
         }
     </style>
 </head>
 <body>
-
 <div class="orders-page-wrapper">
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="mainNav">
-            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
-                </li>
-
-                <!-- Profile dropdown (icon) -->
-                <li class="nav-item dropdown ms-3">
-                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
-                       href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-5"></i>
-                    </a>
-
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
-                                <i class="bi bi-person-circle me-2"></i> Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
-                                <i class="bi bi-bag-check me-2"></i> Orders
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
-                                <i class="bi bi-info-circle me-2"></i> About
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-
-            <!-- Wishlist -->
-            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
-                <i class="bi bi-heart"></i>
-            </a>
-            <!-- Cart -->
-            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
-                <i class="bi bi-cart"></i>
-            </a>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                    </li>
+                    <!-- Profile dropdown (icon) -->
+                    <li class="nav-item dropdown ms-3">
+                        <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle fs-5"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                            <li>
+                                <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
+                                    <i class="bi bi-person-circle me-2"></i> Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
+                                    <i class="bi bi-bag-check me-2"></i> Orders
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
+                                    <i class="bi bi-info-circle me-2"></i> About
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Wishlist -->
+                <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                    <i class="bi bi-heart"></i>
+                </a>
+                <!-- Cart -->
+                <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                    <i class="bi bi-cart"></i>
+                </a>
+            </div>
         </div>
-    </div>
-</nav>
-
+    </nav>
     <!-- HEADER -->
     <header class="orders-header">
         <div class="orders-header-inner">
-            <h1 class="orders-title mb-1">My orders</h1>
-            <p class="orders-subtitle mb-0">
-                Track your purchases, check delivery status and download invoices.
-            </p>
+            <h1 class="orders-title">My orders</h1>
+            <p class="orders-subtitle mb-0">Track your purchases, check delivery status and download invoices.</p>
         </div>
     </header>
-
     <!-- FILTERS -->
     <div class="orders-filters">
         <div class="orders-filters-inner d-flex flex-wrap align-items-center gap-2 justify-content-between">
@@ -299,77 +600,95 @@
             </div>
         </div>
     </div>
-
     <!-- ORDERS LIST -->
     <main>
         <div class="orders-container">
-            {% for i in order_list%}
+            {% for i in order_list %}
             <!-- ORDER 1 -->
             <div class="order-card">
-                <div class="d-flex justify-content-between align-items-center order-header-line mb-1">
-                    <div>
-                        
-                        <span class="text-muted ms-2">Placed on {{i.created_date}} · {{i.created_time}}</span>
+                <!-- ORDER HEADER -->
+                <div class="order-header">
+                    <div class="order-header-left">
+                        <div class="order-header-label">Order</div>
+                        <div class="order-date">Placed on {{i.created_date}} · {{i.created_time}}</div>
                     </div>
-                    <span class="badge badge-soft-processing">{{i.status}}</span>
+                    <div class="order-status">
+                        <span class="badge badge-soft-processing">{{i.status}}</span>
+                    </div>
                 </div>
-
-                <div class="d-flex justify-content-between align-items-center order-main-row gap-3 mt-2">
-                    <div class="d-flex align-items-center gap-3">
-                        <!-- Product image -->
-                        <img src="{{i.items.product_image.url}}" alt="{{i.items.product_name}}" class="order-product-img">
-                        <div>
-                            <div class="fw-semibold" style="font-size:0.9rem;">{{i.items.product_name}}</div>
-                            <div class="order-meta">
-                                {{i.items.quantity}} item · Expected delivery: 20–22 Dec 2025
+                <!-- ORDER CONTENT -->
+                <div class="order-content">
+                    <div class="order-main-grid">
+                        <!-- PRODUCT SECTION -->
+                        <div class="product-section">
+                            <div class="section-label">Product details</div>
+                            {% for items in i.items %}
+                            <div class="product-row">
+                                <!-- Product image -->
+                                <img src="{{items.product_image}}" alt="{{items.product_name}}" class="order-product-img">
+                                <div class="product-info">
+                                    <div class="product-name">{{items.product_name}}</div>
+                                    <div class="product-meta">
+                                        {{items.quantity}} item · Expected delivery: 20–22 Dec 2025
+                                        <div>
+                                            <i class="bi bi-box-seam me-1"></i>Price:
+                                            <span class="product-price">₹{{items.total_amount}}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            {% endfor %}
+                        </div>
+                        <!-- PRICE SUMMARY -->
+                        <div class="price-summary">
+                            <div class="price-label">Order total</div>
+                            <div class="order-total">₹{{i.total_amount}}</div>
+                            {% if i.status == "Placed" %}
+                            <div class="payment-status">Paid via {{i.payment_method}}</div>
+                            {% else %}
+                            <div class="payment-status">Not Paid</div>
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="text-end">
-                        <div class="order-total">₹{{i.total_amount}}</div>
-                        {% if i.status == "Placed" %}
-                            <div class="order-meta">Paid via {{i.payment_method}}</div>
-                        {%else%}
-                            <div class="order-meta">Not Paid</div>
-                        {%endif%}
+                    <div class="order-divider"></div>
+                    <!-- SHIPPING AND ACTIONS -->
+                    <div class="order-bottom-grid">
+                        <div class="shipping-section">
+                            <div class="shipping-title">Shipping to</div>
+                            <div class="shipping-info">
+                                <strong>{{i.full_name}}</strong>, Mumbai
+                            </div>
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn btn-outline-secondary btn-xs">
+                                <i class="bi bi-receipt me-1"></i>View details
+                            </button>
+                            <button class="btn btn-outline-secondary btn-xs">
+                                <i class="bi bi-truck me-1"></i>Track order
+                            </button>
+                            <button class="btn btn-outline-danger btn-xs">
+                                <i class="bi bi-x-circle me-1"></i>Cancel
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="mt-2 d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                    <div class="order-meta">
-                        Shipping to: {{i.full_name}}, Mumbai
+                    <!-- LATEST UPDATE -->
+                    <div class="update-box">
+                        <div class="update-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div class="update-content">
+                            <h6 class="update-title">Latest update</h6>
+                            <p class="update-message">Your order is being packed at the warehouse.</p>
+                            <p class="update-note">You will receive tracking information once the courier picks up the package.</p>
+                        </div>
                     </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-outline-secondary btn-xs">
-                            <i class="bi bi-receipt me-1"></i>View details
-                        </button>
-                        <button class="btn btn-outline-secondary btn-xs">
-                            <i class="bi bi-truck me-1"></i>Track order
-                        </button>
-                        <button class="btn btn-outline-danger btn-xs">
-                            <i class="bi bi-x-circle me-1"></i>Cancel
-                        </button>
-                    </div>
-                </div>
-
-                <div class="order-detail-box mt-3">
-                    <h6>Latest update</h6>
-                    <p class="mb-1">
-                        <i class="bi bi-box-seam me-1"></i>Your order is being packed at the warehouse.
-                    </p>
-                    <p class="mb-0 text-muted">
-                        You will receive tracking information once the courier picks up the package.
-                    </p>
                 </div>
             </div>
             {% endfor %}
-
-            
         </div>
     </main>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
+```
