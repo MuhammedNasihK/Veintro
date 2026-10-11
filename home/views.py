@@ -837,6 +837,18 @@ def orders(request):
 
 
 @login_required
+def cancel_order(request,order_id):
+
+    if request.method=="POST":
+        order_obj = get_object_or_404(Order,id=order_id,user=request.user)
+
+        if order_obj:
+            order_obj.status = 'Cancelled'
+            order_obj.save()
+    return redirect('orders')
+
+
+@login_required
 def checkout(request,user_id):
     user_address = Address.objects.filter(user = request.user)
 

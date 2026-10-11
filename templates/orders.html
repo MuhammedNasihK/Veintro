@@ -719,9 +719,12 @@
                                     <i class="bi bi-truck me-1"></i>Track order
                                 </a>
                                 {% if i.status|lower != 'cancelled' and i.status|lower != 'delivered' %}
-                                <a href="" class="btn btn-outline-danger btn-xs">
-                                    <i class="bi bi-x-circle me-1"></i>Cancel
-                                </a>
+                                <form method="POST" action="{% url 'cancel_order' i.order_id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-xs">
+                                        <i class="bi bi-x-circle me-1"></i>Cancel
+                                    </button>
+                                </form>
                                 {% endif %}
                             </div>
                         </div>
