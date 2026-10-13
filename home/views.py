@@ -720,57 +720,57 @@ def payment(request):
 
 @csrf_exempt
 def payment_callback(request):
-
     if request.method == 'POST':
-        razorpay_payment_id = request.POST.get('razorpay_payment_id',"")
-        razorpay_order_id = request.POST.get('razorpay_order_id',"")
-        razorpay_signature = request.POST.get('razorpay_signature','')
+        razorpay_payment_id = request.POST.get('razorpay_payment_id', '')
+        razorpay_order_id   = request.POST.get('razorpay_order_id', '')
+        razorpay_signature  = request.POST.get('razorpay_signature', '')
 
         try:
             razorpay_client.utility.verify_payment_signature({
-                'razorpay_payment_id' : razorpay_payment_id,
-                'razorpay_order_id' : razorpay_order_id,
-                'razorpay_signature' : razorpay_signature
+                'razorpay_payment_id': razorpay_payment_id,
+                'razorpay_order_id':   razorpay_order_id,
+                'razorpay_signature':  razorpay_signature,
             })
 
+            # Signature valid — now verify actual payment status from Razorpay
+            razorpay_payment = razorpay_client.payment.fetch(razorpay_payment_id)
 
             payment_obj = Payment.objects.get(razorpay_order_id=razorpay_order_id)
-            payment_obj.razorpay_payment_id= razorpay_payment_id
-            payment_obj.razorpay_signature = razorpay_signature
-            payment_obj.payment_status = "Success"
-            payment_obj.save()
-
             order = payment_obj.order
-            order.status = 'Placed'
-            order.save()
 
-            Cart.objects.filter(user=order.user).delete()
-            if 'address_id' in request.session:
-                del request.session['address_id']
-
-            return redirect('payment_success',order_id=order.id)
-
-        except razorpay.errors.SignatureVerificationError:
-            
-            try:
-                payment_obj = Payment.objects.get(razorpay_order_id=razorpay_order_id)
-                payment_obj.payment_status = 'Failed'
+            if razorpay_payment['status'] == 'captured':
+                # ✅ Genuine success
+                payment_obj.razorpay_payment_id = razorpay_payment_id
+                payment_obj.razorpay_signature  = razorpay_signature
+                payment_obj.payment_status      = 'Success'
                 payment_obj.save()
 
-                order = payment_obj.order
-                order.status = 'Cancelled'
+                order.status = 'Placed'
                 order.save()
 
-                
+                Cart.objects.filter(user=order.user).delete()
+                if 'address_id' in request.session:
+                    del request.session['address_id']
 
+                return redirect('payment_success', order_id=order.id)
+
+            else:
+                # ❌ Signature valid but payment failed/cancelled
+                payment_obj.payment_status = 'Failed'
+                payment_obj.save()
+                order.delete()   # CASCADE deletes OrderItems + Payment
+                return redirect('payment_failed')
+
+        except razorpay.errors.SignatureVerificationError:
+            # Tampered request
+            try:
+                payment_obj = Payment.objects.get(razorpay_order_id=razorpay_order_id)
+                order = payment_obj.order
+                order.delete()
             except Payment.DoesNotExist:
                 pass
-
             return redirect('payment_failed')
 
-            
-
-        
     return redirect('cart')
 
 
