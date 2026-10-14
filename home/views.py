@@ -706,8 +706,8 @@ def payment(request):
             'email'            : request.user.email,
             'phone'            : order.mobile_number,
             'order_id'         : order.id,
-            'callback_url'     : request.build_absolute_uri('/payment/callback/'),
-            'cancel_url'       : request.build_absolute_uri('/payment/callback/'),
+            'callback_url'     : request.build_absolute_uri(f'/payment/callback/?order_id={order.id}'),
+            'cancel_url'       : request.build_absolute_uri(f'/payment/callback/?order_id={order.id}')
         }
 
 
@@ -722,27 +722,26 @@ def payment(request):
 def payment_callback(request):
     if request.method == 'POST':
         razorpay_payment_id = request.POST.get('razorpay_payment_id', '')
-        razorpay_order_id   = request.POST.get('razorpay_order_id', '')
-        razorpay_signature  = request.POST.get('razorpay_signature', '')
+        razorpay_order_id = request.POST.get('razorpay_order_id', '')
+        razorpay_signature = request.POST.get('razorpay_signature', '')
 
         try:
             razorpay_client.utility.verify_payment_signature({
                 'razorpay_payment_id': razorpay_payment_id,
-                'razorpay_order_id':   razorpay_order_id,
-                'razorpay_signature':  razorpay_signature,
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_signature': razorpay_signature,
             })
 
-            # Signature valid — now verify actual payment status from Razorpay
             razorpay_payment = razorpay_client.payment.fetch(razorpay_payment_id)
 
             payment_obj = Payment.objects.get(razorpay_order_id=razorpay_order_id)
             order = payment_obj.order
-
+            print(razorpay_payment['status'])
             if razorpay_payment['status'] == 'captured':
-                # ✅ Genuine success
+                
                 payment_obj.razorpay_payment_id = razorpay_payment_id
-                payment_obj.razorpay_signature  = razorpay_signature
-                payment_obj.payment_status      = 'Success'
+                payment_obj.razorpay_signature = razorpay_signature
+                payment_obj.payment_status = 'Success'
                 payment_obj.save()
 
                 order.status = 'Placed'
@@ -755,20 +754,20 @@ def payment_callback(request):
                 return redirect('payment_success', order_id=order.id)
 
             else:
-                # ❌ Signature valid but payment failed/cancelled
+                
                 payment_obj.payment_status = 'Failed'
                 payment_obj.save()
-                order.delete()   # CASCADE deletes OrderItems + Payment
+                order.delete()   
                 return redirect('payment_failed')
 
         except razorpay.errors.SignatureVerificationError:
-            # Tampered request
+            
             try:
                 payment_obj = Payment.objects.get(razorpay_order_id=razorpay_order_id)
                 order = payment_obj.order
                 order.delete()
             except Payment.DoesNotExist:
-                pass
+                Order.objects.all().delete()
             return redirect('payment_failed')
 
     return redirect('cart')
