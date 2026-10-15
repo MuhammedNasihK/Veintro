@@ -720,54 +720,73 @@ def payment(request):
 
 @csrf_exempt
 def payment_callback(request):
+
+    # Failure/Cancel — Razorpay sends GET
+    if request.method == 'GET':
+        order_id = request.GET.get('order_id')
+        print("GET order_id:", order_id)
+        if order_id:
+            try:
+                order = Order.objects.get(id=order_id, status='Pending')
+                print("Order found, deleting...")
+                order.delete()
+            except Order.DoesNotExist:
+                print("Order not found — checking actual status:")
+                try:
+                    o = Order.objects.get(id=order_id)
+                    print("Order exists with status:", o.status)
+                except Order.DoesNotExist:
+                    print("Order doesn't exist at all")
+        else:
+            print("order_id is None — not in query params")
+        return redirect('payment_failed')
+
+    # Success — Razorpay sends POST
     if request.method == 'POST':
         razorpay_payment_id = request.POST.get('razorpay_payment_id', '')
-        razorpay_order_id = request.POST.get('razorpay_order_id', '')
-        razorpay_signature = request.POST.get('razorpay_signature', '')
+        razorpay_order_id   = request.POST.get('razorpay_order_id', '')
+        razorpay_signature  = request.POST.get('razorpay_signature', '')
 
         try:
             razorpay_client.utility.verify_payment_signature({
                 'razorpay_payment_id': razorpay_payment_id,
-                'razorpay_order_id': razorpay_order_id,
-                'razorpay_signature': razorpay_signature,
+                'razorpay_order_id':   razorpay_order_id,
+                'razorpay_signature':  razorpay_signature,
             })
 
             razorpay_payment = razorpay_client.payment.fetch(razorpay_payment_id)
-
             payment_obj = Payment.objects.get(razorpay_order_id=razorpay_order_id)
             order = payment_obj.order
-            print(razorpay_payment['status'])
-            if razorpay_payment['status'] == 'captured':
-                
-                payment_obj.razorpay_payment_id = razorpay_payment_id
-                payment_obj.razorpay_signature = razorpay_signature
-                payment_obj.payment_status = 'Success'
-                payment_obj.save()
 
+            if razorpay_payment['status'] == 'captured':
+                payment_obj.razorpay_payment_id = razorpay_payment_id
+                payment_obj.razorpay_signature  = razorpay_signature
+                payment_obj.payment_status      = 'Success'
+                payment_obj.save()
                 order.status = 'Placed'
                 order.save()
-
                 Cart.objects.filter(user=order.user).delete()
                 if 'address_id' in request.session:
                     del request.session['address_id']
-
                 return redirect('payment_success', order_id=order.id)
-
             else:
-                
-                payment_obj.payment_status = 'Failed'
-                payment_obj.save()
-                order.delete()   
+                order.delete()
                 return redirect('payment_failed')
 
         except razorpay.errors.SignatureVerificationError:
-            
-            try:
-                payment_obj = Payment.objects.get(razorpay_order_id=razorpay_order_id)
-                order = payment_obj.order
-                order.delete()
-            except Payment.DoesNotExist:
-                Order.objects.all().delete()
+            order_id = request.GET.get('order_id')
+            print("FAILURE — order_id:", order_id)
+            if order_id:
+                try:
+                    Order.objects.get(id=order_id, status='Pending').delete()
+                    print("Deleted successfully")
+                except Order.DoesNotExist:
+                    print("Not found — checking actual status:")
+                    try:
+                        o = Order.objects.get(id=order_id)
+                        print("Order status is:", o.status)
+                    except Order.DoesNotExist:
+                        print("Order doesn't exist at all")
             return redirect('payment_failed')
 
     return redirect('cart')
