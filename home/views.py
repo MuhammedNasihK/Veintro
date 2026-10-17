@@ -814,8 +814,20 @@ def payment_failed(request):
 @login_required
 def orders(request):
 
+
+    sort = request.GET.get('sort')
     
     orders = Order.objects.filter(user = request.user).prefetch_related('orderitem_set')
+
+    if sort == 'placed':
+        orders = orders.filter(status='Placed')
+    elif sort == 'shipped':
+        orders.filter(status='Shipped')
+    elif sort == "delivered":
+        orders = orders.filter(status='Delivered')
+    elif orders == 'cancelled':
+        orders = orders.filter(status = 'Cancelled')
+        
     order_list = []
     if orders:
         for order in orders:
