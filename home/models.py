@@ -112,9 +112,9 @@ class Payment(models.Model):
     )
 
     PAYMENT_METHOD_CHOICE = (
-        ('UPI','UPI'),
         ('Netbanking','Netbanking'),
         ('Card','Card'),
+        ('Wallet',"Wallet"),
         ('Cash on Delivery','Cash on Delivery')
     )
 

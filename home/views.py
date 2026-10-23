@@ -822,10 +822,10 @@ def orders(request):
     if sort == 'placed':
         orders = orders.filter(status='Placed')
     elif sort == 'shipped':
-        orders.filter(status='Shipped')
+        orders = orders.filter(status='Shipped')
     elif sort == "delivered":
         orders = orders.filter(status='Delivered')
-    elif orders == 'cancelled':
+    elif sort == 'cancelled':
         orders = orders.filter(status = 'Cancelled')
         
     order_list = []

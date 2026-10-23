@@ -627,12 +627,12 @@
         <form action="{% url 'orders' %}" method="GET">
         <div class="orders-filters-inner d-flex flex-wrap align-items-center gap-2 justify-content-between">
             <div class="d-flex flex-wrap gap-2">
-                <select class="form-select form-select-sm" name="sort" id="sort" onchange=this.form.submit() style="width:auto;">
-                    <option>All status</option>
-                    <option value="placed">Placed</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
+                <select class="form-select form-select-sm" name="sort" id="sort" onchange="this.form.submit()" style="width:auto;">
+                    <option value="" selected>All status</option>   
+                    <option value="placed"     {% if request.GET.sort == 'placed'     %}selected{% endif %}>Placed</option>
+                    <option value="shipped"    {% if request.GET.sort == 'shipped'    %}selected{% endif %}>Shipped</option>
+                    <option value="delivered"  {% if request.GET.sort == 'delivered'  %}selected{% endif %}>Delivered</option>
+                    <option value="cancelled"  {% if request.GET.sort == 'cancelled'  %}selected{% endif %}>Cancelled</option>
                 </select>
                 
             </div>
