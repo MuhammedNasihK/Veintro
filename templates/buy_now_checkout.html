@@ -1,0 +1,656 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veintro - Checkout</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-dark: #0b1020;
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --accent-soft: rgba(34, 197, 94, 0.12);
+            --muted: #6b7280;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            background: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Navbar - Veintro Logo Specifications */
+        .navbar {
+            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+            height: 72px;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
+        }
+        
+        .container-fluid-custom {
+            width: 100%;
+            max-width: 1320px;
+            padding-inline: 20px;
+            margin-inline: auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; 
+        }
+        
+        .navbar-brand {
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin-left: -45px; 
+        }
+
+        /* FIXED: same as all other pages */
+        .navbar-brand img {
+            width: 240px;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .navbar .nav-link {
+            color: #e5e7eb !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .navbar .nav-link.special-hover {
+            position: relative;
+            border-radius: 999px;
+            padding-inline: 14px;
+            overflow: hidden;
+        }
+        .navbar .nav-link.special-hover::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            width: 0;
+            height: 2px;
+            background: #22c55e;
+            transform: translateX(-50%);
+            transition: width 0.25s ease-out;
+            border-radius: 999px;
+        }
+        .navbar .nav-link.special-hover:hover::after {
+            width: 60%;
+        }
+        .navbar .nav-link.special-hover:hover {
+            background: rgba(31, 41, 55, 0.7);
+        }
+
+        .icon-btn {
+            border-radius: 999px;
+            border-color: #1f2937;
+            color: #e5e7eb;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .icon-btn i {
+            font-size: 1.1rem;
+        }
+        .icon-btn:hover {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #bbf7d0;
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        .dropdown-toggle::after {
+            display: inline-block !important;
+            margin-left: 0.255em;
+            vertical-align: 0.255em;
+            content: "";
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
+        }
+
+        /* ===== FLOATING ALERTS — CSS ONLY, NO JS ===== */
+        .floating-alert-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 9999;
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .floating-alert {
+            pointer-events: all;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-left: 5px solid #22c55e;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #1f2937;
+            font-weight: 500;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 0.5s forwards, fadeOutRight 0.5s 2s forwards;
+        }
+        .floating-alert.alert-error,
+        .floating-alert.alert-danger { border-left-color: #ef4444; }
+        .floating-alert.alert-warning { border-left-color: #f59e0b; }
+        .floating-alert.alert-info    { border-left-color: #3b82f6; }
+        .alert-icon { font-size: 1.2rem; margin-right: 10px; display: flex; align-items: center; }
+        .floating-alert .btn-close { padding: 1rem; opacity: 0.5; }
+        .floating-alert .btn-close:hover { opacity: 1; }
+        .alert-progress {
+            position: absolute;
+            bottom: 0; left: 0;
+            height: 3px;
+            background: #22c55e;
+            width: 100%;
+            animation: progress 2s linear forwards;
+        }
+        .floating-alert.alert-error .alert-progress,
+        .floating-alert.alert-danger .alert-progress { background: #ef4444; }
+        .floating-alert.alert-warning .alert-progress { background: #f59e0b; }
+        .floating-alert.alert-info .alert-progress    { background: #3b82f6; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(110%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+        @keyframes fadeOutRight {
+            from { transform: translateX(0);    opacity: 1; }
+            to   { transform: translateX(110%); opacity: 0; }
+        }
+        @keyframes progress {
+            from { width: 100%; }
+            to   { width: 0%;   }
+        }
+        /* ===== END FLOATING ALERTS ===== */
+
+        /* Header */
+        .checkout-header {
+            padding: 24px 0 10px;
+        }
+        .checkout-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+        }
+        .checkout-subtitle {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .checkout-steps {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .checkout-layout {
+            max-width: 800px;
+        }
+
+        .checkout-card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12);
+            transition: box-shadow 0.25s ease, transform 0.2s ease;
+        }
+        .checkout-card:hover {
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .section-heading {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .section-caption {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        /* Professional Clickable Address Cards */
+        .address-card-wrapper {
+            cursor: pointer;
+            display: block;
+            height: 100%;
+            margin: 0;
+        }
+        .address-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 16px 20px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .address-card-wrapper:hover .address-card {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        
+        /* Proper CSS Selection Logic */
+        .address-radio:checked + .address-card-wrapper .address-card {
+            border-color: #22c55e;
+            background: #f0fdf4;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.15);
+        }
+        
+        .check-circle {
+            color: #d1d5db;
+            font-size: 1.4rem;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+        .address-radio:checked + .address-card-wrapper .check-circle {
+            color: #22c55e;
+            transform: scale(1.1);
+        }
+
+        .address-name {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 1rem;
+        }
+        .address-text {
+            font-size: 0.85rem;
+            color: #4b5563;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .address-phone {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #374151;
+            margin-top: auto;
+        }
+
+        .btn-link-sm {
+            font-size: 0.85rem;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .btn-link-sm:hover {
+            text-decoration: underline;
+            color: #1d4ed8;
+        }
+
+        /* Redirect Button for New Address */
+        .btn-add-address {
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+            color: #4b5563;
+            border-radius: 14px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .btn-add-address:hover {
+            border-color: #22c55e;
+            color: #16a34a;
+            background: #f0fdf4;
+        }
+
+        /* Buttons */
+        .btn-next-step {
+            background: #22c55e;
+            border-radius: 999px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #0f172a;
+            padding: 10px 28px;
+            transition: all 0.2s ease-out;
+        }
+        .btn-next-step:hover {
+            background: #16a34a;
+            color: #ffffff;
+            box-shadow: 0 12px 26px rgba(22, 163, 74, 0.45);
+            transform: translateY(-1px);
+        }
+        .btn-back-cart {
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            font-size: 0.9rem;
+            color: #374151;
+            background: #f9fafb;
+            padding: 10px 24px;
+            transition: all 0.18s ease-out;
+            text-decoration: none;
+        }
+        .btn-back-cart:hover {
+            background: #ffffff;
+            border-color: #9ca3af;
+            color: #111827;
+        }
+
+        footer {
+            background: #020617;
+            color: #9ca3af;
+        }
+        footer a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        footer a:hover {
+            color: #f9fafb;
+        }
+
+        /* ===== MOBILE RESPONSIVE FIXES ===== */
+        @media (max-width: 991.98px) {
+            .navbar-brand { margin-left: -20px; }
+            .navbar-brand img { width: 180px; height: auto; }
+        }
+
+        @media (max-width: 575.98px) {
+            .navbar-brand { margin-left: -10px; }
+            .navbar-brand img { width: 150px; }
+            .checkout-title { font-size: 1.4rem; }
+            .checkout-subtitle { font-size: 0.85rem; }
+            .checkout-card { padding: 16px !important; border-radius: 14px; }
+            
+            .address-card { padding: 14px 16px; }
+            .address-name { font-size: 0.95rem; }
+            .check-circle { font-size: 1.2rem; }
+            
+            .action-buttons-wrapper {
+                flex-direction: column-reverse;
+                align-items: stretch !important;
+            }
+            .btn-next-step, .btn-back-cart {
+                width: 100%;
+                text-align: center;
+            }
+
+            .floating-alert-container {
+                right: 8px;
+                left: 8px;
+                max-width: 100%;
+                top: 76px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container-fluid-custom">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                </li>
+
+                <!-- Profile dropdown -->
+                <li class="nav-item dropdown ms-3">
+                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
+                       href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.email }}
+                        {% else %}
+                            <i class="bi bi-person-circle fs-5"></i>
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                        {% if request.user.is_authenticated %}
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
+                                <i class="bi bi-person-circle me-2"></i> Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
+                                <i class="bi bi-bag-check me-2"></i> Orders
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
+                                <i class="bi bi-info-circle me-2"></i> About
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            {% if request.user.is_authenticated %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Logout
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                                </a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Wishlist & Cart -->
+            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                <i class="bi bi-heart"></i>
+            </a>
+            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                <i class="bi bi-cart"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+{% if messages %}
+    <div class="floating-alert-container">
+        {% for message in messages %}
+            <div class="alert alert-dismissible fade show floating-alert alert-{{ message.tags }}" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="alert-icon">
+                        {% if message.tags == 'success' %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% elif message.tags == 'error' or message.tags == 'danger' %}
+                            <i class="bi bi-exclamation-circle-fill text-danger"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill text-primary"></i>
+                        {% endif %}
+                    </div>
+                    <div>{{ message }}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-progress"></div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- CHECKOUT HEADER -->
+<section class="checkout-header">
+    <div class="container checkout-layout">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1 class="checkout-title mb-1">Checkout</h1>
+                <p class="checkout-subtitle mb-1">
+                    Choose your delivery address before moving to payment.
+                </p>
+                <p class="checkout-steps mb-0">
+                    Step 1 of 2 · Delivery details → Payment
+                </p>
+            </div>
+            <div class="text-end d-none d-md-block">
+                <span class="badge bg-light text-dark me-1" style="font-size:0.75rem;">
+                    <i class="bi bi-lock-fill me-1 text-success"></i> Payment is completed on the next step
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHECKOUT CONTENT -->
+<section class="pb-4">
+    <div class="container checkout-layout">
+        
+        <!-- Main Form wrapper -->
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            <div class="checkout-card p-3 p-md-4 mb-3">
+                <div class="d-flex justify-content-between align-items-start align-items-md-center mb-4 flex-column flex-md-row gap-2">
+                    <div>
+                        <div class="section-heading">Delivery Address</div>
+                        <div class="section-caption mt-1">
+                            Select an address below or add a new one for this order.
+                        </div>
+                    </div>
+                    <a href="{% url 'profile' %}" class="btn-link-sm fw-medium">
+                        <i class="bi bi-gear me-1"></i>Manage in profile
+                    </a>
+                </div>
+
+                <!-- Saved Addresses & Add New Address Container -->
+                <div class="row align-items-stretch">
+                    
+                    {% if address_list %}
+                        {% for a in address_list %}
+                        <div class="col-12 col-md-6 mb-3">
+                            <input type="radio" name="addressid" id="address_{{ forloop.counter }}" value="{{ a.address_id }}" class="address-radio d-none" {% if forloop.first %}checked{% endif %} required>
+                            
+                            <label class="address-card-wrapper w-100 h-100 m-0" for="address_{{ forloop.counter }}">
+                                <div class="address-card">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="address-name mb-0">{{ a.full_name }} 
+                                            {% if forloop.first %}
+                                            <span class="badge bg-success-subtle text-success ms-1 align-middle" style="font-size: 0.65rem; font-weight: 600;">Default</span>
+                                            {% endif %}
+                                        </h6>
+                                        <div class="check-circle ms-2">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="address-text">
+                                        {{ a.flat }}, {{ a.area }}<br>
+                                        {% if a.landmark %}{{ a.landmark }},<br>{% endif %}
+                                        {{ a.city }}, {{ a.state }} - {{ a.pincode }}
+                                    </div>
+                                    <div class="address-phone">
+                                        <i class="bi bi-telephone text-muted me-1"></i>+91 {{ a.mobile_number }}
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 mb-3">
+                            <div class="alert alert-light border text-center p-4 rounded-3 text-muted">
+                                <i class="bi bi-geo-alt fs-2 d-block mb-2"></i>
+                                You don't have any saved addresses yet.
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Dedicated "Add New Address" Button Card -->
+                    <div class="col-12 col-md-6 mb-3">
+                        <a href="{% url 'add_address' %}" class="btn-add-address w-100 h-100 d-flex flex-column align-items-center justify-content-center text-decoration-none p-4">
+                            <i class="bi bi-plus-circle fs-2 mb-2 text-success"></i>
+                            <span class="fw-semibold">Add a new address</span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4 action-buttons-wrapper">
+                <a href="{% url 'cart' %}" class="btn btn-back-cart">
+                    <i class="bi bi-arrow-left me-1"></i> Back to cart
+                </a>
+                <button type="submit" class="btn btn-next-step">
+                    Continue to payment <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </div>
+            
+        </form>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="pt-4 mt-5">
+    <div class="container pb-3">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro" style="width: 180px; margin-left: -20px; margin-bottom: 10px;">
+                <p style="font-size:0.85rem;">
+                    Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
+                </p>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="{% url 'products' %}">All products</a></li>
+                    <li><a href="{% url 'products' %}">Mobiles</a></li>
+                    <li><a href="{% url 'products' %}">Laptops</a></li>
+                    <li><a href="{% url 'products' %}">Televisions</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'orders' %}">Orders</a></li>
+                    <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+                    <li><a href="{% url 'cart' %}">Cart</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Stay updated</h6>
+                <p style="font-size:0.82rem;">Get early access to new launches and exclusive offers.</p>
+                <form class="d-flex gap-2">
+                    <input type="email" class="form-control form-control-sm" placeholder="Enter your email">
+                    <button class="btn btn-sm btn-success" type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <hr class="border-secondary mt-4 mb-2">
+        <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
+            <span>© 2026 Veintro. All rights reserved.</span>
+            <span>Made with Bootstrap & HTML/CSS.</span>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

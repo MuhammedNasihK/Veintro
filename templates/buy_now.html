@@ -621,7 +621,8 @@
                             You will save <span class="text-success fw-semibold" id="summarySavingsNote">₹0</span> on this order compared to MRP.
                         </p>
 
-                        <form action="{% url 'checkout' product_details.variant_id %}" method="GET">
+                        <form action="{% url 'checkout' product_details.variant_id %}" method="POST">
+                            {% csrf_token %}
                             <input type="hidden" name="quantity" id="checkoutQuantity" value="1">
                             <button class="btn btn-checkout w-100 mb-2 py-2" type="submit">
                                 Proceed to checkout
