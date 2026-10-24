@@ -16,13 +16,16 @@ urlpatterns = [
     path('cart/',views.cart,name='cart'),
     path('add_to_cart/<int:variant_id>',views.add_to_cart,name='add_to_cart'),
     path('checkout/<int:user_id>',views.checkout,name='checkout'),
-    path('buy_now_checkout/<int:variant_id>',views.buy_now_checkout,name='buy_now_checkout'),
     path('orders/',views.orders,name='orders'),
     path('cancel_order/<int:order_id>',views.cancel_order,name='cancel_order'),
-    path('buy_now/<int:variant_id>',views.buy_now,name='buy_now'),
     path('payment/',views.payment,name='payment'),
     path('payment/callback/',views.payment_callback,name='payment_callback'),
     path('payment_success/<int:order_id>',views.payment_success,name='payment_success'),
     path('payment_failed/',views.payment_failed,name='payment_failed'),
-    path('about/',views.about,name='about')
+    path('about/',views.about,name='about'),
+
+    #  BUY NOW OPTION URLS:
+    path('buy_now/<int:variant_id>',views.buy_now,name='buy_now'),
+    path('buy_now_checkout/<int:variant_id>',views.buy_now_checkout,name='buy_now_checkout'),
+    path('buy_now_payment/',views.buy_now_payment,name='buy_now_payment')
 ]

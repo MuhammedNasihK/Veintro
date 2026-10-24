@@ -717,6 +717,10 @@ def payment(request):
     return render(request,'payment.html')
 
 
+def buy_now_payment(request):
+    return render(request,"payment.html")
+
+
 
 @csrf_exempt
 def payment_callback(request):
@@ -950,6 +954,7 @@ def buy_now_checkout(request,variant_id):
         'address_list' : address_list
     }
     return render(request,"buy_now_checkout.html",context)
+
 
 
 def about(request):
