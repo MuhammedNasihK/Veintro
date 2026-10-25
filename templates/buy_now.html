@@ -488,6 +488,12 @@
                         </div>
 
                         {% if product_details %}
+
+                        <form id="update-form" action="" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="update">
+                        </form>
+
                             <div class="cart-item">
                                 <div class="row g-3 align-items-center">
                                     <div class="col-3 col-md-2">
@@ -524,10 +530,14 @@
                                     
                                     <div class="col-6 col-md-2 mt-2 mt-md-0">
                                         <div class="mb-1" style="font-size: 0.75rem; color: #6b7280; font-weight: 500; padding-left: 8px;">Qty</div>
-                                        <select id="qtyInput" class="form-select form-select-sm qty-input">
-                                            {% for n in stock_range %}
-                                                <option value="{{n}}">{{n}}</option>
-                                            {% endfor %}
+                                        <select id="qtyInput" class="form-select form-select-sm qty-input" name="quantity_{{product_details.variant_id}}" form="update-form" onchange="this.form.submit()">
+                                            {% if stock_range == 0 %}
+                                                <h3 style="color: red">Out of Stock</h3>
+                                            {%else%}
+                                                {% for n in stock_range %}
+                                                    <option value="{{n}}" {% if n == request.session.buy_now_selected_qty %}selected {%endif%}>{{n}}</option>
+                                                {% endfor %}
+                                            {%endif%}
                                         </select>
                                     </div>
                                     
@@ -621,9 +631,9 @@
                             You will save <span class="text-success fw-semibold" id="summarySavingsNote">₹0</span> on this order compared to MRP.
                         </p>
 
-                        <form action="{% url 'checkout' product_details.variant_id %}" method="POST">
+                        <form id="checkout-form" action="{% url 'buy_now_checkout' product_details.variant_id %}" method="POST">
                             {% csrf_token %}
-                            <input type="hidden" name="quantity" id="checkoutQuantity" value="1">
+                            <input type="hidden" name="action" value="submit">
                             <button class="btn btn-checkout w-100 mb-2 py-2" type="submit">
                                 Proceed to checkout
                             </button>

@@ -103,6 +103,15 @@ class OrderItem(models.Model):
     def total_price(self):
         return f"{self.quantity} X {self.variant.product.name} (Order #{self.order.pk})"
 
+
+
+class BuyNow(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    variant = models.ForeignKey('admin_panel.ProductVariant',on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    
+
 class Payment(models.Model):
     PAYMENT_STATUS = (
         ('Pending',"Pending"),

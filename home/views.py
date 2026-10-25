@@ -20,7 +20,7 @@ User = get_user_model()
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
 
 def home(request):                                                                                                            # here the first attribute is attribute field in ProductVariant which is related to AttributeValue by using ManyToMany relation and the second attribute is the attribute field in the AttributeValue table which is related to Attribute table by using ForeignKey relation.
-    trending_products = ProductVariant.objects.filter(is_active=True).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
+    trending_products = ProductVariant.objects.filter(is_active=True,stock__gt=0).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
     latest_mobiles = trending_products.filter(product__category=1).order_by("-added_date")
     product_list=[]
     latest_mobiles_list = []
@@ -88,7 +88,7 @@ def products(request):
     filter_price = request.GET.get('price')
     sort = request.GET.get('sort')
 
-    products = ProductVariant.objects.filter(is_active=True).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
+    products = ProductVariant.objects.filter(is_active=True,stock__gt=0).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
     product_details = []
 
     if sort:
@@ -154,7 +154,6 @@ def products(request):
 
 
     return render(request,'products.html',context)
-
 
 
 
@@ -564,7 +563,7 @@ def add_to_cart(request,variant_id):
     return redirect(request.META.get('HTTP_REFERER','home'))
 
 
-@login_required
+
 @login_required
 def buy_now(request,variant_id):
     
@@ -575,6 +574,14 @@ def buy_now(request,variant_id):
             'attribute__attribute','productimage_set')
     product_details = {}
 
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'update':
+            if "buy_now_selected_qty" in request.session:
+                selected_qty = request.POST.get(product.id)
+                request.session['buy_now_selected_qty'] = int(selected_qty)
+                return redirect('buy_now')
+            
     for p in product:
 
         main_img = p.productimage_set.filter(is_main=True).first()
@@ -595,9 +602,18 @@ def buy_now(request,variant_id):
     stock = int(product_details.get('stock'))
     if stock >=5:
         stock_range = range(1,6)
+    elif stock == 0:
+        stock_range = 0
     else:
         stock_range = range(1,stock+1)
-    print(type(product_details['stock']))
+
+    if product_details:
+        if 'buy_now_product_details' in request.session and 'buy_now_selected_qty' in request.session:
+            del request.session['buy_now_product_details']
+            del request.session['buy_now_selected_qty']
+        else:
+            request.session['buy_now_product_details'] = product_details
+            request.session['buy_now_selected_qty'] = 1
 
     context = {
         'product_details' : product_details,
@@ -924,7 +940,7 @@ def checkout(request,user_id):
     return render(request,'checkout.html',context)
 
 def buy_now_checkout(request,variant_id):
-    user_address = get_object_or_404(Address,user=request.user)
+    user_address = Address.objects.filter(user=request.user)
 
     if request.method == 'POST':
             address_id = request.POST.get('addressid')
@@ -933,8 +949,10 @@ def buy_now_checkout(request,variant_id):
                 address_id = int(address_id)
                 address = get_object_or_404(Address,id = address_id,user = request.user)
                 if address:
+                    if 'address_id' in request.session:
+                        del request.session['address_id']
                     request.session['address_id'] = address_id
-                    return redirect('payment')
+                    return redirect('buy_now_payment')
 
     address_list = []
     if user_address:
