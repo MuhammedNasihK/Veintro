@@ -569,18 +569,33 @@ def buy_now(request,variant_id):
     
     if not request.user.is_authenticated:
         return redirect('login')
+
+    if request.method == 'POST':
+            print("POST data:", request.POST)
+            action = request.POST.get('action')
+            print("action:", action)
+            if action == 'update':
+                variant = ProductVariant.objects.get(id=variant_id)
+                product_data = BuyNow.objects.get(variant=variant,user=request.user)
+                selected_qty = request.POST.get(str(f"quantity_{variant_id}"))
+                if selected_qty:
+                    product_data.quantity = int(selected_qty)
+                    product_data.save(update_fields=['quantity'])
+                    return redirect('buy_now',variant_id=variant_id)
+
+                
     product = ProductVariant.objects.filter(id=variant_id,is_active=True).select_related(
         'product','product__category','product__brand').prefetch_related(
             'attribute__attribute','productimage_set')
     product_details = {}
 
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        if action == 'update':
-            if "buy_now_selected_qty" in request.session:
-                selected_qty = request.POST.get(product.id)
-                request.session['buy_now_selected_qty'] = int(selected_qty)
-                return redirect('buy_now')
+    if product:
+        variant = ProductVariant.objects.get(id=variant_id)
+        product_data,created = BuyNow.objects.update_or_create(
+            user=request.user,
+            defaults={'variant':variant,'quantity':1}
+        )
+
             
     for p in product:
 
@@ -595,7 +610,7 @@ def buy_now(request,variant_id):
             'discount_percentage': p.discount_percentage(),
             'stock' : p.stock,
             'attribute' : {a.attribute.name: a.value for a in p.attribute.all()},
-            'image' : main_img.image.url if main_img else None
+            'image' : main_img.image.url if main_img else None,
 
         }
 
@@ -607,18 +622,12 @@ def buy_now(request,variant_id):
     else:
         stock_range = range(1,stock+1)
 
-    if product_details:
-        if 'buy_now_product_details' in request.session and 'buy_now_selected_qty' in request.session:
-            del request.session['buy_now_product_details']
-            del request.session['buy_now_selected_qty']
-        else:
-            request.session['buy_now_product_details'] = product_details
-            request.session['buy_now_selected_qty'] = 1
 
     context = {
         'product_details' : product_details,
         'stock_range' : stock_range,
-        'stock' : stock
+        'stock' : stock,
+        'product_data' : product_data
     }
 
     return render(request,'buy_now.html',context)

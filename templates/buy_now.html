@@ -489,7 +489,7 @@
 
                         {% if product_details %}
 
-                        <form id="update-form" action="" method="POST">
+                        <form id="update-form" action="{% url 'buy_now' product_details.variant_id%}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="update">
                         </form>
@@ -535,7 +535,7 @@
                                                 <h3 style="color: red">Out of Stock</h3>
                                             {%else%}
                                                 {% for n in stock_range %}
-                                                    <option value="{{n}}" {% if n == request.session.buy_now_selected_qty %}selected {%endif%}>{{n}}</option>
+                                                    <option value="{{n}}" {% if n == product_data.quantity %}selected {%endif%}>{{n}}</option>
                                                 {% endfor %}
                                             {%endif%}
                                         </select>
