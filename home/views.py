@@ -565,72 +565,69 @@ def add_to_cart(request,variant_id):
 
 
 @login_required
-def buy_now(request,variant_id):
-    
-    if not request.user.is_authenticated:
-        return redirect('login')
+def buy_now(request, variant_id):
 
     if request.method == 'POST':
-            print("POST data:", request.POST)
-            action = request.POST.get('action')
-            print("action:", action)
-            if action == 'update':
-                variant = ProductVariant.objects.get(id=variant_id)
-                product_data = BuyNow.objects.get(variant=variant,user=request.user)
-                selected_qty = request.POST.get(str(f"quantity_{variant_id}"))
-                if selected_qty:
-                    product_data.quantity = int(selected_qty)
-                    product_data.save(update_fields=['quantity'])
-                    return redirect('buy_now',variant_id=variant_id)
+        action = request.POST.get('action')
+        if action == 'update':
+            product_data = BuyNow.objects.get(user=request.user)
+            selected_qty = request.POST.get(f"quantity_{variant_id}")
+            if selected_qty:
+                product_data.quantity = int(selected_qty)
+                product_data.save(update_fields=['quantity'])
+            return redirect('buy_now', variant_id=variant_id)
 
-                
-    product = ProductVariant.objects.filter(id=variant_id,is_active=True).select_related(
-        'product','product__category','product__brand').prefetch_related(
-            'attribute__attribute','productimage_set')
+    product = ProductVariant.objects.filter(id=variant_id, is_active=True).select_related(
+        'product', 'product__category', 'product__brand').prefetch_related(
+        'attribute__attribute', 'productimage_set')
+
+    if not product.exists():
+        return redirect('products')
+
+    variant = ProductVariant.objects.get(id=variant_id)
+
+    product_data, created = BuyNow.objects.get_or_create(
+        user=request.user,
+        defaults={'variant': variant, 'quantity': 1}
+    )
+
+    if not created and product_data.variant != variant:
+        product_data.variant = variant
+        product_data.quantity = 1
+        product_data.save()
+
     product_details = {}
-
-    if product:
-        variant = ProductVariant.objects.get(id=variant_id)
-        product_data,created = BuyNow.objects.update_or_create(
-            user=request.user,
-            defaults={'variant':variant,'quantity':1}
-        )
-
-            
     for p in product:
-
         main_img = p.productimage_set.filter(is_main=True).first()
         product_details = {
-            'variant_id' : p.id,
-            'name' : p.product.name,
-            'category' : p.product.category.name,
-            'brand' : p.product.brand.name,
-            'price' : p.price,
-            'discount_price' : p.discount_price,
+            'variant_id': p.id,
+            'name': p.product.name,
+            'category': p.product.category.name,
+            'brand': p.product.brand.name,
+            'price': p.price,
+            'discount_price': p.discount_price,
             'discount_percentage': p.discount_percentage(),
-            'stock' : p.stock,
-            'attribute' : {a.attribute.name: a.value for a in p.attribute.all()},
-            'image' : main_img.image.url if main_img else None,
-
+            'stock': p.stock,
+            'attribute': {a.attribute.name: a.value for a in p.attribute.all()},
+            'image': main_img.image.url if main_img else None,
         }
 
     stock = int(product_details.get('stock'))
-    if stock >=5:
-        stock_range = range(1,6)
+    if stock >= 5:
+        stock_range = range(1, 6)
     elif stock == 0:
         stock_range = 0
     else:
-        stock_range = range(1,stock+1)
-
+        stock_range = range(1, stock + 1)
 
     context = {
-        'product_details' : product_details,
-        'stock_range' : stock_range,
-        'stock' : stock,
-        'product_data' : product_data
+        'product_details': product_details,
+        'stock_range': stock_range,
+        'stock': stock,
+        'product_data': product_data
     }
 
-    return render(request,'buy_now.html',context)
+    return render(request, 'buy_now.html', context)
 
 
 @login_required
