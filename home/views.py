@@ -739,7 +739,45 @@ def payment(request):
     return render(request,'payment.html')
 
 
+
+@login_required
 def buy_now_payment(request):
+
+    if request.method == 'POST':
+        payment_method = request.POST.get('payment_method')
+        buy_now_product = BuyNow.objects.filter(user=request.user).select_related('variant','variant__product')
+
+        if not buy_now_product.exists():
+            return redirect('cart')
+
+        total_amount = 0
+        total_amount = buy_now_product.variant.discount_price if buy_now_product.variant.discount_price > 0 else buy_now_product.variant.price
+        total_amount = total_amount * buy_now_product.quantity
+
+        delivery_charge = 29 if total_amount < 15000 else 0
+
+        address_id = request.session.get('address_id')
+        if not address_id:
+            return redirect('buy_now_checkout')
+        address = get_object_or_404(Address,id=address_id,user=request.user)
+
+        order = Order.objects.create(
+            user = request.user,
+            full_name = address.full_name,
+            mobile_number = address.mobile_number,
+            pincode = address.pincode,
+            flat = address.flat,
+            area = address.area,
+            landmark = address.landmark,
+            city = address.city,
+            state = address.state,
+            total_amount = total_amount,
+            status = 'Pending',
+            payment_method = payment_method
+        )
+
+        
+        
     return render(request,"payment.html")
 
 
